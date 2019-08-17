@@ -1,7 +1,13 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "AuroraBlueprints", "src/AuroraBlueprints.fsproj", "{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AuroraBlueprints", "src\AuroraBlueprints.fsproj", "{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{FA339438-85B8-43B0-BE8A-6505A79A01AF}"
+	ProjectSection(SolutionItems) = preProject
+		sass\main.sass = sass\main.sass
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +19,11 @@ Global
 		{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {68EADD21-6B2E-4F48-8A62-386A31B7A696}
 	EndGlobalSection
 EndGlobal

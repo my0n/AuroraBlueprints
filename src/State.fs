@@ -9,6 +9,7 @@ open Types
 
 let pageParser: Parser<Page->Page,Page> =
     oneOf [
+        map Ships (s "ships")
         map About (s "about")
         map Counter (s "counter")
         map Home (s "home")
@@ -27,9 +28,16 @@ let init result =
     let (home, homeCmd) = Home.State.init()
     let (model, cmd) =
         urlUpdate result
-          { CurrentPage = Home
-            Counter = counter
-            Home = home }
+            {
+                CurrentPage = Home
+                Counter = counter
+                Home = home
+                Ships =
+                    {
+                        CurrentShip = None
+                        Ships = []
+                    }
+            }
 
     model, Cmd.batch [ cmd
                        Cmd.map CounterMsg counterCmd

@@ -3,31 +3,27 @@ module Navbar.View
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-let navButton classy href faClass txt =
+open Global
+
+let navButton label page currentPage =
     p
         [ ClassName "control" ]
         [ a
-            [ ClassName (sprintf "button %s" classy)
-              Href href ]
-            [ span
-                [ ClassName "icon" ]
-                [ i
-                    [ ClassName (sprintf "fab %s" faClass) ]
-                    [ ] ]
-              span
-                [ ]
-                [ str txt ] ] ]
+            [ classList [ "is-active", page = currentPage; "button", true ]
+              Href (toHash page) ]
+            [ str label ] ]
 
-let navButtons =
+let navButtons currentPage =
     span
         [ ClassName "navbar-item" ]
         [ div
             [ ClassName "field is-grouped" ]
-            [ navButton "twitter" "https://twitter.com/FableCompiler" "fa-twitter" "Twitter"
-              navButton "github" "https://github.com/elmish/elmish" "fa-github" "Fork me"
-              navButton "github" "https://gitter.im/fable-compiler/Fable" "fa-gitter" "Gitter" ] ]
+            [ navButton "Home" Home currentPage
+              navButton "Ships" Ships currentPage
+              navButton "Counter sample" Counter currentPage
+              navButton "About" Page.About currentPage ] ]
 
-let root =
+let root currentPage =
     nav
         [ ClassName "navbar is-dark" ]
         [ div
@@ -39,4 +35,4 @@ let root =
                     [ str "Elmish" ] ]
               div
                 [ ClassName "navbar-end" ]
-                [ navButtons ] ] ]
+                [ navButtons currentPage ] ] ]

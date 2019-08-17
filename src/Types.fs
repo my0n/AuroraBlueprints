@@ -5,8 +5,11 @@ open Global
 type Msg =
     | CounterMsg of Counter.Types.Msg
     | HomeMsg of Home.Types.Msg
-
+    
 type Model =
-    { CurrentPage: Page
-      Counter: Counter.Types.Model
-      Home: Home.Types.Model }
+    {
+        CurrentPage: Page
+        Counter: Counter.Types.Model
+        Home: Home.Types.Model
+        Ships: Ships.Types.Model
+    }

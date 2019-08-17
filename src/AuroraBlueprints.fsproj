@@ -3,9 +3,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="sass\**" />
+  </ItemGroup>
+  <ItemGroup>
     <!-- Global to the app -->
-    <None Include="sass\main.sass" />
     <Compile Include="Global.fs" />
+    <Compile Include="TableCommon.fs" />
+    <Compile Include="SelectableList.fs" />
+    <Compile Include="Ships\Types.fs" />
+    <Compile Include="Ships\View.fs" />
     <!-- Info -->
     <Compile Include="Info/View.fs" />
     <!-- Counter -->
@@ -23,6 +29,5 @@
     <Compile Include="State.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
