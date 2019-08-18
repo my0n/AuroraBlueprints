@@ -71,15 +71,31 @@ type Ship =
     {
         Guid: Guid
         Name: string
-        Weight: double
+        ShipClass: string
+        Size: float<hs>
         Components: Map<Guid, ShipComponent>
     }
     static member empty =
         {
             Guid = Guid.NewGuid()
-            Name = "New ship"
-            Weight = 0.0
+            Name = "Tribal"
+            ShipClass = "Cruiser"
+            Size = 0.0<hs>
             Components = Map.empty
+        }
+    member this.calculate =
+        let size =
+            this.Components
+            |> Map.values
+            |> List.map (fun c ->
+                match c with
+                | FuelStorage c ->
+                    c.Size
+                )
+            |> List.sum
+
+        { this with
+            Size = size
         }
 
 type Msg =

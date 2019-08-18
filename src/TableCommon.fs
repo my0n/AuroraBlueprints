@@ -20,7 +20,7 @@ type ButtonOptions =
 type CellRenderer =
     | String of string
     | Integer of int
-    | Number of double * NumberOptions
+    | Size of float<hs>
     | Button of ButtonOptions
 
 let tableHead columns =
@@ -36,8 +36,8 @@ let tableCell dispatch cell =
         str value
     | Integer value ->
         str <| sprintf "%d" value
-    | Number (value, options) ->
-        str <| sprintf "%.2f" value
+    | Size value ->
+        str <| sprintf "%.1f HS" value
     | Button options ->
         p [ ClassName "control" ]
           [

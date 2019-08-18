@@ -9,7 +9,7 @@ open System
 let literToKiloliterConversion = 1000.0<l/kl>
 let tonToHSConversion = 50.0<ton/hs>
 let toKiloliters (liters: float<l>) = liters / literToKiloliterConversion
-let toHS (tons: float<ton>) = tons / tonToHSConversion
+let toTons (hs: float<hs>) = hs * tonToHSConversion
 
 type Page =
     | Ships

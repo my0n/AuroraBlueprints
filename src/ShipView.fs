@@ -8,6 +8,7 @@ open Global
 open TableCommon
 open SelectableList
 open InputComponents
+open ShipDescription
 
 let shipListOptions =
     {
@@ -15,7 +16,7 @@ let shipListOptions =
         RowRenderer = (fun ship ->
             [
                 String ship.Name
-                Number (ship.Weight, { Precision = 2 })
+                Size ship.Size
                 Button { Text = "Delete"; OnClick = Msg.RemoveShip ship }
             ]
         )
@@ -81,6 +82,7 @@ let shipInfo dispatch ship =
               ]
         ]
         @ shipComponents
+        @+ descriptionBox ship
 
 let root model dispatch =
     let ships = Map.values model.AllShips

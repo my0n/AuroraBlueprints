@@ -42,6 +42,7 @@ let update msg model =
             CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Guid = ship.Guid)
         }, Cmd.none
     | ReplaceShip ship ->
+        let ship = ship.calculate
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Guid = ship.Guid) ship

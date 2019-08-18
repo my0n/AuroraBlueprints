@@ -12,6 +12,7 @@
     <Compile Include="TableCommon.fs" />
     <Compile Include="InputComponents.fs" />
     <Compile Include="SelectableList.fs" />
+    <Compile Include="ShipComponents\ShipDescription.fs" />
     <Compile Include="ShipComponents\Common.fs" />
     <Compile Include="ShipComponents\FuelStorage.fs" />
     <Compile Include="ShipView.fs" />
