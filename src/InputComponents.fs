@@ -30,6 +30,14 @@ type IntegerInputOptions =
         OnChange: int -> Msg
     }
 
+let horizontalGroup label fields =
+    div [ ClassName "field is-horizontal" ]
+        ((
+          [ (match label with None -> None | Some label -> Some (div [ ClassName "field-label" ] [ str label ])) ]
+          @ [ Some (div [ ClassName "field-body" ] fields) ]
+        )
+        |> List.choose id)
+
 let integerInput options dispatch value =
     div [ ClassName "field" ]
         [ div [ ClassName "control" ]
