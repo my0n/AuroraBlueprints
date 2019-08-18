@@ -43,15 +43,6 @@ let componentListOptions ship =
         OnSelect = fun comp -> Msg.Noop
     }
 
-let shipComponentCard header weight contents =
-    div []
-        [
-            div [ ClassName "is-4" ] [str header]
-        ]
-
-let fuelStorage comp =
-    shipComponentCard "Fuel Storage" 20 []
-
 let actionButton name callback =
     p [ ClassName "control" ]
       [
@@ -77,7 +68,7 @@ let shipInfo dispatch ship =
             |> List.map (fun comp ->
                 match comp with
                 | FuelStorage fs ->
-                    fuelStorage fs
+                    ShipComponents.FuelStorage.fuelStorage fs
             )
 
         [ div [ ClassName "title is-4" ]
