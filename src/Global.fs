@@ -2,6 +2,15 @@ module Global
 
 open System
 
+[<Measure>] type l
+[<Measure>] type kl
+[<Measure>] type ton
+[<Measure>] type hs
+let literToKiloliterConversion = 1000.0<l/kl>
+let tonToHSConversion = 50.0<ton/hs>
+let toKiloliters (liters: float<l>) = literToKiloliterConversion / liters
+let toHS (tons: float<ton>) = tonToHSConversion / tons
+
 type Page =
     | Ships
 

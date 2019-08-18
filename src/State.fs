@@ -13,7 +13,7 @@ let init result =
                 CurrentShip = None
                 AllShips = Map.empty
                 AllComponents = Map.empty
-                                %+ { Guid = Guid.NewGuid(); Spec = FuelStorage FuelStorage.empty }
+                                %+ FuelStorage FuelStorage.empty
             }
 
     model, Cmd.batch [ cmd ]
@@ -69,8 +69,10 @@ let update msg model =
 
     // Components
     | SaveComponentToDesigns shipComponent ->
-        model, Cmd.ofMsg (NewComponentDesign { Guid = Guid.NewGuid(); Spec = shipComponent })
+        model, Cmd.ofMsg (NewComponentDesign shipComponent.duplicate)
     | CopyComponentToShip (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components @+ shipComponent })
+        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent.duplicate })
     | RemoveComponentFromShip (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components @- shipComponent })
+        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %- shipComponent })
+    | ReplaceShipComponent (ship, shipComponent) ->
+        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent.calculate })

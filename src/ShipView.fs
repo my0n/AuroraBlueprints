@@ -25,15 +25,15 @@ let shipListOptions =
 let componentListOptions ship =
     {
         Columns = [ "Name"; "" ]
-        RowRenderer = (fun (comp: ShipComponentDesign) ->
+        RowRenderer = (fun (comp: ShipComponent) ->
             let name =
-                match comp.Spec with
+                match comp with
                 | FuelStorage _ -> "Fuel Storage"
 
             let onClick =
                 match ship with
                 | None -> Msg.Noop
-                | Some ship -> Msg.CopyComponentToShip (ship, comp.Spec)
+                | Some ship -> Msg.CopyComponentToShip (ship, comp)
 
             [
                 String name
@@ -65,10 +65,11 @@ let shipInfo dispatch ship =
     | Some ship ->
         let shipComponents =
             ship.Components
+            |> Map.values
             |> List.map (fun comp ->
                 match comp with
                 | FuelStorage fs ->
-                    ShipComponents.FuelStorage.fuelStorage fs
+                    ShipComponents.FuelStorage.fuelStorage dispatch ship fs
             )
 
         [ div [ ClassName "title is-4" ]

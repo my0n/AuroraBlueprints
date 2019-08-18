@@ -5,45 +5,75 @@ open System
 
 type FuelStorage =
     {
+        Guid: Guid
+
         Tiny: int
         Small: int
         Standard: int
         Large: int
         VeryLarge: int
         UltraLarge: int
+        
+        // calculated values
+        Size: float<hs>
+        FuelCapacity: float<l>
     }
     static member empty =
         {
+            Guid = Guid.NewGuid()
+
             Tiny = 0
             Small = 0
             Standard = 0
             Large = 0
             VeryLarge = 0
             UltraLarge = 0
+
+            Size = 0.0<hs>
+            FuelCapacity = 0.0<l>
+        }
+    member this.calculate =
+        { this with
+            Size = (float this.Tiny * 0.1
+                  + float this.Small * 0.2
+                  + float this.Standard * 1.0
+                  + float this.Large * 5.0
+                  + float this.VeryLarge * 20.0
+                  + float this.UltraLarge * 100.0) * 1.0<hs>
+            FuelCapacity = (float this.Tiny * 1.0
+                          + float this.Small * 2.0
+                          + float this.Standard * 10.0
+                          + float this.Large * 50.0
+                          + float this.VeryLarge * 200.0
+                          + float this.UltraLarge * 1000.0) * 5.0<l>
         }
 
-type ShipComponentSpec =
+type ShipComponent =
     | FuelStorage of FuelStorage
-
-type ShipComponentDesign =
-    {
-        Guid: Guid
-        Spec: ShipComponentSpec
-    }
+    member this.Guid
+        with get() =
+            match this with
+            | FuelStorage c -> c.Guid
+    member this.duplicate =
+        match this with
+        | FuelStorage c -> FuelStorage { c with Guid = Guid.NewGuid() }
+    member this.calculate =
+        match this with
+        | FuelStorage c -> FuelStorage c.calculate
 
 type Ship =
     {
         Guid: Guid
         Name: string
         Weight: double
-        Components: ShipComponentSpec list
+        Components: Map<Guid, ShipComponent>
     }
     static member empty =
         {
             Guid = Guid.NewGuid()
             Name = "New ship"
             Weight = 0.0
-            Components = []
+            Components = Map.empty
         }
 
 type Msg =
@@ -57,21 +87,22 @@ type Msg =
     | ShipUpdateName of Ship * string
 
     // Component Designs
-    | NewComponentDesign of ShipComponentDesign
-    | RemoveComponentDesign of ShipComponentDesign
-    | ReplaceComponentDesign of ShipComponentDesign
+    | NewComponentDesign of ShipComponent
+    | RemoveComponentDesign of ShipComponent
+    | ReplaceComponentDesign of ShipComponent
 
     // Components
-    | SaveComponentToDesigns of ShipComponentSpec
-    | CopyComponentToShip of Ship * ShipComponentSpec
-    | RemoveComponentFromShip of Ship * ShipComponentSpec
+    | SaveComponentToDesigns of ShipComponent
+    | CopyComponentToShip of Ship * ShipComponent
+    | RemoveComponentFromShip of Ship * ShipComponent
+    | ReplaceShipComponent of Ship * ShipComponent
 
 type Model =
     {
         CurrentPage: Page
         CurrentShip: Ship option
         AllShips: Map<Guid, Ship>
-        AllComponents: Map<Guid, ShipComponentDesign>
+        AllComponents: Map<Guid, ShipComponent>
     }
     static member empty =
         {
