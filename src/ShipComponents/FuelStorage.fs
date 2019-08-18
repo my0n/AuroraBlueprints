@@ -11,6 +11,7 @@ let fuelStorage dispatch (ship: Ship) (comp: FuelStorage) =
     shipComponentCard [
                         Name "Fuel Storage"
                         Size comp.Size
+                        FuelCapacity comp.FuelCapacity
                       ]
                       [
                         integerInput {

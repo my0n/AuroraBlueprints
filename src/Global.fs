@@ -8,8 +8,8 @@ open System
 [<Measure>] type hs
 let literToKiloliterConversion = 1000.0<l/kl>
 let tonToHSConversion = 50.0<ton/hs>
-let toKiloliters (liters: float<l>) = literToKiloliterConversion / liters
-let toHS (tons: float<ton>) = tonToHSConversion / tons
+let toKiloliters (liters: float<l>) = liters / literToKiloliterConversion
+let toHS (tons: float<ton>) = tons / tonToHSConversion
 
 type Page =
     | Ships
