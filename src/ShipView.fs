@@ -7,6 +7,7 @@ open Types
 open Global
 open TableCommon
 open SelectableList
+open InputComponents
 
 let gridOptions =
     {
@@ -45,7 +46,7 @@ let actionBar dispatch =
             actionButton "New Ship" (fun event -> Msg.NewShip |> dispatch)
         ]
 
-let shipInfo ship =
+let shipInfo dispatch ship =
     match ship with
     | None ->
         [ div [ ClassName "title is-4" ] [ str "No ship selected." ] ]
@@ -58,7 +59,11 @@ let shipInfo ship =
                     fuelStorage comp
             )
 
-        [ div [ ClassName "title is-4" ] [ str (ship.Guid.ToString()) ] ]
+        [ div [ ClassName "title is-4" ]
+              [
+                textInput { OnChange = fun newName -> Msg.ShipUpdateName (ship, newName) } dispatch ship.Name
+              ]
+        ]
         @ shipComponents
 
 let root model dispatch =
@@ -71,6 +76,6 @@ let root model dispatch =
             div [ ClassName "column" ]
                 (
                   [ actionBar dispatch ]
-                  @+ div [ ClassName "content" ] (shipInfo model.CurrentShip)
+                  @+ div [ ClassName "content" ] (shipInfo dispatch model.CurrentShip)
                 )
         ]

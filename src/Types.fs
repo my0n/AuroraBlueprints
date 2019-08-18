@@ -16,7 +16,7 @@ type Ship =
     static member empty =
         {
             Guid = Guid.NewGuid()
-            Name = ""
+            Name = "New ship"
             Weight = 0.0
             Components = []
         }
@@ -26,6 +26,7 @@ type Msg =
     | RemoveShip of Guid
     | ReplaceShip of Guid * Ship
     | SelectShip of Ship
+    | ShipUpdateName of Ship * string
 
 type Model =
     {
