@@ -8,7 +8,7 @@ open Global
 type ShipComponentCardHeaderItem =
     | Name of string
     | Size of float<hs>
-    | FuelCapacity of float<l>
+    | FuelCapacity of float<kl>
 
 let shipComponentCard header contents =
     let headerChunks =
@@ -20,7 +20,7 @@ let shipComponentCard header contents =
             | Size size ->
                 div [ ClassName "level-item level-right" ] [ str <| sprintf "%.1f HS" size ]
             | FuelCapacity fc ->
-                div [ ClassName "level-item level-right" ] [ str <| sprintf "%.1f kL" (toKiloliters fc) ]
+                div [ ClassName "level-item level-right" ] [ str <| sprintf "%.1f kL" fc ]
         )
 
     div []

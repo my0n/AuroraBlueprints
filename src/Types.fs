@@ -16,7 +16,7 @@ type FuelStorage =
         
         // calculated values
         Size: float<hs>
-        FuelCapacity: float<l>
+        FuelCapacity: float<kl>
     }
     static member empty =
         {
@@ -30,7 +30,7 @@ type FuelStorage =
             UltraLarge = 0
 
             Size = 0.0<hs>
-            FuelCapacity = 0.0<l>
+            FuelCapacity = 0.0<kl>
         }
     member this.calculate =
         { this with
@@ -45,7 +45,7 @@ type FuelStorage =
                           + float this.Standard * 10.0
                           + float this.Large * 50.0
                           + float this.VeryLarge * 200.0
-                          + float this.UltraLarge * 1000.0) * 5.0<l>
+                          + float this.UltraLarge * 1000.0) * 5.0<kl>
         }
 
 type ShipComponent =

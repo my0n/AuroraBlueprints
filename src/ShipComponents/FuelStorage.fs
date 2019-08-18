@@ -20,4 +20,34 @@ let fuelStorage dispatch (ship: Ship) (comp: FuelStorage) =
                                     }
                                     dispatch
                                     comp.Tiny
+                        integerInput {
+                                      Label = "Small"
+                                      OnChange = fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Small = n })
+                                    }
+                                    dispatch
+                                    comp.Small
+                        integerInput {
+                                      Label = "Standard"
+                                      OnChange = fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Standard = n })
+                                    }
+                                    dispatch
+                                    comp.Standard
+                        integerInput {
+                                      Label = "Large"
+                                      OnChange = fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Large = n })
+                                    }
+                                    dispatch
+                                    comp.Large
+                        integerInput {
+                                      Label = "VeryLarge"
+                                      OnChange = fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with VeryLarge = n })
+                                    }
+                                    dispatch
+                                    comp.VeryLarge
+                        integerInput {
+                                      Label = "UltraLarge"
+                                      OnChange = fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with UltraLarge = n })
+                                    }
+                                    dispatch
+                                    comp.UltraLarge
                       ]
