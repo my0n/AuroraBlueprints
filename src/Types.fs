@@ -6,6 +6,7 @@ open System
 type FuelStorage =
     {
         Guid: Guid
+        ShipGuid: Guid
 
         Tiny: int
         Small: int
@@ -21,6 +22,7 @@ type FuelStorage =
     static member empty =
         {
             Guid = Guid.NewGuid()
+            ShipGuid = Guid.Empty
 
             Tiny = 0
             Small = 0
@@ -54,9 +56,13 @@ type ShipComponent =
         with get() =
             match this with
             | FuelStorage c -> c.Guid
-    member this.duplicate =
+    member this.ShipGuid
+        with get() =
+            match this with
+            | FuelStorage c -> c.ShipGuid
+    member this.duplicate (shipGuid: Guid) =
         match this with
-        | FuelStorage c -> FuelStorage { c with Guid = Guid.NewGuid() }
+        | FuelStorage c -> FuelStorage { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
     member this.calculate =
         match this with
         | FuelStorage c -> FuelStorage c.calculate
@@ -94,8 +100,8 @@ type Msg =
     // Components
     | SaveComponentToDesigns of ShipComponent
     | CopyComponentToShip of Ship * ShipComponent
-    | RemoveComponentFromShip of Ship * ShipComponent
-    | ReplaceShipComponent of Ship * ShipComponent
+    | RemoveComponentFromShip of ShipComponent
+    | ReplaceShipComponent of ShipComponent
 
 type Model =
     {

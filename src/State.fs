@@ -69,10 +69,18 @@ let update msg model =
 
     // Components
     | SaveComponentToDesigns shipComponent ->
-        model, Cmd.ofMsg (NewComponentDesign shipComponent.duplicate)
+        model, Cmd.ofMsg (NewComponentDesign (shipComponent.duplicate Guid.Empty))
     | CopyComponentToShip (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent.duplicate })
-    | RemoveComponentFromShip (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %- shipComponent })
-    | ReplaceShipComponent (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent.calculate })
+        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ (shipComponent.duplicate ship.Guid)})
+    | RemoveComponentFromShip shipComponent ->
+        let ship = model.AllShips.TryFind shipComponent.ShipGuid
+        match ship with
+        | None -> model, Cmd.none
+        | Some ship ->
+            model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %- shipComponent })
+    | ReplaceShipComponent shipComponent ->
+        let ship = model.AllShips.TryFind shipComponent.ShipGuid
+        match ship with
+        | None -> model, Cmd.none
+        | Some ship ->
+            model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent.calculate })

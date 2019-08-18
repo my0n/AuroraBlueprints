@@ -69,7 +69,7 @@ let shipInfo dispatch ship =
             |> List.map (fun comp ->
                 match comp with
                 | FuelStorage fs ->
-                    ShipComponents.FuelStorage.fuelStorage dispatch ship fs
+                    ShipComponents.FuelStorage.fuelStorage fs dispatch
             )
 
         [ div [ ClassName "title is-4" ]
