@@ -3,6 +3,7 @@ module App.State
 open Elmish
 open Global
 open Types
+open System
 
 let init result =
     let (model, cmd) =
@@ -10,7 +11,9 @@ let init result =
             {
                 CurrentPage = Ships
                 CurrentShip = None
-                Ships = Map.empty
+                AllShips = Map.empty
+                AllComponents = Map.empty
+                                %+ { Guid = Guid.NewGuid(); Spec = FuelStorage FuelStorage.empty }
             }
 
     model, Cmd.batch [ cmd ]
@@ -23,25 +26,51 @@ let orOtherIf pred other inp =
 
 let update msg model =
     match msg with
+    | Noop ->
+        model, Cmd.none
+        
+    // Ships
     | NewShip ->
         let ship = Types.Ship.empty
         { model with
-            Ships = model.Ships %+ (ship.Guid, ship)
+            AllShips = model.AllShips %+ ship
             CurrentShip = Some ship
         }, Cmd.none
-    | RemoveShip guid ->
+    | RemoveShip ship ->
         { model with
-            Ships = model.Ships %- guid
-            CurrentShip = model.CurrentShip |> orNoneIf (fun ship -> ship.Guid = guid)
+            AllShips = model.AllShips %- ship
+            CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Guid = ship.Guid)
         }, Cmd.none
-    | ReplaceShip (guid, newShip) ->
+    | ReplaceShip ship ->
         { model with
-            Ships = model.Ships %+ (guid, newShip)
-            CurrentShip = model.CurrentShip |> orOtherIf (fun ship -> ship.Guid = guid) newShip
+            AllShips = model.AllShips %+ ship
+            CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Guid = ship.Guid) ship
         }, Cmd.none
     | ShipUpdateName (ship, newName) ->
-        model, Cmd.ofMsg (ReplaceShip (ship.Guid, { ship with Name = newName }))
+        model, Cmd.ofMsg (ReplaceShip { ship with Name = newName })
     | SelectShip ship ->
         { model with
             CurrentShip = Some ship
         }, Cmd.none
+
+    // Components - Design
+    | NewComponentDesign shipComponent ->
+        { model with
+            AllComponents = model.AllComponents %+ shipComponent
+        }, Cmd.none
+    | RemoveComponentDesign shipComponent ->
+        { model with
+            AllComponents = model.AllComponents %- shipComponent
+        }, Cmd.none
+    | ReplaceComponentDesign shipComponent ->
+        { model with
+            AllComponents = model.AllComponents %+ shipComponent
+        }, Cmd.none
+
+    // Components
+    | SaveComponentToDesigns shipComponent ->
+        model, Cmd.ofMsg (NewComponentDesign { Guid = Guid.NewGuid(); Spec = shipComponent })
+    | CopyComponentToShip (ship, shipComponent) ->
+        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components @+ shipComponent })
+    | RemoveComponentFromShip (ship, shipComponent) ->
+        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components @- shipComponent })

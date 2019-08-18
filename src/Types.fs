@@ -3,15 +3,40 @@ module Types
 open Global
 open System
 
-type ShipComponent =
-    | FuelStorage
+type FuelStorage =
+    {
+        Tiny: int
+        Small: int
+        Standard: int
+        Large: int
+        VeryLarge: int
+        UltraLarge: int
+    }
+    static member empty =
+        {
+            Tiny = 0
+            Small = 0
+            Standard = 0
+            Large = 0
+            VeryLarge = 0
+            UltraLarge = 0
+        }
+
+type ShipComponentSpec =
+    | FuelStorage of FuelStorage
+
+type ShipComponentDesign =
+    {
+        Guid: Guid
+        Spec: ShipComponentSpec
+    }
 
 type Ship =
     {
         Guid: Guid
         Name: string
         Weight: double
-        Components: ShipComponent list
+        Components: ShipComponentSpec list
     }
     static member empty =
         {
@@ -22,21 +47,36 @@ type Ship =
         }
 
 type Msg =
+    | Noop
+
+    // Ships
     | NewShip
-    | RemoveShip of Guid
-    | ReplaceShip of Guid * Ship
+    | RemoveShip of Ship
+    | ReplaceShip of Ship
     | SelectShip of Ship
     | ShipUpdateName of Ship * string
+
+    // Component Designs
+    | NewComponentDesign of ShipComponentDesign
+    | RemoveComponentDesign of ShipComponentDesign
+    | ReplaceComponentDesign of ShipComponentDesign
+
+    // Components
+    | SaveComponentToDesigns of ShipComponentSpec
+    | CopyComponentToShip of Ship * ShipComponentSpec
+    | RemoveComponentFromShip of Ship * ShipComponentSpec
 
 type Model =
     {
         CurrentPage: Page
         CurrentShip: Ship option
-        Ships: Map<Guid, Ship>
+        AllShips: Map<Guid, Ship>
+        AllComponents: Map<Guid, ShipComponentDesign>
     }
     static member empty =
         {
             CurrentPage = Ships
             CurrentShip = None
-            Ships = Map.empty
+            AllShips = Map.empty
+            AllComponents = Map.empty
         }

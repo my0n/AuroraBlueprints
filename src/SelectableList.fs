@@ -25,8 +25,7 @@ let private tableBody options dispatch rows selection =
         |> Seq.map (tableCell dispatch)
         |> Seq.map List.wrap
         |> Seq.map (td [])
-        |> tr [
-                classList [ "is-selected", selected ]
+        |> tr [ classList [ "is-selected", selected ]
                 OnClick (fun event ->
                     event.stopPropagation() |> ignore
                     options.OnSelect row |> dispatch

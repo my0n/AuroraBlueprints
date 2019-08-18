@@ -9,17 +9,38 @@ open TableCommon
 open SelectableList
 open InputComponents
 
-let gridOptions =
+let shipListOptions =
     {
         Columns = [ "Name"; "Weight"; "" ]
         RowRenderer = (fun ship ->
             [
                 String ship.Name
                 Number (ship.Weight, { Precision = 2 })
-                Button { Text = "Delete"; OnClick = Msg.RemoveShip ship.Guid }
+                Button { Text = "Delete"; OnClick = Msg.RemoveShip ship }
             ]
         )
         OnSelect = fun ship -> Msg.SelectShip ship
+    }
+
+let componentListOptions ship =
+    {
+        Columns = [ "Name"; "" ]
+        RowRenderer = (fun (comp: ShipComponentDesign) ->
+            let name =
+                match comp.Spec with
+                | FuelStorage _ -> "Fuel Storage"
+
+            let onClick =
+                match ship with
+                | None -> Msg.Noop
+                | Some ship -> Msg.CopyComponentToShip (ship, comp.Spec)
+
+            [
+                String name
+                Button { Text = "Add"; OnClick = onClick }
+            ]
+        )
+        OnSelect = fun comp -> Msg.Noop
     }
 
 let shipComponentCard header weight contents =
@@ -55,27 +76,32 @@ let shipInfo dispatch ship =
             ship.Components
             |> List.map (fun comp ->
                 match comp with
-                | FuelStorage ->
-                    fuelStorage comp
+                | FuelStorage fs ->
+                    fuelStorage fs
             )
 
         [ div [ ClassName "title is-4" ]
               [
-                textInput { OnChange = fun newName -> Msg.ShipUpdateName (ship, newName) } dispatch ship.Name
+                textInput {
+                            Label = "Name"
+                            OnChange = fun newName -> Msg.ShipUpdateName (ship, newName)
+                          } dispatch ship.Name
               ]
         ]
         @ shipComponents
 
 let root model dispatch =
-    let ships = Map.values model.Ships
+    let ships = Map.values model.AllShips
 
     div [ ClassName "columns" ]
         [
-            div [ ClassName "column is-3" ]
-                [ selectableList gridOptions dispatch ships model.CurrentShip ]
-            div [ ClassName "column" ]
+            div [ ClassName "column is-2" ]
+                [ selectableList shipListOptions dispatch ships model.CurrentShip ]
+            div [ ClassName "column is-8" ]
                 (
                   [ actionBar dispatch ]
                   @+ div [ ClassName "content" ] (shipInfo dispatch model.CurrentShip)
                 )
+            div [ ClassName "column" ]
+                [ selectableList (componentListOptions model.CurrentShip) dispatch (Map.values model.AllComponents) None ]
         ]
