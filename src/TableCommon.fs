@@ -42,7 +42,10 @@ let tableCell dispatch cell =
         p [ ClassName "control" ]
           [
               div [ ClassName "button"
-                    OnClick (fun event -> dispatch options.OnClick)
+                    OnClick (fun event ->
+                        event.stopPropagation() |> ignore
+                        dispatch options.OnClick
+                    )
                   ]
                   [ str options.Text ]
           ]

@@ -18,6 +18,7 @@ let gridOptions =
                 Button { Text = "Delete"; OnClick = Msg.RemoveShip ship.Guid }
             ]
         )
+        OnSelect = fun ship -> Msg.SelectShip ship
     }
 
 let shipComponentCard header weight contents =
@@ -57,7 +58,7 @@ let shipInfo ship =
                     fuelStorage comp
             )
 
-        [ div [ ClassName "title is-4" ] [str ship.Name] ]
+        [ div [ ClassName "title is-4" ] [ str (ship.Guid.ToString()) ] ]
         @ shipComponents
 
 let root model dispatch =

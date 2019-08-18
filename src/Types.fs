@@ -25,6 +25,7 @@ type Msg =
     | NewShip
     | RemoveShip of Guid
     | ReplaceShip of Guid * Ship
+    | SelectShip of Ship
 
 type Model =
     {
