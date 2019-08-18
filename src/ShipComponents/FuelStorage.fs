@@ -1,8 +1,5 @@
 module ShipComponents.FuelStorage
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
-
 open Types
 open ShipComponents.Common
 open InputComponents
