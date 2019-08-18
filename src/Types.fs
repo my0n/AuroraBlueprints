@@ -1,15 +1,40 @@
-module App.Types
+module Types
 
 open Global
+open System
+
+type ShipComponent =
+    | FuelStorage
+
+type Ship =
+    {
+        Guid: Guid
+        Name: string
+        Weight: double
+        Components: ShipComponent list
+    }
+    static member empty =
+        {
+            Guid = Guid.NewGuid()
+            Name = ""
+            Weight = 0.0
+            Components = []
+        }
 
 type Msg =
-    | CounterMsg of Counter.Types.Msg
-    | HomeMsg of Home.Types.Msg
-    
+    | NewShip
+    | RemoveShip of Guid
+    | ReplaceShip of Guid * Ship
+
 type Model =
     {
         CurrentPage: Page
-        Counter: Counter.Types.Model
-        Home: Home.Types.Model
-        Ships: Ships.Types.Model
+        CurrentShip: Ship option
+        Ships: Map<Guid, Ship>
     }
+    static member empty =
+        {
+            CurrentPage = Ships
+            CurrentShip = None
+            Ships = Map.empty
+        }

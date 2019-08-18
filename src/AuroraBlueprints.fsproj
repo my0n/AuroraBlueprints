@@ -8,24 +8,16 @@
   <ItemGroup>
     <!-- Global to the app -->
     <Compile Include="Global.fs" />
+    <Compile Include="Types.fs" />
     <Compile Include="TableCommon.fs" />
     <Compile Include="SelectableList.fs" />
-    <Compile Include="Ships\Types.fs" />
-    <Compile Include="Ships\View.fs" />
+    <Compile Include="ShipView.fs" />
+    <Compile Include="NavbarView.fs" />
     <!-- Info -->
-    <Compile Include="Info/View.fs" />
     <!-- Counter -->
-    <Compile Include="Counter/Types.fs" />
-    <Compile Include="Counter/State.fs" />
-    <Compile Include="Counter/View.fs" />
     <!-- Home -->
-    <Compile Include="Home/Types.fs" />
-    <Compile Include="Home/State.fs" />
-    <Compile Include="Home/View.fs" />
     <!-- Navbar -->
-    <Compile Include="Navbar/View.fs" />
     <!-- App -->
-    <Compile Include="Types.fs" />
     <Compile Include="State.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>

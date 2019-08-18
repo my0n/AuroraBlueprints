@@ -4,6 +4,7 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 open Global
+open Types
 
 let navButton label page currentPage =
     p
@@ -18,10 +19,8 @@ let navButtons currentPage =
         [ ClassName "navbar-item" ]
         [ div
             [ ClassName "field is-grouped" ]
-            [ navButton "Home" Home currentPage
-              navButton "Ships" Ships currentPage
-              navButton "Counter sample" Counter currentPage
-              navButton "About" Page.About currentPage ] ]
+            [ navButton "Ships" Ships currentPage]
+        ]
 
 let root currentPage =
     nav
@@ -32,7 +31,7 @@ let root currentPage =
                 [ ClassName "navbar-brand" ]
                 [ h1
                     [ ClassName "navbar-item title is-4" ]
-                    [ str "Elmish" ] ]
+                    [ str "Aurora4x Blueprints" ] ]
               div
                 [ ClassName "navbar-end" ]
                 [ navButtons currentPage ] ] ]

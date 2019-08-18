@@ -12,7 +12,7 @@ type SelectableListOptions<'a> =
         RowRenderer: 'a -> CellRenderer list
     }
 
-let private tableBody rowFn rows selection =
+let private tableBody rowFn dispatch rows selection =
     rows
     |> Seq.map (fun row ->
         (row, match selection with None -> false | Some s -> row = s)
@@ -20,16 +20,16 @@ let private tableBody rowFn rows selection =
     |> Seq.map (fun (row, selected) ->
         row
         |> rowFn
-        |> Seq.map tableCell
+        |> Seq.map (tableCell dispatch)
         |> Seq.map List.wrap
         |> Seq.map (td [])
         |> tr [ classList [ "is-selected", selected ] ]
     )
     |> tbody []
 
-let selectableList options rows selection =
+let selectableList options dispatch rows selection =
     table [ ClassName "table" ]
           [
             tableHead options.Columns
-            tableBody options.RowRenderer rows selection
+            tableBody options.RowRenderer dispatch rows selection
           ]

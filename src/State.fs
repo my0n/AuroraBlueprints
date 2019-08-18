@@ -6,13 +6,11 @@ open Elmish.Browser.UrlParser
 open Fable.Import.Browser
 open Global
 open Types
+open System
 
 let pageParser: Parser<Page->Page,Page> =
     oneOf [
         map Ships (s "ships")
-        map About (s "about")
-        map Counter (s "counter")
-        map Home (s "home")
     ]
 
 let urlUpdate (result : Page option) model =
@@ -24,30 +22,28 @@ let urlUpdate (result : Page option) model =
         { model with CurrentPage = page }, []
 
 let init result =
-    let (counter, counterCmd) = Counter.State.init()
-    let (home, homeCmd) = Home.State.init()
     let (model, cmd) =
         urlUpdate result
             {
-                CurrentPage = Home
-                Counter = counter
-                Home = home
-                Ships =
-                    {
-                        CurrentShip = None
-                        Ships = []
-                    }
+                CurrentPage = Ships
+                CurrentShip = None
+                Ships = Map.empty
             }
 
-    model, Cmd.batch [ cmd
-                       Cmd.map CounterMsg counterCmd
-                       Cmd.map HomeMsg homeCmd ]
+    model, Cmd.batch [ cmd ]
 
 let update msg model =
     match msg with
-    | CounterMsg msg ->
-        let (counter, counterCmd) = Counter.State.update msg model.Counter
-        { model with Counter = counter }, Cmd.map CounterMsg counterCmd
-    | HomeMsg msg ->
-        let (home, homeCmd) = Home.State.update msg model.Home
-        { model with Home = home }, Cmd.map HomeMsg homeCmd
+    | NewShip ->
+        let ship = Types.Ship.empty
+        { model with
+            Ships = model.Ships %+ (ship.Guid, ship)
+        }, Cmd.none
+    | RemoveShip guid ->
+        { model with
+            Ships = model.Ships %- guid
+        }, Cmd.none
+    | ReplaceShip (guid, ship) ->
+        { model with
+            Ships = model.Ships %+ (guid, ship)
+        }, Cmd.none

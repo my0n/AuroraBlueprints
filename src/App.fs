@@ -20,10 +20,7 @@ let root model dispatch =
 
   let pageHtml page =
     match page with
-    | Page.About -> Info.View.root
-    | Counter -> Counter.View.root model.Counter (CounterMsg >> dispatch)
-    | Home -> Home.View.root model.Home (HomeMsg >> dispatch)
-    | Ships -> Ships.View.root model.Ships
+    | Ships -> Ships.View.root model dispatch
 
   div
     []
