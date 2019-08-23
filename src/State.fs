@@ -49,6 +49,8 @@ let update msg model =
         }, Cmd.none
     | ShipUpdateName (ship, newName) ->
         model, Cmd.ofMsg (ReplaceShip { ship with Name = newName })
+    | ShipUpdateClass (ship, newName) ->
+        model, Cmd.ofMsg (ReplaceShip { ship with ShipClass = newName })
     | SelectShip ship ->
         { model with
             CurrentShip = Some ship

@@ -74,11 +74,21 @@ let shipInfo dispatch ship =
             )
 
         [ div [ ClassName "title is-4" ]
-              [
-                textInput {
-                            Label = "Name"
-                            OnChange = fun newName -> Msg.ShipUpdateName (ship, newName)
-                          } dispatch ship.Name
+              [ horizontalGroup None
+                                [
+                                  textInput {
+                                              Label = "Name"
+                                              OnChange = fun newName -> Msg.ShipUpdateName (ship, newName)
+                                            }
+                                            dispatch
+                                            ship.Name
+                                  textInput {
+                                              Label = "Class"
+                                              OnChange = fun newName -> Msg.ShipUpdateClass (ship, newName)
+                                            }
+                                            dispatch
+                                            ship.ShipClass
+                                ]
               ]
         ]
         @ shipComponents

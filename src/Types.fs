@@ -107,6 +107,7 @@ type Msg =
     | ReplaceShip of Ship
     | SelectShip of Ship
     | ShipUpdateName of Ship * string
+    | ShipUpdateClass of Ship * string
 
     // Component Designs
     | NewComponentDesign of ShipComponent

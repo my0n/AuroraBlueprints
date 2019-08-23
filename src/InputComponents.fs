@@ -44,8 +44,9 @@ let integerInput options dispatch value =
               [ label [ ClassName "label" ]
                       [ str options.Label ]
                 input [ ClassName "input"
-                        Type "text"
+                        Type "number"
                         Value value
+                        Min 0
                         OnChange (fun event ->
                             match System.Int32.TryParse event.Value with
                             | true, num -> options.OnChange num |> dispatch
