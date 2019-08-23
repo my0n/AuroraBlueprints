@@ -9,6 +9,7 @@ open TableCommon
 open SelectableList
 open InputComponents
 open ShipDescription
+open ShipComponent
 
 let shipListOptions =
     {

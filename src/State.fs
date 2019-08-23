@@ -4,6 +4,7 @@ open Elmish
 open Global
 open Types
 open System
+open ShipComponent
 
 let init result =
     let (model, cmd) =

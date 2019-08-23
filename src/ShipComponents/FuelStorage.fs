@@ -3,6 +3,7 @@ module ShipComponents.FuelStorage
 open Types
 open ShipComponents.Common
 open InputComponents
+open ShipComponent
 
 let fuelStorage (comp: FuelStorage) dispatch =
     shipComponentCard [
