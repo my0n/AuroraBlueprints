@@ -2,15 +2,6 @@ module Global
 
 open System
 
-[<Measure>] type l
-[<Measure>] type kl
-[<Measure>] type ton
-[<Measure>] type hs
-let literToKiloliterConversion = 1000.0<l/kl>
-let tonToHSConversion = 50.0<ton/hs>
-let toKiloliters (liters: float<l>) = liters / literToKiloliterConversion
-let toTons (hs: float<hs>) = hs * tonToHSConversion
-
 type Page =
     | Ships
 
@@ -31,10 +22,11 @@ let toHash page =
     | Ships -> "#ships"
     
 let inline (@+) (l: 'a list) (a: 'a) = l @ [a]
+let inline (@+?) (l: 'a list) (a: 'a option) = l @ (match a with Some a -> [a] | None -> [])
 let inline (@-) (l: 'a list) (a: 'a) = l |> List.except [a]
 
-let inline (%+) (m: Map<'a, 'b>) (v: ^b) =
+let inline (%+) (m: Map<Guid, 'b>) (v: ^b) =
     m |> Map.add ((^b) : (member Guid : Guid) (v)) v
     
-let inline (%-) (m: Map<'a, 'b>) (v: ^b) =
+let inline (%-) (m: Map<Guid, 'b>) (v: ^b) =
     m |> Map.remove ((^b) : (member Guid : Guid) (v))

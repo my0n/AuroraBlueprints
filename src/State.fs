@@ -15,6 +15,7 @@ let init result =
                 AllShips = Map.empty
                 AllComponents = Map.empty
                                 %+ FuelStorage FuelStorage.empty
+                                %+ Engine Engine.empty
             }
 
     model, Cmd.batch [ cmd ]

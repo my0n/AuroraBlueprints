@@ -25,7 +25,16 @@ $table-background-color: $blue
 $table-color: #fff
 $table-row-active-background-color: $blue-light
 
+$card-background-color: $blue
+
 @import '../node_modules/bulma/bulma'
+
+.card
+  border: white dashed 2px
+  border-radius: 12px
+
+.card + .card
+  margin-top: 1em
 
 .twitter
   color: #55acee !important // Override bulma
@@ -39,4 +48,13 @@ $table-row-active-background-color: $blue-light
   padding-left: 2em
 
 .ship-description + .ship-description
+  padding-left: 0.25em
+
+.card-header-icon
+  color: white
+
+.card-header-subtitle
+  padding: 0.75rem
+  
+.card-header-subtitle > i
   padding-left: 0.25em

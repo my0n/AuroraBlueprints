@@ -4,6 +4,7 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
 open Types
+open Measures
 open Global
 
 type private ShipDescription =

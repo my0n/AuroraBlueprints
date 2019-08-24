@@ -3,6 +3,7 @@ module TableCommon
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+open Measures
 open Global
 open Types
 

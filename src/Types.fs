@@ -2,7 +2,7 @@ module Types
 
 open Global
 open System
-
+open Measures
 open ShipComponent
 
 type Ship =
@@ -27,8 +27,8 @@ type Ship =
             |> Map.values
             |> List.map (fun c ->
                 match c with
-                | FuelStorage c ->
-                    c.Size
+                | FuelStorage c -> c.TotalSize
+                | Engine c      -> c.TotalSize
                 )
             |> List.sum
 

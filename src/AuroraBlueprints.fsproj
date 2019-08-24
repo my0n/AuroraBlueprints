@@ -7,14 +7,21 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Global to the app -->
+    <Compile Include="Measures.fs" />
+    <Compile Include="BuildCost.fs" />
     <Compile Include="Global.fs" />
+    <Compile Include="Bulma\Form.fs" />
+    <Compile Include="Bulma\Card.fs" />
+    <Compile Include="Technology.fs" />
+    <Compile Include="ShipComponent.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="TableCommon.fs" />
-    <Compile Include="InputComponents.fs" />
     <Compile Include="SelectableList.fs" />
     <Compile Include="ShipComponents\ShipDescription.fs" />
     <Compile Include="ShipComponents\Common.fs" />
     <Compile Include="ShipComponents\FuelStorage.fs" />
+    <Compile Include="ShipComponents\Engine.fs" />
+    <Compile Include="ShipComponents\Classification.fs" />
     <Compile Include="ShipView.fs" />
     <Compile Include="NavbarView.fs" />
     <Compile Include="PageState.fs" />

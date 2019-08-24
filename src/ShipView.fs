@@ -7,11 +7,10 @@ open Types
 open Global
 open TableCommon
 open SelectableList
-open InputComponents
 open ShipDescription
 open ShipComponent
 
-let shipListOptions =
+let shipListOptions: SelectableListOptions<Ship> =
     {
         Columns = [ "Name"; "Weight"; "" ]
         RowRenderer = (fun ship ->
@@ -28,9 +27,7 @@ let componentListOptions ship =
     {
         Columns = [ "Name"; "" ]
         RowRenderer = (fun (comp: ShipComponent) ->
-            let name =
-                match comp with
-                | FuelStorage _ -> "Fuel Storage"
+            let name = comp.Name
 
             let onClick =
                 match ship with
@@ -70,28 +67,11 @@ let shipInfo dispatch ship =
             |> Map.values
             |> List.map (fun comp ->
                 match comp with
-                | FuelStorage fs ->
-                    ShipComponents.FuelStorage.fuelStorage fs dispatch
+                | FuelStorage comp -> ShipComponents.FuelStorage.render comp dispatch
+                | Engine comp ->      ShipComponents.Engine.render comp dispatch
             )
 
-        [ div [ ClassName "title is-4" ]
-              [ horizontalGroup None
-                                [
-                                  textInput {
-                                              Label = "Name"
-                                              OnChange = fun newName -> Msg.ShipUpdateName (ship, newName)
-                                            }
-                                            dispatch
-                                            ship.Name
-                                  textInput {
-                                              Label = "Class"
-                                              OnChange = fun newName -> Msg.ShipUpdateClass (ship, newName)
-                                            }
-                                            dispatch
-                                            ship.ShipClass
-                                ]
-              ]
-        ]
+        [ ShipComponents.Classification.render ship dispatch ]
         @ shipComponents
         @+ descriptionBox ship
 
