@@ -6,16 +6,22 @@ type Page =
     | Ships
 
 module List =
-    let wrap element = [ element ]
-    let lookup (m: Map<'key, 'value>) =
+    let inline wrap element = [ element ]
+    let inline lookup (m: Map<'key, 'value>) =
         List.map (fun key ->
             m.TryFind key
         )
         >> List.choose id
 
 module Map =
-    let keys m = m |> Map.toList |> List.map (fun (a, b) -> a)
-    let values m = m |> Map.toList |> List.map (fun (a, b) -> b)
+    let inline keys m = m |> Map.toList |> List.map (fun (a, b) -> a)
+    let inline values m = m |> Map.toList |> List.map (fun (a, b) -> b)
+    let inline toListV vfn m =
+        m
+        |> Map.toList
+        |> List.map (fun (k, v) ->
+            (k, vfn v)
+        )
 
 let toHash page =
     match page with
@@ -30,3 +36,4 @@ let inline (%+) (m: Map<Guid, 'b>) (v: ^b) =
     
 let inline (%-) (m: Map<Guid, 'b>) (v: ^b) =
     m |> Map.remove ((^b) : (member Guid : Guid) (v))
+

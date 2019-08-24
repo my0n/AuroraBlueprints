@@ -8,6 +8,8 @@ module Measures
 [<Measure>] type hr
 [<Measure>] type s
 [<Measure>] type km
+[<Measure>] type comp
+[<Measure>] type people
 let literToKiloliterConversion = 1000.0<l/kl>
 let tonToHSConversion = 50.0<ton/hs>
 let inline toKiloliters (liters: float<l>) = liters / literToKiloliterConversion

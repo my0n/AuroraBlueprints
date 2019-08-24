@@ -129,3 +129,8 @@ module Technology =
             { Level = -18; PowerMod = 0.1 }
         ]
         |> List.map (fun e -> e.Level, e) |> Map.ofSeq
+
+    let allPowerMods =
+        let al = highPowerMod |> Map.toList
+        let bl = lowPowerMod |> Map.toList
+        al @ bl |> Map.ofList

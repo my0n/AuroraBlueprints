@@ -28,7 +28,7 @@ type Ship =
             |> List.map (fun c ->
                 match c with
                 | FuelStorage c -> c.TotalSize
-                | Engine c      -> c.TotalSize
+                | Engine c      -> int2float c.Size * int2float c.Count
                 )
             |> List.sum
 

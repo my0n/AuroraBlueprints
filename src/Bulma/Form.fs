@@ -7,6 +7,7 @@ open Fable.Helpers.React.Props
 type IntInpOptions =
     {
         Label: string option
+        Max: int option
         Value: int
     }
 
@@ -16,17 +17,11 @@ type TxtInpOptions =
         Value: string
     }
 
-type SelectOption =
-    {
-        Key: string
-        Label: string
-    }
-
 type SelectOptions =
     {
         Label: string option
-        Options: SelectOption list
-        Value: string
+        Options: (int * string) list
+        Value: int
     }
 
 type FormElement =
@@ -34,7 +29,7 @@ type FormElement =
     | IntInp of IntInpOptions * (int -> unit)
     | TxtInp of TxtInpOptions * (string -> unit)
     | RadGrp of (string * (unit -> unit)) list
-    | Select of SelectOptions * (string -> unit)
+    | Select of SelectOptions * (int -> unit)
     | StcBtn of string
     | Addons of FormElement list
     | Button of string * (unit -> unit)
@@ -69,6 +64,7 @@ let rec render f =
                             Type "number"
                             Value options.Value
                             Min 0
+                            Max options.Max
                             OnChange (fun event ->
                                         match System.Int32.TryParse event.Value with
                                         | true, num -> cb num
@@ -105,12 +101,17 @@ let rec render f =
             )
             |> div [ ClassName "control" ]
         | Select (options, cb) ->
-            [ div [ ClassName "control" ]
-                    [ div [ ClassName "select" ]
-                        [ select [ OnChange (fun event -> cb event.Value) ]
+            [ div [ ClassName "control is-expanded" ]
+                    [ div [ ClassName "select is-fullwidth" ]
+                        [ select [ OnChange (fun event ->
+                                               match System.Int32.TryParse event.Value with
+                                               | true, num -> cb num
+                                               | _ -> cb 0
+                                            )
+                                 ]
                                  (options.Options
-                                  |> List.map (fun opt ->
-                                    option [ Value opt.Key; Selected (opt.Key = options.Value) ] [ str opt.Label ]
+                                  |> List.map (fun (k, v) ->
+                                    option [ Value k; Selected (k = options.Value) ] [ str v ]
                                   )
                                  )
                         ]
