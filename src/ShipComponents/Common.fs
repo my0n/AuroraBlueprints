@@ -17,6 +17,7 @@ type ShipComponentCardHeaderItem =
     | Velocity of float<km/s>
     | FuelConsumption of int<comp> * float<kl/hr/comp> * float<kl/hr/ep>
     | Price of int<comp> * BuildCost
+    | TotalPrice of TotalBuildCost
     | SensorStrength of int * int
     | MaintenanceClass of MaintenanceClass
     | RemoveButton
@@ -82,11 +83,31 @@ let inline private renderHeader header comp dispatch: CardHeaderElement list opt
                         bpr b.Corbomite "corbomite"
                         bpr b.Duranium "duranium"
                         bpr b.Gallicite "gallicite"
+                        bpr b.Mercassium "mercassium"
                         bpr b.Uridium "uridium"
                     ]
                     |> List.choose id
                     |> String.concat "\r\n"
                 Info (sprintf "%.0f" (b.BuildPoints * int2float count), (match hoverText with "" -> "free" | _ -> hoverText), Dollar)
+
+            | TotalPrice b ->
+                let bpr a lbl =
+                    match a with
+                    | 0.0 -> None
+                    | a -> Some <| sprintf "%.1f %s" a lbl
+                let hoverText =
+                    [
+                        bpr b.BuildPoints "build points"
+                        bpr b.Boronide "boronide"
+                        bpr b.Corbomite "corbomite"
+                        bpr b.Duranium "duranium"
+                        bpr b.Gallicite "gallicite"
+                        bpr b.Mercassium "mercassium"
+                        bpr b.Uridium "uridium"
+                    ]
+                    |> List.choose id
+                    |> String.concat "\r\n"
+                Info (sprintf "%.0f" b.BuildPoints, (match hoverText with "" -> "free" | _ -> hoverText), Dollar)
 
             | SensorStrength (geo, grav) ->
                 let geot =
@@ -109,7 +130,9 @@ let inline private renderHeader header comp dispatch: CardHeaderElement list opt
                 | Military -> Info ("", "This component is classified as a military component for maintenance purposes.", Shield)
 
             | RemoveButton ->
-                Button (Close, (fun _ -> Msg.RemoveComponentFromShip comp |> dispatch))
+                match comp with
+                | None -> NoRender
+                | Some comp -> Button (Close, (fun _ -> Msg.RemoveComponentFromShip comp |> dispatch))
         )
         >> Some
     )

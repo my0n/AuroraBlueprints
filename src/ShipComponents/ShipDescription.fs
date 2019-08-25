@@ -20,7 +20,7 @@ type private ShipDescription =
     | BuildPoints of float
 
 let private describe ship =
-    Block [ Line [ Text ship.Name; Label "class"; Text ship.ShipClass; Space; Size ship.Size; Space; Crew ship.Crew; Space; BuildPoints ship.BuildPoints ]
+    Block [ Line [ Text ship.Name; Label "class"; Text ship.ShipClass; Space; Size ship.Size; Space; Crew ship.Crew; Space; BuildPoints ship.BuildCost.BuildPoints ]
           ]
 
 let rec private renderDescription desc =
@@ -40,7 +40,7 @@ let rec private renderDescription desc =
     | Label s ->
         span [ ClassName "ship-description" ] [ str s ]
     | Size s ->
-        span [ ClassName "ship-description" ] [ str << sprintf "%.0f tons" <| toTons s ]
+        span [ ClassName "ship-description" ] [ str << sprintf "%.0f tons" <| hs2ton s ]
     | Crew s ->
         span [ ClassName "ship-description" ] [ str <| sprintf "%d crew" s ]
     | BuildPoints s ->

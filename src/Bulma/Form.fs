@@ -4,6 +4,12 @@ open Global
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+type FltInpOptions =
+    {
+        Label: string option
+        Value: float
+    }
+
 type IntInpOptions =
     {
         Label: string option
@@ -26,6 +32,7 @@ type SelectOptions =
 
 type FormElement =
     | HorGrp of string option * FormElement list
+    | FltInp of FltInpOptions * (float -> unit)
     | IntInp of IntInpOptions * (int -> unit)
     | TxtInp of TxtInpOptions * (string -> unit)
     | RadGrp of (string * (unit -> unit)) list
@@ -58,6 +65,23 @@ let rec render f =
             |> optLbl lbl
                       (fun lbl -> div [ ClassName "field-label is-normal" ] [ str lbl ])
             |> div [ ClassName "field is-horizontal" ]
+        | FltInp (options, cb) ->
+            [ div [ ClassName "control is-small" ]
+                  [ input [ ClassName "input"
+                            Type "number"
+                            Value options.Value
+                            Min 0
+                            OnChange (fun event ->
+                                        match System.Double.TryParse event.Value with
+                                        | true, num -> cb num
+                                        | _ -> cb 0.0
+                                     )
+                          ]
+                  ]
+            ]
+            |> optLbl options.Label
+                      (fun lbl -> label [ ClassName "label" ] [ str lbl ])
+            |> div [ ClassName "control" ]
         | IntInp (options, cb) ->
             [ div [ ClassName "control is-small" ]
                   [ input [ ClassName "input"

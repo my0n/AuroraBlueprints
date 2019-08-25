@@ -52,5 +52,5 @@ let render (comp: Engine) dispatch =
         |> Bulma.Form.render
     shipComponentCard header
                       form
-                      (Engine comp)
+                      (Some <| Engine comp)
                       dispatch

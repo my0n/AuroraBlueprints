@@ -26,13 +26,10 @@ type Bridge =
     member this.Size = 1<hs/comp>
     member this.Crew = 5<people/comp>
     member this.BuildCost =
-        {
+        { BuildCost.Zero with
             BuildPoints = 10.0</comp>
             Duranium = 5.0</comp>
             Corbomite = 5.0</comp>
-            Gallicite = 0.0</comp>
-            Boronide = 0.0</comp>
-            Uridium = 0.0</comp>
         }
 
 type Sensors =
@@ -53,7 +50,7 @@ type Sensors =
         // calculated values
         Size: int<hs>
         Crew: int<people>
-        BuildCost: BuildCost
+        BuildCost: TotalBuildCost
         GeoSensorRating: int
         GravSensorRating: int
         MaintenenceClass: MaintenanceClass
@@ -73,7 +70,7 @@ type Sensors =
 
             Size = 0<hs>
             Crew = 0<people>
-            BuildCost = BuildCost.empty
+            BuildCost = TotalBuildCost.Zero
             GeoSensorRating = 0
             GravSensorRating = 0
             MaintenenceClass = Commercial
@@ -87,7 +84,7 @@ type Sensors =
                   + (this.ImprovedGeo + this.ImprovedGrav) * 150
                   + (this.AdvancedGeo + this.AdvancedGrav) * 200
                   + (this.PhasedGeo + this.PhasedGrav) * 300
-                   ) * 1</comp/comp>
+                   ) * 1</comp>
         let maint = match [ this.StandardGrav; this.ImprovedGrav; this.AdvancedGrav; this.PhasedGrav ]
                           |> List.exists (fun a -> a > 0<comp>) with
                     | true -> Military
@@ -106,13 +103,9 @@ type Sensors =
                               + this.PhasedGrav * 5
                                ) * 1</comp>
             BuildCost =
-                {
-                    BuildPoints = int2float cost
-                    Uridium = int2float cost
-                    Duranium = 0.0</comp>
-                    Corbomite = 0.0</comp>
-                    Gallicite = 0.0</comp>
-                    Boronide = 0.0</comp>
+                { TotalBuildCost.Zero with
+                    BuildPoints = float cost
+                    Uridium = float cost
                 }
             MaintenenceClass = maint
         }
@@ -122,63 +115,60 @@ type FuelStorage =
         Guid: Guid
         ShipGuid: Guid
 
-        Tiny: int
-        Small: int
-        Standard: int
-        Large: int
-        VeryLarge: int
-        UltraLarge: int
+        Tiny: int<comp>
+        Small: int<comp>
+        Standard: int<comp>
+        Large: int<comp>
+        VeryLarge: int<comp>
+        UltraLarge: int<comp>
         
         // calculated values
         TotalSize: float<hs>
         FuelCapacity: float<kl>
-        BuildCost: BuildCost
+        BuildCost: TotalBuildCost
     }
     static member empty =
         {
             Guid = Guid.NewGuid()
             ShipGuid = Guid.Empty
 
-            Tiny = 0
-            Small = 0
-            Standard = 0
-            Large = 0
-            VeryLarge = 0
-            UltraLarge = 0
+            Tiny = 0<comp>
+            Small = 0<comp>
+            Standard = 0<comp>
+            Large = 0<comp>
+            VeryLarge = 0<comp>
+            UltraLarge = 0<comp>
 
             TotalSize = 0.0<hs>
             FuelCapacity = 0.0<kl>
-            BuildCost = BuildCost.empty
+            BuildCost = TotalBuildCost.Zero
         }
     member this.calculate =
         // cost does not scale proportionately to size and capacity
-        let cost = (float this.Tiny * 1.0
-                  + float this.Small * 1.5
-                  + float this.Standard * 5.0
-                  + float this.Large * 15.0
-                  + float this.VeryLarge * 35.0
-                  + float this.UltraLarge * 100.0) * 1.0</comp>
+        let cost = (int2float this.Tiny * 1.0
+                  + int2float this.Small * 1.5
+                  + int2float this.Standard * 5.0
+                  + int2float this.Large * 15.0
+                  + int2float this.VeryLarge * 35.0
+                  + int2float this.UltraLarge * 100.0) * 1.0</comp>
         { this with
-            TotalSize = (float this.Tiny * 0.1
-                       + float this.Small * 0.2
-                       + float this.Standard * 1.0
-                       + float this.Large * 5.0
-                       + float this.VeryLarge * 20.0
-                       + float this.UltraLarge * 100.0) * 1.0<hs>
-            FuelCapacity = (float this.Tiny * 1.0
-                          + float this.Small * 2.0
-                          + float this.Standard * 10.0
-                          + float this.Large * 50.0
-                          + float this.VeryLarge * 200.0
-                          + float this.UltraLarge * 1000.0) * 5.0<kl>
+            TotalSize = (int2float this.Tiny * 0.1
+                       + int2float this.Small * 0.2
+                       + int2float this.Standard * 1.0
+                       + int2float this.Large * 5.0
+                       + int2float this.VeryLarge * 20.0
+                       + int2float this.UltraLarge * 100.0) * 1.0<hs/comp>
+            FuelCapacity = (int2float this.Tiny * 1.0
+                          + int2float this.Small * 2.0
+                          + int2float this.Standard * 10.0
+                          + int2float this.Large * 50.0
+                          + int2float this.VeryLarge * 200.0
+                          + int2float this.UltraLarge * 1000.0) * 5.0<kl/comp>
             BuildCost =
-                {
+                { TotalBuildCost.Zero with
                     BuildPoints = cost * 2.0
                     Duranium = cost
                     Boronide = cost
-                    Corbomite = 0.0</comp>
-                    Gallicite = 0.0</comp>
-                    Uridium = 0.0</comp>
                 }
         }
 
@@ -221,7 +211,7 @@ type Engine =
             FuelConsumption = 0.0<kl/hr/comp>
             Crew = 0<people/comp>
             MaintenenceClass = Commercial
-            BuildCost = BuildCost.empty
+            BuildCost = BuildCost.Zero
         }.calculate
     member this.calculate =
         let crew = (float this.Size * this.PowerModTech.PowerMod |> Math.Floor |> int) * 1<people/comp>
@@ -242,13 +232,10 @@ type Engine =
             Crew = crew
             MaintenenceClass = maint
             BuildCost =
-                {
+                { BuildCost.Zero with
                     BuildPoints = price
                     Gallicite = price
                     Duranium = price
-                    Corbomite = 0.0</comp>
-                    Boronide = 0.0</comp>
-                    Uridium = 0.0</comp>
                 }
         }
 

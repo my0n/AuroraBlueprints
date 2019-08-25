@@ -36,4 +36,3 @@ let inline (%+) (m: Map<Guid, 'b>) (v: ^b) =
     
 let inline (%-) (m: Map<Guid, 'b>) (v: ^b) =
     m |> Map.remove ((^b) : (member Guid : Guid) (v))
-

@@ -14,7 +14,7 @@ let render (comp: Sensors) dispatch =
         [
             Name "Sensors"
             MaintenanceClass comp.MaintenenceClass
-            Price (1<comp>, comp.BuildCost)
+            TotalPrice comp.BuildCost
             SizeInt (1<comp>, comp.Size*1</comp>)
             SensorStrength (comp.GeoSensorRating, comp.GravSensorRating)
             RemoveButton
@@ -54,5 +54,5 @@ let render (comp: Sensors) dispatch =
         |> Bulma.Form.render
     shipComponentCard header
                       form
-                      (Sensors comp)
+                      (Some <| Sensors comp)
                       dispatch

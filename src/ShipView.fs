@@ -66,13 +66,15 @@ let shipInfo dispatch ship =
             |> Map.values
             |> List.map (fun comp ->
                 match comp with
-                | FuelStorage comp -> ShipComponents.FuelStorage.render comp dispatch
-                | Engine comp      -> ShipComponents.Engine.render comp dispatch
-                | Bridge comp      -> ShipComponents.Bridge.render comp dispatch
-                | Sensors comp     -> ShipComponents.Sensors.render comp dispatch
+                | FuelStorage comp  -> ShipComponents.FuelStorage.render comp dispatch
+                | Engine comp       -> ShipComponents.Engine.render comp dispatch
+                | Bridge comp       -> ShipComponents.Bridge.render comp dispatch
+                | Sensors comp      -> ShipComponents.Sensors.render comp dispatch
             )
 
-        [ ShipComponents.Classification.render ship dispatch ]
+        [ ShipComponents.Classification.render ship dispatch
+          ShipComponents.CrewQuarters.render ship dispatch
+        ]
         @ shipComponents
         @+ ShipComponents.ShipDescription.render ship
 

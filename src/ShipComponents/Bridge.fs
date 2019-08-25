@@ -25,5 +25,5 @@ let render (comp: Bridge) dispatch =
         |> Bulma.Form.render
     shipComponentCard header
                       form
-                      (Bridge comp)
+                      (Some <| Bridge comp)
                       dispatch
