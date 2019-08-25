@@ -17,8 +17,8 @@
     <Compile Include="Types.fs" />
     <Compile Include="TableCommon.fs" />
     <Compile Include="SelectableList.fs" />
-    <Compile Include="ShipComponents\ShipDescription.fs" />
     <Compile Include="ShipComponents\Common.fs" />
+    <Compile Include="ShipComponents\ShipDescription.fs" />
     <Compile Include="ShipComponents\Bridge.fs" />
     <Compile Include="ShipComponents\FuelStorage.fs" />
     <Compile Include="ShipComponents\Engine.fs" />

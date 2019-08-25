@@ -11,6 +11,8 @@ type Ship =
         Name: string
         ShipClass: string
         Size: float<hs>
+        Crew: int<people>
+        BuildPoints: float
         Components: Map<Guid, ShipComponent>
     }
     static member empty =
@@ -19,6 +21,8 @@ type Ship =
             Name = "Tribal"
             ShipClass = "Cruiser"
             Size = 0.0<hs>
+            Crew = 0<people>
+            BuildPoints = 0.0
             Components = Map.empty
         }
     member this.calculate =
@@ -33,8 +37,32 @@ type Ship =
                 )
             |> List.sum
 
+        let crew =
+            this.Components
+            |> Map.values
+            |> List.map (fun c ->
+                match c with
+                | FuelStorage c -> 0<people>
+                | Engine c      -> c.Crew * c.Count
+                | Bridge c      -> c.Crew * c.Count
+                )
+            |> List.sum
+
+        let bp =
+            this.Components
+            |> Map.values
+            |> List.map (fun c ->
+                match c with
+                | FuelStorage c -> c.BuildCost.BuildPoints * 1.0<comp>
+                | Engine c      -> c.BuildCost.BuildPoints * int2float c.Count
+                | Bridge c      -> c.BuildCost.BuildPoints * int2float c.Count
+                )
+            |> List.sum
+
         { this with
             Size = size
+            Crew = crew
+            BuildPoints = bp
         }
 
 type Msg =

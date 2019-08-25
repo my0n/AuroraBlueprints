@@ -7,7 +7,6 @@ open Types
 open Global
 open TableCommon
 open SelectableList
-open ShipDescription
 open ShipComponent
 
 let shipListOptions: SelectableListOptions<Ship> =
@@ -74,7 +73,7 @@ let shipInfo dispatch ship =
 
         [ ShipComponents.Classification.render ship dispatch ]
         @ shipComponents
-        @+ descriptionBox ship
+        @+ ShipComponents.ShipDescription.render ship
 
 let root model dispatch =
     let ships = Map.values model.AllShips
