@@ -17,6 +17,7 @@ let init result =
                                 %+ FuelStorage FuelStorage.empty
                                 %+ Engine Engine.empty
                                 %+ Bridge Bridge.empty
+                                %+ Sensors Sensors.empty
             }
 
     model, Cmd.batch [ cmd ]

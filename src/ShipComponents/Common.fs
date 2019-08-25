@@ -6,6 +6,7 @@ open Global
 
 open Bulma.Card
 open BuildCost
+open ShipComponent
 
 type ShipComponentCardHeaderItem =
     | Name of string
@@ -16,6 +17,8 @@ type ShipComponentCardHeaderItem =
     | Velocity of float<km/s>
     | FuelConsumption of int<comp> * float<kl/hr/comp> * float<kl/hr/ep>
     | Price of int<comp> * BuildCost
+    | SensorStrength of int * int
+    | MaintenanceClass of MaintenanceClass
     | RemoveButton
 
 let inline private renderHeader header comp dispatch: CardHeaderElement list option =
@@ -61,7 +64,7 @@ let inline private renderHeader header comp dispatch: CardHeaderElement list opt
                 let klhrep = sprintf "%0.2f kl/hr/EP" b
                 let hoverText = [ klhr; klhrep ] |> String.concat "\r\n"
                 Info (sprintf "%.2f" (a * int2float count), hoverText, Tachometer)
-
+                
             | Price (count, b) ->
                 let bpr a lbl =
                     match a with
@@ -75,14 +78,35 @@ let inline private renderHeader header comp dispatch: CardHeaderElement list opt
                 let hoverText =
                     [
                         bpr b.BuildPoints "build points"
-                        bpr b.Duranium "duranium"
-                        bpr b.Corbomite "corbomite"
-                        bpr b.Gallicite "gallicite"
                         bpr b.Boronide "boronide"
+                        bpr b.Corbomite "corbomite"
+                        bpr b.Duranium "duranium"
+                        bpr b.Gallicite "gallicite"
+                        bpr b.Uridium "uridium"
                     ]
                     |> List.choose id
                     |> String.concat "\r\n"
                 Info (sprintf "%.0f" (b.BuildPoints * int2float count), (match hoverText with "" -> "free" | _ -> hoverText), Dollar)
+
+            | SensorStrength (geo, grav) ->
+                let geot =
+                    match geo with
+                    | 0 -> None
+                    | _ -> Some <| sprintf "%d geo survey points/hr" geo
+                let gravt =
+                    match grav with
+                    | 0 -> None
+                    | _ -> Some <| sprintf "%d grav survey points/hr" grav
+                let hoverText =
+                    [ geot; gravt ]
+                    |> List.choose id
+                    |> String.concat "\r\n"
+                Info (sprintf "%d/%d" geo grav, hoverText, GlobeAmericas)
+
+            | MaintenanceClass (maint) ->
+                match maint with
+                | Commercial -> NoRender
+                | Military -> Info ("", "This component is classified as a military component for maintenance purposes.", Shield)
 
             | RemoveButton ->
                 Button (Close, (fun _ -> Msg.RemoveComponentFromShip comp |> dispatch))

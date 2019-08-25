@@ -14,6 +14,7 @@ type Ship =
         Crew: int<people>
         BuildPoints: float
         Components: Map<Guid, ShipComponent>
+        MaintenenceClass: MaintenanceClass
     }
     static member empty =
         {
@@ -24,6 +25,7 @@ type Ship =
             Crew = 0<people>
             BuildPoints = 0.0
             Components = Map.empty
+            MaintenenceClass = Commercial
         }
     member this.calculate =
         let size =
@@ -34,6 +36,7 @@ type Ship =
                 | FuelStorage c -> c.TotalSize
                 | Engine c      -> int2float c.Size * int2float c.Count
                 | Bridge c      -> int2float c.Size * int2float c.Count
+                | Sensors c     -> int2float c.Size
                 )
             |> List.sum
 
@@ -45,6 +48,7 @@ type Ship =
                 | FuelStorage c -> 0<people>
                 | Engine c      -> c.Crew * c.Count
                 | Bridge c      -> c.Crew * c.Count
+                | Sensors c     -> c.Crew
                 )
             |> List.sum
 
@@ -56,13 +60,27 @@ type Ship =
                 | FuelStorage c -> c.BuildCost.BuildPoints * 1.0<comp>
                 | Engine c      -> c.BuildCost.BuildPoints * int2float c.Count
                 | Bridge c      -> c.BuildCost.BuildPoints * int2float c.Count
+                | Sensors c     -> c.BuildCost.BuildPoints * 1.0<comp>
                 )
             |> List.sum
+
+        let maint =
+            match this.Components
+                  |> Map.values
+                  |> List.exists (fun c ->
+                    match c with
+                    | Engine c      -> c.MaintenenceClass = Military
+                    | Sensors c     -> c.MaintenenceClass = Military
+                    | _             -> false
+                  ) with
+            | true -> Military
+            | false -> Commercial
 
         { this with
             Size = size
             Crew = crew
             BuildPoints = bp
+            MaintenenceClass = maint
         }
 
 type Msg =

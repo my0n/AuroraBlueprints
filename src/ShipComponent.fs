@@ -6,6 +6,10 @@ open Measures
 open Technology
 open BuildCost
 
+type MaintenanceClass =
+    | Commercial
+    | Military
+
 type Bridge =
     {
         Guid: Guid
@@ -28,6 +32,89 @@ type Bridge =
             Corbomite = 5.0</comp>
             Gallicite = 0.0</comp>
             Boronide = 0.0</comp>
+            Uridium = 0.0</comp>
+        }
+
+type Sensors =
+    {
+        Guid: Guid
+        ShipGuid: Guid
+        
+        StandardGeo: int<comp>
+        ImprovedGeo: int<comp>
+        AdvancedGeo: int<comp>
+        PhasedGeo: int<comp>
+        
+        StandardGrav: int<comp>
+        ImprovedGrav: int<comp>
+        AdvancedGrav: int<comp>
+        PhasedGrav: int<comp>
+
+        // calculated values
+        Size: int<hs>
+        Crew: int<people>
+        BuildCost: BuildCost
+        GeoSensorRating: int
+        GravSensorRating: int
+        MaintenenceClass: MaintenanceClass
+    }
+    static member empty =
+        {
+            Guid = Guid.NewGuid()
+            ShipGuid = Guid.Empty
+            StandardGeo = 0<comp>
+            ImprovedGeo = 0<comp>
+            AdvancedGeo = 0<comp>
+            PhasedGeo = 0<comp>
+            StandardGrav = 0<comp>
+            ImprovedGrav = 0<comp>
+            AdvancedGrav = 0<comp>
+            PhasedGrav = 0<comp>
+
+            Size = 0<hs>
+            Crew = 0<people>
+            BuildCost = BuildCost.empty
+            GeoSensorRating = 0
+            GravSensorRating = 0
+            MaintenenceClass = Commercial
+        }
+    member this.calculate =
+        let total = this.StandardGeo + this.StandardGrav
+                  + this.ImprovedGeo + this.ImprovedGrav
+                  + this.AdvancedGeo + this.AdvancedGrav
+                  + this.PhasedGeo + this.PhasedGrav
+        let cost = ((this.StandardGeo + this.StandardGrav) * 100
+                  + (this.ImprovedGeo + this.ImprovedGrav) * 150
+                  + (this.AdvancedGeo + this.AdvancedGrav) * 200
+                  + (this.PhasedGeo + this.PhasedGrav) * 300
+                   ) * 1</comp/comp>
+        let maint = match [ this.StandardGrav; this.ImprovedGrav; this.AdvancedGrav; this.PhasedGrav ]
+                          |> List.exists (fun a -> a > 0<comp>) with
+                    | true -> Military
+                    | false -> Commercial
+        { this with
+            Size = total * 5<hs/comp>
+            Crew = total * 10<people/comp>
+            GeoSensorRating = (this.StandardGeo * 1
+                             + this.ImprovedGeo * 2
+                             + this.AdvancedGeo * 3
+                             + this.PhasedGeo * 5
+                              ) * 1</comp>
+            GravSensorRating = (this.StandardGrav * 1
+                              + this.ImprovedGrav * 2
+                              + this.AdvancedGrav * 3
+                              + this.PhasedGrav * 5
+                               ) * 1</comp>
+            BuildCost =
+                {
+                    BuildPoints = int2float cost
+                    Uridium = int2float cost
+                    Duranium = 0.0</comp>
+                    Corbomite = 0.0</comp>
+                    Gallicite = 0.0</comp>
+                    Boronide = 0.0</comp>
+                }
+            MaintenenceClass = maint
         }
 
 type FuelStorage =
@@ -91,12 +178,9 @@ type FuelStorage =
                     Boronide = cost
                     Corbomite = 0.0</comp>
                     Gallicite = 0.0</comp>
+                    Uridium = 0.0</comp>
                 }
         }
-
-type MaintenenceClass =
-    | Commercial
-    | Military
 
 type Engine =
     {
@@ -116,7 +200,7 @@ type Engine =
         EnginePower: float<ep/comp>
         FuelConsumption: float<kl/hr/comp>
         Crew: int<people/comp>
-        MaintenenceClass: MaintenenceClass
+        MaintenenceClass: MaintenanceClass
         BuildCost: BuildCost
     }
     static member empty =
@@ -164,6 +248,7 @@ type Engine =
                     Duranium = price
                     Corbomite = 0.0</comp>
                     Boronide = 0.0</comp>
+                    Uridium = 0.0</comp>
                 }
         }
 
@@ -171,31 +256,37 @@ type ShipComponent =
     | Engine of Engine
     | FuelStorage of FuelStorage
     | Bridge of Bridge
+    | Sensors of Sensors
     member this.Guid
         with get() =
             match this with
             | Engine c -> c.Guid
             | FuelStorage c -> c.Guid
             | Bridge c -> c.Guid
+            | Sensors c -> c.Guid
     member this.ShipGuid
         with get() =
             match this with
             | Engine c -> c.ShipGuid
             | FuelStorage c -> c.ShipGuid
             | Bridge c -> c.ShipGuid
+            | Sensors c -> c.ShipGuid
     member this.Name
         with get() =
             match this with
             | Engine c -> c.Name
             | FuelStorage c -> "Fuel Storage"
             | Bridge c -> "Bridge"
+            | Sensors c -> "Sensors"
     member this.duplicate (shipGuid: Guid) =
         match this with
         | Engine c -> Engine { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
         | FuelStorage c -> FuelStorage { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
         | Bridge c -> Bridge { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
+        | Sensors c -> Sensors { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
     member this.calculate =
         match this with
         | Engine c -> Engine c.calculate
         | FuelStorage c -> FuelStorage c.calculate
         | Bridge c -> Bridge c
+        | Sensors c -> Sensors c.calculate

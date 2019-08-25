@@ -11,11 +11,14 @@ type CardHeaderIcon =
     | Tachometer
     | AngleDoubleRight
     | Dollar
+    | GlobeAmericas
+    | Shield
 
 type CardHeaderElement =
     | Title of string
     | Info of string * string * CardHeaderIcon
     | Button of CardHeaderIcon * (unit -> unit)
+    | NoRender
 
 let inline private renderIcon ic =
     match ic with
@@ -25,6 +28,8 @@ let inline private renderIcon ic =
     | Tachometer -> "fas fa-tachometer-alt"
     | AngleDoubleRight -> "fas fa-angle-double-right"
     | Dollar -> "fas fa-dollar-sign"
+    | GlobeAmericas -> "fas fa-globe-americas"
+    | Shield -> "fas fa-shield-alt"
 
 let inline render headerItems contents =
     let h =
@@ -34,8 +39,10 @@ let inline render headerItems contents =
                 match hi with
                 | Title t ->
                     div [ ClassName "card-header-title" ] [ str t ]
+                    |> Some
                 | Info (t, hover, ic) ->
                     div [ ClassName "card-header-subtitle"; HTMLAttr.Title hover ] [ str t; i [ ClassName (renderIcon ic) ] [] ]
+                    |> Some
                 | Button (ic, cb) ->
                     a [ ClassName "card-header-icon"
                         OnClick (fun event -> cb())
@@ -43,7 +50,10 @@ let inline render headerItems contents =
                       [ span [ ClassName "icon" ]
                              [ i [ ClassName (renderIcon ic) ] [] ]
                       ]
+                    |> Some
+                | NoRender -> None
             )
+            >> List.choose id
             >> header [ ClassName "card-header" ]
             >> Some
         )

@@ -13,6 +13,7 @@ let render (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
+            MaintenanceClass comp.MaintenenceClass
             Price (comp.Count, comp.BuildCost)
             SizeInt (comp.Count, comp.Size)
             EnginePower (comp.Count, comp.EnginePower, comp.Size)

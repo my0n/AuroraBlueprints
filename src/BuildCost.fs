@@ -9,6 +9,7 @@ type BuildCost =
         Corbomite: float</comp>
         Gallicite: float</comp>
         Boronide: float</comp>
+        Uridium: float</comp>
     }
     static member empty =
         {
@@ -17,4 +18,5 @@ type BuildCost =
             Corbomite = 0.0</comp>
             Gallicite = 0.0</comp>
             Boronide = 0.0</comp>
+            Uridium = 0.0</comp>
         }

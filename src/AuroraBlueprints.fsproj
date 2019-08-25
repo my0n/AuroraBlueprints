@@ -22,6 +22,7 @@
     <Compile Include="ShipComponents\Bridge.fs" />
     <Compile Include="ShipComponents\FuelStorage.fs" />
     <Compile Include="ShipComponents\Engine.fs" />
+    <Compile Include="ShipComponents\Sensors.fs" />
     <Compile Include="ShipComponents\Classification.fs" />
     <Compile Include="ShipView.fs" />
     <Compile Include="NavbarView.fs" />
