@@ -7,14 +7,15 @@ open ShipComponent
 open Bulma.Form
 open Measures
 open Technology
+open System
 
 let render (comp: Engine) dispatch =
     let header =
         [
-            Name "Engine"
+            Name comp.Name
             Price (comp.Count, comp.BuildCost)
             SizeInt (comp.Count, comp.Size)
-            EnginePower (comp.Count, comp.EnginePower)
+            EnginePower (comp.Count, comp.EnginePower, comp.Size)
             FuelConsumption (comp.Count, comp.FuelConsumption, comp.FuelConsumption / comp.EnginePower)
             RemoveButton
         ] |> Some
@@ -35,7 +36,7 @@ let render (comp: Engine) dispatch =
                   [ IntInp ({ Label = Some "Size"; Value = comp.Size*1<comp/hs>; Max = Some 50 },
                             (fun n -> Msg.ReplaceShipComponent (Engine { comp with Size = n*1<hs/comp> }) |> dispatch)
                            )
-                    Select ({ Label = Some "Engine Techology"; Options = Technology.engine |> Map.toListV (fun v -> v.Name); Value = comp.EngineTech.Level },
+                    Select ({ Label = Some "Engine Technology"; Options = Technology.engine |> Map.toListV (fun v -> String.Format("{0} ({1:0} EP/HS)", v.Name, v.PowerPerHs)); Value = comp.EngineTech.Level },
                             (fun n -> Msg.ReplaceShipComponent (Engine { comp with EngineTech = Technology.engine.[n] }) |> dispatch)
                            )
                     Select ({ Label = Some "Engine Efficiency"; Options = Technology.engineEfficiency |> Map.toListV (fun v -> sprintf "%.2fx fuel consumption" v.Efficiency); Value = comp.EfficiencyTech.Level },

@@ -12,7 +12,7 @@ type ShipComponentCardHeaderItem =
     | SizeInt of int<comp> * int<hs/comp>
     | SizeFloat of int<comp> * float<hs/comp>
     | FuelCapacity of float<kl>
-    | EnginePower of int<comp> * float<ep/comp>
+    | EnginePower of int<comp> * float<ep/comp> * int<hs/comp>
     | Velocity of float<km/s>
     | FuelConsumption of int<comp> * float<kl/hr/comp> * float<kl/hr/ep>
     | Price of int<comp> * BuildCost
@@ -30,34 +30,38 @@ let inline private renderHeader header comp dispatch: CardHeaderElement list opt
                     | 1<comp> | 0<comp> -> sprintf "%d HS" (size * count)
                     | _ -> sprintf "%d (%d) HS" (size * count) size
                 Info (sprintf "%d" (size * count), hoverText, Weight)
+
             | SizeFloat (count, size) ->
                 let hoverText =
                     match count with
                     | 1<comp> | 0<comp> -> sprintf "%.1f HS" (size * int2float count)
                     | _ -> sprintf "%.1f (%.1f) HS" (size * int2float count) size
                 Info (sprintf "%.1f" (size * int2float count), hoverText, Weight)
+
             | FuelCapacity fc ->
                 Info (sprintf "%.0f" fc, sprintf "%.0f kL" fc, GasPump)
-            | EnginePower (count, e) ->
-                let hoverText =
+
+            | EnginePower (count, e, sz) ->
+                let epstr =
                     match count with
                     | 1<comp> | 0<comp> -> sprintf "%.1f EP" (e * int2float count)
                     | _ -> sprintf "%.1f (%.1f) EP" (e * int2float count) e
-                    
+                let ephrstr = sprintf "%.1f EP/HS" (e / int2float sz)
+                let hoverText = [ epstr; ephrstr ] |> String.concat "\r\n"
                 Info (sprintf "%.1f" (e * int2float count), hoverText, AngleDoubleRight)
+
             | Velocity e ->
                 Info (sprintf "%.0f" e, sprintf "%.0f km/s" e, AngleDoubleRight)
+
             | FuelConsumption (count, a, b) ->
                 let klhr =
                     match count with
                     | 1<comp> | 0<comp> -> sprintf "%0.2f kl/hr" (a * int2float count)
                     | _ -> sprintf "%0.2f (%0.2f) kl/hr" (a * int2float count) a
-                let hoverText =
-                    [
-                        klhr
-                        sprintf "%0.2f kl/hr/ep" b
-                    ] |> String.concat "\r\n"
+                let klhrep = sprintf "%0.2f kl/hr/EP" b
+                let hoverText = [ klhr; klhrep ] |> String.concat "\r\n"
                 Info (sprintf "%.2f" (a * int2float count), hoverText, Tachometer)
+
             | Price (count, b) ->
                 let bpr a lbl =
                     match a with
@@ -71,12 +75,17 @@ let inline private renderHeader header comp dispatch: CardHeaderElement list opt
                 let hoverText =
                     [
                         bpr b.BuildPoints "build points"
+                        bpr b.Duranium "duranium"
+                        bpr b.Corbomite "corbomite"
                         bpr b.Gallicite "gallicite"
+                        bpr b.Boronide "boronide"
                     ]
                     |> List.choose id
                     |> String.concat "\r\n"
                 Info (sprintf "%.0f" (b.BuildPoints * int2float count), (match hoverText with "" -> "free" | _ -> hoverText), Dollar)
-            | RemoveButton -> Button (Close, (fun _ -> Msg.RemoveComponentFromShip comp |> dispatch))
+
+            | RemoveButton ->
+                Button (Close, (fun _ -> Msg.RemoveComponentFromShip comp |> dispatch))
         )
         >> Some
     )

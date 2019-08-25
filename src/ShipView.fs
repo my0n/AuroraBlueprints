@@ -69,6 +69,7 @@ let shipInfo dispatch ship =
                 match comp with
                 | FuelStorage comp -> ShipComponents.FuelStorage.render comp dispatch
                 | Engine comp ->      ShipComponents.Engine.render comp dispatch
+                | Bridge comp ->      ShipComponents.Bridge.render comp dispatch
             )
 
         [ ShipComponents.Classification.render ship dispatch ]

@@ -29,6 +29,7 @@ type Ship =
                 match c with
                 | FuelStorage c -> c.TotalSize
                 | Engine c      -> int2float c.Size * int2float c.Count
+                | Bridge c      -> int2float c.Size * int2float c.Count
                 )
             |> List.sum
 
