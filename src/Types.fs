@@ -23,6 +23,7 @@ type Ship =
         // this is included in Size, but shows the portion that is dedicated to crew quarters
         CrewQuartersSize: float<hs>
         CrewQuartersBuildCost: TotalBuildCost
+        CryogenicBerths: int<people> // calculated
     }
     static member empty =
         {
@@ -39,6 +40,7 @@ type Ship =
             DeployTime = 3.0<mo>
             CrewQuartersSize = 0.0<hs>
             CrewQuartersBuildCost = TotalBuildCost.Zero
+            CryogenicBerths = 0<people>
         }
     member this.calculate =
         let maint =
