@@ -3,11 +3,14 @@ module Ships.View
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+open Global
+
+open AppModel.Model
+open AppModel.Msg
 open Bulma.Button
 open Bulma.Table
-open Types
-open Global
-open ShipComponent
+open Model.ShipComponent
+open Model.Ship
 
 let actionBar dispatch =
     div []

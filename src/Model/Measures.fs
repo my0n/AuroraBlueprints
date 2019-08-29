@@ -1,4 +1,4 @@
-module Measures
+module Model.Measures
 
 open System
 

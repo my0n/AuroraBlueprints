@@ -1,10 +1,12 @@
-module Types
+module Model.Ship
+
+open System
 
 open Global
-open System
-open Measures
-open ShipComponent
-open BuildCost
+
+open Model.BuildCost
+open Model.Measures
+open Model.ShipComponent
 
 type Ship =
     {
@@ -121,41 +123,4 @@ type Ship =
             MaintenenceClass = maint
             CrewQuartersSize = crewQuartersSize
             CrewQuartersBuildCost = crewQuartersCost
-        }
-
-type Msg =
-    | Noop
-
-    // Ships
-    | NewShip
-    | RemoveShip of Ship
-    | ReplaceShip of Ship
-    | SelectShip of Ship
-    | ShipUpdateName of Ship * string
-    | ShipUpdateClass of Ship * string
-
-    // Component Designs
-    | NewComponentDesign of ShipComponent
-    | RemoveComponentDesign of ShipComponent
-    | ReplaceComponentDesign of ShipComponent
-
-    // Components
-    | SaveComponentToDesigns of ShipComponent
-    | CopyComponentToShip of Ship * ShipComponent
-    | RemoveComponentFromShip of ShipComponent
-    | ReplaceShipComponent of ShipComponent
-
-type Model =
-    {
-        CurrentPage: Page
-        CurrentShip: Ship option
-        AllShips: Map<Guid, Ship>
-        AllComponents: Map<Guid, ShipComponent>
-    }
-    static member empty =
-        {
-            CurrentPage = Ships
-            CurrentShip = None
-            AllShips = Map.empty
-            AllComponents = Map.empty
         }

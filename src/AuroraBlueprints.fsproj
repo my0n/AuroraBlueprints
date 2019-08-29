@@ -7,12 +7,14 @@
   </ItemGroup>
   <ItemGroup>
     <!-- Global to the app -->
-    <Compile Include="Measures.fs" />
-    <Compile Include="BuildCost.fs" />
     <Compile Include="Global.fs" />
-    <Compile Include="Technology.fs" />
-    <Compile Include="ShipComponent.fs" />
-    <Compile Include="Types.fs" />
+    <Compile Include="Model\Measures.fs" />
+    <Compile Include="Model\BuildCost.fs" />
+    <Compile Include="Model\Technology.fs" />
+    <Compile Include="Model\ShipComponent.fs" />
+    <Compile Include="Model\Ship.fs" />
+    <Compile Include="AppModel\Msg.fs" />
+    <Compile Include="AppModel\Model.fs" />
     <Compile Include="Bulma\Button.fs" />
     <Compile Include="Bulma\Table.fs" />
     <Compile Include="Bulma\Form.fs" />

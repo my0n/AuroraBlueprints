@@ -3,11 +3,12 @@ module ShipComponents.ShipDescription
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-open Types
-open Measures
 open Global
-open Bulma.Card
 open System
+
+open Bulma.Card
+open Model.Measures
+open Model.Ship
 
 type private SizeOptions =
     | HS

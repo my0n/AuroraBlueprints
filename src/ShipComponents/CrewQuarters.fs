@@ -1,13 +1,11 @@
 module ShipComponents.CrewQuarters
 
-open Global
-open Types
 open ShipComponents.Common
-open ShipComponent
+
+open AppModel.Msg
 open Bulma.Form
-open Measures
-open Technology
-open System
+open Model.Measures
+open Model.Ship
 
 let render (ship: Ship) dispatch =
     let header =

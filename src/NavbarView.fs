@@ -3,8 +3,7 @@ module Navbar.View
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
-open Global
-open Types
+open AppModel.Model
 
 let navButton label page currentPage =
     p [ ClassName "control" ]

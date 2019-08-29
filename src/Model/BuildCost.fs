@@ -1,6 +1,6 @@
-module BuildCost
+module Model.BuildCost
 
-open Measures
+open Model.Measures
 
 type TotalBuildCost =
     {

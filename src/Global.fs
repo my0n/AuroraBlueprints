@@ -2,9 +2,6 @@ module Global
 
 open System
 
-type Page =
-    | Ships
-
 module List =
     let inline wrap element = [ element ]
     let inline lookup (m: Map<'key, 'value>) =
@@ -22,10 +19,6 @@ module Map =
         |> List.map (fun (k, v) ->
             (k, vfn v)
         )
-
-let toHash page =
-    match page with
-    | Ships -> "#ships"
     
 let inline (@+) (l: 'a list) (a: 'a) = l @ [a]
 let inline (@+?) (l: 'a list) (a: 'a option) = l @ (match a with Some a -> [a] | None -> [])

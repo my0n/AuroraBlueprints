@@ -1,10 +1,10 @@
-module ShipComponent
+module Model.ShipComponent
 
 open System
 
-open Measures
-open Technology
-open BuildCost
+open Model.BuildCost
+open Model.Measures
+open Model.Technology
 
 type MaintenanceClass =
     | Commercial

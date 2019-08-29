@@ -1,12 +1,12 @@
 module ShipComponents.Common
 
-open Measures
-open Types
 open Global
 
+open AppModel.Msg
 open Bulma.Card
-open BuildCost
-open ShipComponent
+open Model.BuildCost
+open Model.Measures
+open Model.ShipComponent
 
 type ShipComponentCardHeaderItem =
     | Name of string

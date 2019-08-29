@@ -2,9 +2,12 @@ module App.State
 
 open Elmish
 open Global
-open Types
 open System
-open ShipComponent
+
+open AppModel.Model
+open AppModel.Msg
+open Model.Ship
+open Model.ShipComponent
 
 let init result =
     let (model, cmd) =
@@ -35,7 +38,7 @@ let update msg model =
         
     // Ships
     | NewShip ->
-        let ship = Types.Ship.empty
+        let ship = Ship.empty
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = Some ship

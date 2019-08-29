@@ -4,7 +4,7 @@ open Elmish.Browser.Navigation
 open Elmish.Browser.UrlParser
 open Fable.Import.Browser
 open Global
-open Types
+open AppModel.Model
 
 let pageParser: Parser<Page->Page,Page> =
     oneOf [

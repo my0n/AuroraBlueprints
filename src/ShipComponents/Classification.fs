@@ -1,7 +1,8 @@
 module ShipComponents.Classification
 
-open Types
+open AppModel.Msg
 open Bulma.Form
+open Model.Ship
 
 let render (ship: Ship) dispatch =
     let form =

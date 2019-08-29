@@ -1,6 +1,6 @@
-module Technology
+module Model.Technology
 
-open Measures
+open Model.Measures
 open Global
 
 type EngineLevel = int
