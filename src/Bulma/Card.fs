@@ -31,7 +31,7 @@ let inline private renderIcon ic =
     | GlobeAmericas -> "fas fa-globe-americas"
     | Shield -> "fas fa-shield-alt"
 
-let inline render headerItems contents =
+let render headerItems contents =
     let h =
         headerItems
         |> Option.bind (

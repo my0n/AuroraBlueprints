@@ -3,57 +3,15 @@ module Ships.View
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+open Bulma.Button
+open Bulma.Table
 open Types
 open Global
-open TableCommon
-open SelectableList
 open ShipComponent
-
-let shipListOptions: SelectableListOptions<Ship> =
-    {
-        Columns = [ "Name"; "Weight"; "" ]
-        RowRenderer = (fun ship ->
-            [
-                String ship.Name
-                Size ship.Size
-                Button { Text = "Delete"; OnClick = Msg.RemoveShip ship }
-            ]
-        )
-        OnSelect = fun ship -> Msg.SelectShip ship
-    }
-
-let componentListOptions ship =
-    {
-        Columns = [ "Name"; "" ]
-        RowRenderer = (fun (comp: ShipComponent) ->
-            let name = comp.Name
-
-            let onClick =
-                match ship with
-                | None -> Msg.Noop
-                | Some ship -> Msg.CopyComponentToShip (ship, comp)
-
-            [
-                String name
-                Button { Text = "Add"; OnClick = onClick }
-            ]
-        )
-        OnSelect = fun comp -> Msg.Noop
-    }
-
-let actionButton name callback =
-    p [ ClassName "control" ]
-      [
-          div [ ClassName "button"
-                OnClick callback
-              ]
-              [ str name ]
-      ]
 
 let actionBar dispatch =
     div []
-        [
-            actionButton "New Ship" (fun event -> Msg.NewShip |> dispatch)
+        [ Bulma.Button.render "New Ship" (fun _ -> Msg.NewShip |> dispatch)
         ]
 
 let shipInfo dispatch ship =
@@ -66,10 +24,10 @@ let shipInfo dispatch ship =
             |> Map.values
             |> List.map (fun comp ->
                 match comp with
-                | FuelStorage comp  -> ShipComponents.FuelStorage.render comp dispatch
-                | Engine comp       -> ShipComponents.Engine.render comp dispatch
-                | Bridge comp       -> ShipComponents.Bridge.render comp dispatch
-                | Sensors comp      -> ShipComponents.Sensors.render comp dispatch
+                | FuelStorage comp -> ShipComponents.FuelStorage.render comp dispatch
+                | Engine comp      -> ShipComponents.Engine.render comp dispatch
+                | Bridge comp      -> ShipComponents.Bridge.render comp dispatch
+                | Sensors comp     -> ShipComponents.Sensors.render comp dispatch
             )
 
         [ ShipComponents.Classification.render ship dispatch
@@ -79,17 +37,54 @@ let shipInfo dispatch ship =
         @+ ShipComponents.ShipDescription.render ship
 
 let root model dispatch =
-    let ships = Map.values model.AllShips
+    let ships = model.AllShips |> Map.values
+    let comps = model.AllComponents |> Map.values
+
+    let removeShip ship = Msg.RemoveShip ship |> dispatch
+    let selectShip ship = Msg.SelectShip ship |> dispatch
+    let addComponent ship comp = Msg.CopyComponentToShip (ship, comp) |> dispatch
+
+    let shipListOptions: ColumnOptions<Ship> list =
+        [
+            {
+                Name = "Name"
+                Value = String (fun ship -> ship.Name)
+            }
+            {
+                Name = "Size (HS)"
+                Value = String (fun ship -> sprintf "%.1f" ship.Size)
+            }
+            {
+                Name = ""
+                Value = Button ("Remove", removeShip)
+            }
+        ]
+
+    let componentListOptions: ColumnOptions<ShipComponent> list =
+        [
+            {
+                Name = "Name"
+                Value = String (fun comp -> comp.Name)
+            }
+            {
+                Name = ""
+                Value = Button ("Delete", fun comp ->
+                    match model.CurrentShip with
+                    | Some ship -> addComponent ship comp
+                    | None -> ()
+                )
+            }
+        ]
 
     div [ ClassName "columns" ]
         [
             div [ ClassName "column is-2" ]
-                [ selectableList shipListOptions dispatch ships model.CurrentShip ]
+                [ Bulma.Table.render shipListOptions ships model.CurrentShip selectShip ]
             div [ ClassName "column is-8" ]
                 (
                   [ actionBar dispatch ]
                   @+ div [ ClassName "content" ] (shipInfo dispatch model.CurrentShip)
                 )
             div [ ClassName "column" ]
-                [ selectableList (componentListOptions model.CurrentShip) dispatch (Map.values model.AllComponents) None ]
+                [ Bulma.Table.render componentListOptions comps None (fun _ -> ()) ]
         ]
