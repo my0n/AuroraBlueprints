@@ -80,4 +80,8 @@ let render ship =
     let contents = ship
                    |> describe
                    |> renderDescription
-    Bulma.Card.render (Some [ Title "Description" ]) [ contents ]
+    Bulma.Card.render {
+        HeaderItems = [ Title "Description" ]
+        Contents = [ contents ]
+        HasExpanderToggle = true
+    }

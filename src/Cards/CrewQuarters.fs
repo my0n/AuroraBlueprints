@@ -1,9 +1,8 @@
 module ShipComponents.CrewQuarters
 
-open ShipComponents.Common
-
 open AppModel.Msg
 open Bulma.Form
+open Card.Common
 open Model.Measures
 open Model.Ship
 
@@ -13,7 +12,7 @@ let render (ship: Ship) dispatch =
             Name "Crew Quarters"
             TotalPrice ship.CrewQuartersBuildCost
             SizeFloat (1<comp>, ship.CrewQuartersSize*1.0</comp>)
-        ] |> Some
+        ]
     let form =
         [ HorGrp (None,
                   [ FltInp ({ Label = Some "Deployment Time"; Value = ship.DeployTime*1.0</mo> },
@@ -26,7 +25,4 @@ let render (ship: Ship) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header
-                      form
-                      None
-                      dispatch
+    shipComponentCard header form

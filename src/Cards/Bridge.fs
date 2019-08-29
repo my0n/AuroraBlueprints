@@ -1,9 +1,9 @@
 module ShipComponents.Bridge
 
-open ShipComponents.Common
 
 open AppModel.Msg
 open Bulma.Form
+open Card.Common
 open Model.Measures
 open Model.ShipComponent
 
@@ -13,8 +13,7 @@ let render (comp: Bridge) dispatch =
             Name "Bridge"
             Price (comp.Count, comp.BuildCost)
             SizeInt (comp.Count, comp.Size)
-            RemoveButton
-        ] |> Some
+        ]
     let form =
         [ HorGrp (None,
                   [ IntInp ({ Label = Some "Count"; Value = comp.Count*1</comp>; Max = None },
@@ -24,7 +23,4 @@ let render (comp: Bridge) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header
-                      form
-                      (Some <| Bridge comp)
-                      dispatch
+    shipComponentCard header form

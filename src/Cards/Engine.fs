@@ -1,11 +1,11 @@
 module ShipComponents.Engine
 
 open Global
-open ShipComponents.Common
 open System
 
 open AppModel.Msg
 open Bulma.Form
+open Card.Common
 open Model.Measures
 open Model.Technology
 open Model.ShipComponent
@@ -19,8 +19,7 @@ let render (comp: Engine) dispatch =
             SizeInt (comp.Count, comp.Size)
             EnginePower (comp.Count, comp.EnginePower, comp.Size)
             FuelConsumption (comp.Count, comp.FuelConsumption, comp.FuelConsumption / comp.EnginePower)
-            RemoveButton
-        ] |> Some
+        ]
     let form =
         [ HorGrp (None,
                   [ IntInp ({ Label = Some "Count"; Value = comp.Count*1</comp>; Max = None },
@@ -51,7 +50,4 @@ let render (comp: Engine) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header
-                      form
-                      (Some <| Engine comp)
-                      dispatch
+    shipComponentCard header form

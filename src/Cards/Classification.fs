@@ -1,6 +1,7 @@
 module ShipComponents.Classification
 
 open AppModel.Msg
+open Bulma.Card
 open Bulma.Form
 open Model.Ship
 
@@ -18,4 +19,8 @@ let render (ship: Ship) dispatch =
         ]
         |> Bulma.Form.render
 
-    Bulma.Card.render None form
+    Bulma.Card.render {
+        HeaderItems = []
+        Contents = form
+        HasExpanderToggle = false
+    }

@@ -1,11 +1,11 @@
 module ShipComponents.Sensors
 
 open Global
-open ShipComponents.Common
 open System
 
 open AppModel.Msg
 open Bulma.Form
+open Card.Common
 open Model.Measures
 open Model.ShipComponent
 
@@ -17,8 +17,7 @@ let render (comp: Sensors) dispatch =
             TotalPrice comp.BuildCost
             SizeInt (1<comp>, comp.Size*1</comp>)
             SensorStrength (comp.GeoSensorRating, comp.GravSensorRating)
-            RemoveButton
-        ] |> Some
+        ]
     let form =
         [ HorGrp (None,
                   [ IntInp ({ Label = Some "Standard Geo"; Value = comp.StandardGeo*1</comp>; Max = None },
@@ -52,7 +51,4 @@ let render (comp: Sensors) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header
-                      form
-                      (Some <| Sensors comp)
-                      dispatch
+    shipComponentCard header form

@@ -11,6 +11,7 @@ open Bulma.Button
 open Bulma.Table
 open Model.ShipComponent
 open Model.Ship
+open Fable.Import.React
 
 let actionBar dispatch =
     div []
@@ -37,7 +38,7 @@ let shipInfo dispatch ship =
           ShipComponents.CrewQuarters.render ship dispatch
         ]
         @ shipComponents
-        @+ ShipComponents.ShipDescription.render ship
+        @ [ ShipComponents.ShipDescription.render ship ]
 
 let root model dispatch =
     let ships = model.AllShips |> Map.values
@@ -71,7 +72,7 @@ let root model dispatch =
             }
             {
                 Name = ""
-                Value = Button ("Delete", fun comp ->
+                Value = Button ("Add", fun comp ->
                     match model.CurrentShip with
                     | Some ship -> addComponent ship comp
                     | None -> ()

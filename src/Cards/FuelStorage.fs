@@ -1,9 +1,8 @@
 module ShipComponents.FuelStorage
 
-open ShipComponents.Common
-
 open AppModel.Msg
 open Bulma.Form
+open Card.Common
 open Model.Measures
 open Model.ShipComponent
 
@@ -14,8 +13,7 @@ let render (comp: FuelStorage) dispatch =
             TotalPrice comp.BuildCost
             SizeFloat (1<comp>, comp.TotalSize*1.0</comp>)
             FuelCapacity comp.FuelCapacity
-            RemoveButton
-        ] |> Some
+        ]
     let form =
         [ HorGrp (None,
                   [ IntInp ({ Label = Some "Tiny"; Value = comp.Tiny*1</comp>; Max = None },
@@ -40,7 +38,4 @@ let render (comp: FuelStorage) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header
-                      form
-                      (Some <| FuelStorage comp)
-                      dispatch
+    shipComponentCard header form
