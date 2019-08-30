@@ -127,9 +127,10 @@ let inline private renderHeader header: CardHeaderElement list =
             | Military -> Info ("", "This component is classified as a military component for maintenance purposes.", Shield)
     )
 
-let shipComponentCard header contents =
+let shipComponentCard header contents actions =
     Bulma.Card.render {
         HeaderItems = renderHeader header
         Contents = contents
+        Actions = actions
         HasExpanderToggle = true
     }

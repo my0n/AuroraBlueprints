@@ -23,6 +23,13 @@ type CardHeaderElement =
     | Button of CardHeaderIcon * (unit -> unit)
     | NoRender
 
+type ColorStatus =
+    | NormalColor
+    | InfoColor
+    | SuccessColor
+    | WarningColor
+    | DangerColor
+
 let inline private renderIcon ic =
     match ic with
     | Close -> "fas fa-times"
@@ -39,6 +46,7 @@ type CardProps =
     {
         HeaderItems: CardHeaderElement list
         Contents: React.ReactElement list
+        Actions: (string * ColorStatus * (unit -> unit)) list
         HasExpanderToggle: bool
     }
     
@@ -96,9 +104,30 @@ type private Card(props) =
                                    ]
                                    li
         let c = div [ classList [ "card-content", true; "is-hidden", not this.state.IsBodyVisible ] ] this.props.Contents
-
+        let f =
+            match this.props.Actions with
+            | [] -> None
+            | li ->
+                li
+                |> List.map (fun (lbl, st, cb) ->
+                    a [ classList [ "card-footer-item", true
+                                    "has-text-info", st = InfoColor
+                                    "has-text-success", st = SuccessColor
+                                    "has-text-warning", st = WarningColor
+                                    "has-text-danger", st = DangerColor
+                                  ]
+                        OnClick (fun event ->
+                                    event.stopPropagation() |> ignore
+                                    cb()
+                                )
+                      ]
+                      [ str lbl ]
+                )
+                |> footer [ classList [ "card-footer", true; "is-hidden", not this.state.IsBodyVisible ] ]
+                |> Some
         [ h
           Some c
+          f
         ]
         |> List.choose id
         |> div [ ClassName "card" ]

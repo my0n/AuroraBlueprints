@@ -83,5 +83,6 @@ let render ship =
     Bulma.Card.render {
         HeaderItems = [ Title "Description" ]
         Contents = [ contents ]
+        Actions = []
         HasExpanderToggle = true
     }

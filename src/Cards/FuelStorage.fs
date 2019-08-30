@@ -1,6 +1,7 @@
 module ShipComponents.FuelStorage
 
 open AppModel.Msg
+open Bulma.Card
 open Bulma.Form
 open Card.Common
 open Model.Measures
@@ -38,4 +39,8 @@ let render (comp: FuelStorage) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header form
+    let actions =
+        [
+            "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip <| FuelStorage comp |> dispatch)
+        ]
+    shipComponentCard header form actions

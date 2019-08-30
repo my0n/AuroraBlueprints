@@ -4,6 +4,7 @@ open Global
 open System
 
 open AppModel.Msg
+open Bulma.Card
 open Bulma.Form
 open Card.Common
 open Model.Measures
@@ -51,4 +52,8 @@ let render (comp: Sensors) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header form
+    let actions =
+        [
+            "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip <| Sensors comp |> dispatch)
+        ]
+    shipComponentCard header form actions

@@ -22,5 +22,6 @@ let render (ship: Ship) dispatch =
     Bulma.Card.render {
         HeaderItems = []
         Contents = form
+        Actions = []
         HasExpanderToggle = false
     }

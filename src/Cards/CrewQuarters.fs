@@ -25,4 +25,5 @@ let render (ship: Ship) dispatch =
                  )
         ]
         |> Bulma.Form.render
-    shipComponentCard header form
+    let actions = []
+    shipComponentCard header form actions
