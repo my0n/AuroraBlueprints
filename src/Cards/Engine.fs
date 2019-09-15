@@ -20,7 +20,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
             MaintenanceClass comp.MaintenenceClass
             Price (comp.Count, comp.BuildCost)
             SizeInt (comp.Count, comp.Size)
-            EnginePower (comp.Count, comp.EnginePower, comp.Size)
+            EnginePower (comp.Count, comp.EnginePower, comp.Size, ship.Speed)
             FuelConsumption (comp.Count, comp.FuelConsumption, comp.FuelConsumption / comp.EnginePower)
         ]
     let form =

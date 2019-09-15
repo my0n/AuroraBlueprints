@@ -16,7 +16,7 @@ let render (ship: Ship) dispatch =
             TotalPrice ship.ArmorBuildCost
             SizeFloat (1<comp>, ship.ArmorSize*1.0</comp>)
             ArmorStrength ship.ArmorStrength
-            ArmorSize (ship.ArmorWidth, ship.ArmorDepth)
+            ArmorSize (ship.ArmorDepth, ship.ArmorWidth)
         ]
     let form =
         [ HorGrp (None,

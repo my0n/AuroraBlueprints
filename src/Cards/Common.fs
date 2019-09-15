@@ -12,7 +12,7 @@ type ShipComponentCardHeaderItem =
     | SizeInt of int<comp> * int<hs/comp>
     | SizeFloat of int<comp> * float<hs/comp>
     | FuelCapacity of float<kl>
-    | EnginePower of int<comp> * float<ep/comp> * int<hs/comp>
+    | EnginePower of int<comp> * float<ep/comp> * int<hs/comp> * float<km/s>
     | Velocity of float<km/s>
     | FuelConsumption of int<comp> * float<kl/hr/comp> * float<kl/hr/ep>
     | Price of int<comp> * BuildCost
@@ -44,14 +44,15 @@ let inline private renderHeader header: CardHeaderElement list =
         | FuelCapacity fc ->
             Info (sprintf "%.0f" fc, sprintf "%.0f kL" fc, GasPump)
 
-        | EnginePower (count, e, sz) ->
+        | EnginePower (count, e, sz, spd) ->
+            let spdstr = sprintf "%.0f km/s" spd
             let epstr =
                 match count with
                 | 1<comp> | 0<comp> -> sprintf "%.1f EP" (e * int2float count)
                 | _ -> sprintf "%.1f (%.1f) EP" (e * int2float count) e
             let ephrstr = sprintf "%.1f EP/HS" (e / int2float sz)
-            let hoverText = [ epstr; ephrstr ] |> String.concat "\r\n"
-            Info (sprintf "%.1f" (e * int2float count), hoverText, AngleDoubleRight)
+            let hoverText = [ spdstr; epstr; ephrstr ] |> String.concat "\r\n"
+            Info (sprintf "%.0f" spd, hoverText, AngleDoubleRight)
 
         | Velocity e ->
             Info (sprintf "%.0f" e, sprintf "%.0f km/s" e, AngleDoubleRight)
@@ -61,7 +62,7 @@ let inline private renderHeader header: CardHeaderElement list =
                 match count with
                 | 1<comp> | 0<comp> -> sprintf "%0.2f kl/hr" (a * int2float count)
                 | _ -> sprintf "%0.2f (%0.2f) kl/hr" (a * int2float count) a
-            let klhrep = sprintf "%0.2f kl/hr/EP" b
+            let klhrep = sprintf "%0.4f kl/hr/EP" b
             let hoverText = [ klhr; klhrep ] |> String.concat "\r\n"
             Info (sprintf "%.2f" (a * int2float count), hoverText, Tachometer)
                 
@@ -133,8 +134,8 @@ let inline private renderHeader header: CardHeaderElement list =
         | ArmorStrength (strength) ->
             Info (sprintf "%.1f" strength, sprintf "%.1f armor strength" strength, Shield)
 
-        | ArmorSize (width, depth) ->
-            Info (sprintf "%d×%d" width depth, sprintf "%d columns wide\n%d rows deep" width depth, ThLarge)
+        | ArmorSize (depth, width) ->
+            Info (sprintf "%d×%d" depth width, sprintf "%d rows deep\n%d columns wide" depth width, ThLarge)
     )
 
 let shipComponentCard header contents actions =

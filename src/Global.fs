@@ -9,6 +9,10 @@ module List =
             m.TryFind key
         )
         >> List.choose id
+    let inline tryFindMap (fn: 't -> 'u option) =
+        Seq.map fn
+        >> Seq.choose id
+        >> Seq.tryFind (fun _ -> true)
 
 module Map =
     let inline keys m = m |> Map.toList |> List.map (fun (a, b) -> a)

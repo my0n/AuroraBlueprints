@@ -18,11 +18,19 @@ type Ship =
         Guid: Guid
         Name: string
         ShipClass: string
+        Components: Map<Guid, ShipComponent>
+        
         Size: float<hs> // calculated
         BuildCost: TotalBuildCost // calculated
-        Components: Map<Guid, ShipComponent>
+        MaintenanceClass: MaintenanceClass // calculated
 
-        MaintenenceClass: MaintenanceClass // calculated
+        // engines and fuel
+        FuelCapacity: float<kl> // calculated
+        TotalEnginePower: float<ep> // calculated
+        HasEngines: bool // calculated
+        FuelRange: float<km> // calculated
+        FullPowerTime: float<mo> // calculated
+        Speed: float<km/s> // calculated
 
         // armor
         ArmorDepth: int
@@ -49,7 +57,13 @@ type Ship =
                 Size = 0.0<hs>
                 BuildCost = TotalBuildCost.Zero
                 Components = Map.empty
-                MaintenenceClass = Commercial
+                MaintenanceClass = Commercial
+                FuelCapacity = 0.0<kl>
+                HasEngines = false
+                FuelRange = 0.0<km>
+                FullPowerTime = 0.0<mo>
+                TotalEnginePower = 0.0<ep>
+                Speed = 0.0<km/s>
                 
                 ArmorDepth = 1
                 ArmorTechnology = Technology.armor.[0]
@@ -112,7 +126,16 @@ type Ship =
             }
 
         // aggregate
-
+        let fuelCapacity =
+            this.Components
+            |> Map.values
+            |> List.map (fun c ->
+                match c with
+                | FuelStorage c -> c.FuelCapacity
+                | _ -> 0.0<kl>
+            )
+            |> List.sum
+            
         let buildCostBeforeArmor =
             this.Components
             |> Map.values
@@ -143,11 +166,60 @@ type Ship =
         let armorCalc =
             Model.ArmorCalc.shipArmor sizeBeforeArmor this.ArmorDepth this.ArmorTechnology
 
+        // final aggregate
+        let sz = sizeBeforeArmor + armorCalc.Size
+        let bc = buildCostBeforeArmor + armorCalc.Cost
+
+        // engine stuff
+        let hasEngines =
+            this.Components
+            |> Map.values
+            |> List.exists (fun c ->
+                match c with
+                | Engine c -> c.Count > 0<comp>
+                | _ -> false
+            )
+
+        let totalEp =
+            this.Components
+            |> Map.values
+            |> List.map (fun c ->
+                match c with
+                | Engine c -> c.EnginePower * int2float c.Count
+                | _ -> 0.0<ep>
+            )
+            |> List.sum
+
+        let fuelConsumption =
+            this.Components
+            |> Map.values
+            |> List.tryFindMap (fun c ->
+                match c with
+                | Engine c -> Some (c.FuelConsumption * int2float c.Count)
+                | _ -> None
+            )
+            |> Option.defaultValue 0.0<kl/hr>
+
+        let (speed, fuelTime, fuelRange) =
+            match hasEngines && fuelCapacity > 0.0<kl> with
+            | true ->
+                let speed = totalEp * 1000.0<(km/s)/(ep/hs)> / sz
+                let fuelTime = fuelCapacity / fuelConsumption
+                let fuelRange = (min2s <| hr2min fuelTime) * speed
+                speed, fuelTime, fuelRange
+            | false -> 1.0<km/s>, 0.0<hr>, 0.0<km>
+
         { this with
-            Size = sizeBeforeArmor + armorCalc.Size
+            Size = sz
             Crew = crew
-            BuildCost = buildCostBeforeArmor + armorCalc.Cost
-            MaintenenceClass = maint
+            BuildCost = bc
+            MaintenanceClass = maint
+            FuelCapacity = fuelCapacity
+            HasEngines = hasEngines
+            FuelRange = fuelRange
+            FullPowerTime = day2mo <| hr2day fuelTime
+            TotalEnginePower = totalEp
+            Speed = speed
 
             ArmorBuildCost = armorCalc.Cost
             ArmorSize = armorCalc.Size

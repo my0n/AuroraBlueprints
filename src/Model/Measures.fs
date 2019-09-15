@@ -7,19 +7,29 @@ open System
 [<Measure>] type kl
 [<Measure>] type ton
 [<Measure>] type hs
-[<Measure>] type hr
-[<Measure>] type s
 [<Measure>] type km
 [<Measure>] type comp
 [<Measure>] type people
+[<Measure>] type year
 [<Measure>] type mo
-let literToKiloliterConversion = 1000.0<l/kl>
-let tonToHSConversion = 50.0<ton/hs>
-let inline toKiloliters (liters: float<l>) = liters / literToKiloliterConversion
-let inline hs2ton (hs: float<hs>) = hs * tonToHSConversion
-let inline ton2hs (t: float<ton>) = t / tonToHSConversion
+[<Measure>] type day
+[<Measure>] type hr
+[<Measure>] type min
+[<Measure>] type s
+let inline l2kl (liters: float<l>) = liters / 1000.0<l/kl>
+let inline kl2l (kiloliters: float<kl>) = kiloliters * 1000.0<l/kl>
+let inline hs2ton (hs: float<hs>) = hs * 50.0<ton/hs>
+let inline ton2hs (t: float<ton>) = t / 50.0<ton/hs>
+let inline mo2year (mo: float<mo>) = mo / 12.0<mo/year>
+let inline mo2day (mo: float<mo>) = mo * 30.0<day/mo>
+let inline day2mo (day: float<day>) = day / 30.0<day/mo>
+let inline day2hr (day: float<day>) = day * 24.0<hr/day>
+let inline hr2day (hr: float<hr>) = hr / 60.0<hr/day>
+let inline hr2min (hr: float<hr>) = hr * 60.0<min/hr>
+let inline min2hr (min: float<min>) = min / 60.0<min/hr>
+let inline min2s (min: float<min>) = min * 60.0<s/min>
 
-// fable doesn't support .FloatWithMeasure etc. so that's a box and unbox (parens are important otherwise you get a newobj, call, and callvirt lmao)
+// fable doesn't support .FloatWithMeasure etc. so that's a box and unbox (parens are important otherwise you get a newobj, call, and callvirt)
 let inline int2float (x: int<'t>): float<'t> = unbox (float x)
 let inline float2int (x: float<'t>): int<'t> = unbox (int x)
 
