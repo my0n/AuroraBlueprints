@@ -81,27 +81,15 @@ type Ship =
             }.calculate
     member this.calculate =
         let maint =
-            match this.Components
-                  |> Map.values
-                  |> List.exists (fun c ->
-                    match c with
-                    | Engine c  -> c.MaintenenceClass = Military
-                    | Sensors c -> c.MaintenenceClass = Military
-                    | _         -> false
-                  ) with
-            | true -> Military
-            | false -> Commercial
+            this.Components
+            |> Map.values
+            |> List.tryFindMap (fun c -> match c.MaintenanceClass with Military -> Some Military | Commercial -> None)
+            |> Option.defaultValue Commercial
 
         let crew =
             match this.Components
                   |> Map.values
-                  |> List.map (fun c ->
-                      match c with
-                      | FuelStorage c -> 0<people>
-                      | Engine c      -> c.Crew * c.Count
-                      | Bridge c      -> c.Crew * c.Count
-                      | Sensors c     -> c.Crew
-                  )
+                  |> List.map (fun c -> c.Crew)
                   |> List.sum
                   |> int2float with
             | crew when this.DeployTime < 0.1<mo> -> crew / 6.0
@@ -139,26 +127,14 @@ type Ship =
         let buildCostBeforeArmor =
             this.Components
             |> Map.values
-            |> List.map (fun c ->
-                match c with
-                | FuelStorage c -> c.BuildCost
-                | Engine c      -> c.BuildCost * c.Count
-                | Bridge c      -> c.BuildCost * c.Count
-                | Sensors c     -> c.BuildCost
-            )
+            |> List.map (fun c -> c.Cost)
             |> List.append [ crewQuartersCost ]
             |> List.sum
 
         let sizeBeforeArmor =
             this.Components
             |> Map.values
-            |> List.map (fun c ->
-                match c with
-                | FuelStorage c -> c.TotalSize
-                | Engine c      -> int2float c.Size * int2float c.Count
-                | Bridge c      -> int2float c.Size * int2float c.Count
-                | Sensors c     -> int2float c.Size
-            )
+            |> List.map (fun c -> c.Size)
             |> List.append [ crewQuartersSize ]
             |> List.sum
 
