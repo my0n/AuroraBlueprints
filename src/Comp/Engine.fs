@@ -9,8 +9,7 @@ open Model.Technology
 type Engine =
     {
         Guid: Guid
-        ShipGuid: Guid
-        
+
         Name: string
         Manufacturer: string
 
@@ -31,7 +30,6 @@ type Engine =
         with get() =
             {
                 Guid = Guid.NewGuid()
-                ShipGuid = Guid.Empty
 
                 Name = ""
                 Manufacturer = "Aurora Industries"

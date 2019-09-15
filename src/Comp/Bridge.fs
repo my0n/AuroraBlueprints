@@ -7,7 +7,6 @@ open Model.BuildCost
 type Bridge =
     {
         Guid: Guid
-        ShipGuid: Guid
 
         Count: int<comp>
     }
@@ -15,7 +14,6 @@ type Bridge =
         with get() =
             {
                 Guid = Guid.NewGuid()
-                ShipGuid = Guid.Empty
                 Count = 1<comp>
             }
     member this.Size = 1<hs/comp>

@@ -7,7 +7,6 @@ open Model.Measures
 type FuelStorage =
     {
         Guid: Guid
-        ShipGuid: Guid
 
         Tiny: int<comp>
         Small: int<comp>
@@ -25,7 +24,6 @@ type FuelStorage =
         with get() =
             {
                 Guid = Guid.NewGuid()
-                ShipGuid = Guid.Empty
 
                 Tiny = 0<comp>
                 Small = 0<comp>

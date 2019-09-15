@@ -18,13 +18,6 @@ type ShipComponent =
             | FuelStorage c -> c.Guid
             | Bridge c -> c.Guid
             | Sensors c -> c.Guid
-    member this.ShipGuid
-        with get() =
-            match this with
-            | Engine c -> c.ShipGuid
-            | FuelStorage c -> c.ShipGuid
-            | Bridge c -> c.ShipGuid
-            | Sensors c -> c.ShipGuid
     member this.Name
         with get() =
             match this with
@@ -32,12 +25,12 @@ type ShipComponent =
             | FuelStorage c -> "Fuel Storage"
             | Bridge c -> "Bridge"
             | Sensors c -> "Sensors"
-    member this.duplicate (shipGuid: Guid) =
+    member this.duplicate =
         match this with
-        | Engine c -> Engine { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
-        | FuelStorage c -> FuelStorage { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
-        | Bridge c -> Bridge { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
-        | Sensors c -> Sensors { c with Guid = Guid.NewGuid(); ShipGuid = shipGuid }
+        | Engine c -> Engine { c with Guid = Guid.NewGuid() }
+        | FuelStorage c -> FuelStorage { c with Guid = Guid.NewGuid() }
+        | Bridge c -> Bridge { c with Guid = Guid.NewGuid() }
+        | Sensors c -> Sensors { c with Guid = Guid.NewGuid() }
     member this.calculate =
         match this with
         | Engine c -> Engine c.calculate

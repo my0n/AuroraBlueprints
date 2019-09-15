@@ -8,7 +8,6 @@ open Model.Measures
 type Sensors =
     {
         Guid: Guid
-        ShipGuid: Guid
         
         StandardGeo: int<comp>
         ImprovedGeo: int<comp>
@@ -32,7 +31,6 @@ type Sensors =
         with get() =
             {
                 Guid = Guid.NewGuid()
-                ShipGuid = Guid.Empty
                 StandardGeo = 0<comp>
                 ImprovedGeo = 0<comp>
                 AdvancedGeo = 0<comp>

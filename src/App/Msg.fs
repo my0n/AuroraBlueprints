@@ -22,5 +22,5 @@ type Msg =
     // Components
     | SaveComponentToDesigns of ShipComponent
     | CopyComponentToShip of Ship * ShipComponent
-    | RemoveComponentFromShip of ShipComponent
-    | ReplaceShipComponent of ShipComponent
+    | RemoveComponentFromShip of Ship * ShipComponent
+    | ReplaceShipComponent of Ship * ShipComponent

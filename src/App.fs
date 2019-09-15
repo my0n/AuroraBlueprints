@@ -3,13 +3,9 @@ module App.View
 open Elmish
 open Elmish.Browser.Navigation
 open Elmish.Browser.UrlParser
-open Fable.Core
 open Fable.Core.JsInterop
-open Fable.Import
-open Fable.Import.Browser
 open App.State
 open App.Model
-open Global
 
 importAll "../sass/main.sass"
 

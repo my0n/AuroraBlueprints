@@ -28,23 +28,24 @@ type Ship =
         CrewQuartersBuildCost: TotalBuildCost
         CryogenicBerths: int<people> // calculated
     }
-    static member empty =
-        {
-            Guid = Guid.NewGuid()
-            Name = "Tribal"
-            ShipClass = "Cruiser"
-            Size = 0.0<hs>
-            BuildCost = TotalBuildCost.Zero
-            Components = Map.empty
-            MaintenenceClass = Commercial
+    static member Zero
+        with get() =
+            {
+                Guid = Guid.NewGuid()
+                Name = "Tribal"
+                ShipClass = "Cruiser"
+                Size = 0.0<hs>
+                BuildCost = TotalBuildCost.Zero
+                Components = Map.empty
+                MaintenenceClass = Commercial
             
-            Crew = 0<people>
-            SpareBerths = 0<people>
-            DeployTime = 3.0<mo>
-            CrewQuartersSize = 0.0<hs>
-            CrewQuartersBuildCost = TotalBuildCost.Zero
-            CryogenicBerths = 0<people>
-        }
+                Crew = 0<people>
+                SpareBerths = 0<people>
+                DeployTime = 3.0<mo>
+                CrewQuartersSize = 0.0<hs>
+                CrewQuartersBuildCost = TotalBuildCost.Zero
+                CryogenicBerths = 0<people>
+            }.calculate
     member this.calculate =
         let maint =
             match this.Components

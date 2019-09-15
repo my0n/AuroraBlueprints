@@ -7,8 +7,9 @@ open Cards.Common
 open Model.Measures
 open Comp.Bridge
 open Comp.ShipComponent
+open Ship
 
-let render (comp: Bridge) dispatch =
+let render (ship: Ship) (comp: Bridge) dispatch =
     let header =
         [
             Name "Bridge"
@@ -18,7 +19,7 @@ let render (comp: Bridge) dispatch =
     let form =
         [ HorGrp (None,
                   [ IntInp ({ Label = Some "Count"; Value = comp.Count*1</comp>; Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (Bridge { comp with Count = n*1<comp> }) |> dispatch)
+                            (fun n -> Msg.ReplaceShipComponent (ship, Bridge { comp with Count = n*1<comp> }) |> dispatch)
                            )
                   ]
                  )
@@ -26,6 +27,6 @@ let render (comp: Bridge) dispatch =
         |> Bulma.Form.render
     let actions =
         [
-            "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip <| Bridge comp |> dispatch)
+            "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Bridge comp) |> dispatch)
         ]
     shipComponentCard header form actions
