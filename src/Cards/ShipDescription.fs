@@ -115,7 +115,6 @@ let private renderTime opt t =
     match opt with
     | Adaptive ->
         let years = mo2year t
-        let months = t
         let days = mo2day t
         let hours = day2hr days
         let minutes = hr2min hours
