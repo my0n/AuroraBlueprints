@@ -18,7 +18,7 @@ let render (ship: Ship) dispatch =
                   [ FltInp ({ Label = Some "Deployment Time"; Value = ship.DeployTime*1.0</mo> },
                             (fun n -> Msg.ReplaceShip { ship with DeployTime = n*1.0<mo> } |> dispatch)
                            )
-                    IntInp ({ Label = Some "Spare Crew Berths"; Value = ship.SpareBerths*1</people>; Max = None },
+                    IntInp ({ Label = Some "Spare Crew Berths"; Value = ship.SpareBerths*1</people>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShip { ship with SpareBerths = n*1<people> } |> dispatch)
                            )
                   ]

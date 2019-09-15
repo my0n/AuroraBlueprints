@@ -25,7 +25,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
         ]
     let form =
         [ HorGrp (None,
-                  [ IntInp ({ Label = Some "Count"; Value = comp.Count*1</comp>; Max = None },
+                  [ IntInp ({ Label = Some "Count"; Value = comp.Count*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Count = n*1<comp> }) |> dispatch)
                            )
                     TxtInp ({ Label = Some "Name"; Value = comp.Name },
@@ -37,7 +37,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
                   ]
                  )
           HorGrp (None,
-                  [ IntInp ({ Label = Some "Size"; Value = comp.Size*1<comp/hs>; Max = Some 50 },
+                  [ IntInp ({ Label = Some "Size"; Value = comp.Size*1<comp/hs>; Min = Some 0; Max = Some 50 },
                             (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Size = n*1<hs/comp> }) |> dispatch)
                            )
                     Select ({ Label = Some "Engine Technology"; Options = Technology.engine |> Map.toListV (fun v -> String.Format("{0} ({1:0} EP/HS)", v.Name, v.PowerPerHs)); Value = comp.EngineTech.Level },

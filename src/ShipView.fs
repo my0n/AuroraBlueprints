@@ -35,6 +35,7 @@ let shipInfo dispatch ship =
             )
 
         [ Cards.Classification.render ship dispatch
+          Cards.Armor.render ship dispatch
           Cards.CrewQuarters.render ship dispatch
         ]
         @ shipComponents

@@ -19,6 +19,8 @@ type ShipComponentCardHeaderItem =
     | TotalPrice of TotalBuildCost
     | SensorStrength of int * int
     | MaintenanceClass of MaintenanceClass
+    | ArmorStrength of float
+    | ArmorSize of int * int
 
 let inline private renderHeader header: CardHeaderElement list =
     header
@@ -81,6 +83,7 @@ let inline private renderHeader header: CardHeaderElement list =
                     bpr b.Duranium "duranium"
                     bpr b.Gallicite "gallicite"
                     bpr b.Mercassium "mercassium"
+                    bpr b.Neutronium "neutronium"
                     bpr b.Uridium "uridium"
                 ]
                 |> List.choose id
@@ -100,6 +103,7 @@ let inline private renderHeader header: CardHeaderElement list =
                     bpr b.Duranium "duranium"
                     bpr b.Gallicite "gallicite"
                     bpr b.Mercassium "mercassium"
+                    bpr b.Neutronium "neutronium"
                     bpr b.Uridium "uridium"
                 ]
                 |> List.choose id
@@ -125,6 +129,12 @@ let inline private renderHeader header: CardHeaderElement list =
             match maint with
             | Commercial -> NoRender
             | Military -> Info ("", "This component is classified as a military component for maintenance purposes.", Shield)
+
+        | ArmorStrength (strength) ->
+            Info (sprintf "%.1f" strength, sprintf "%.1f armor strength" strength, Shield)
+
+        | ArmorSize (width, depth) ->
+            Info (sprintf "%d×%d" width depth, sprintf "%d columns wide\n%d rows deep" width depth, ThLarge)
     )
 
 let shipComponentCard header contents actions =

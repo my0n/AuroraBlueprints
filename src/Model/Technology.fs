@@ -3,9 +3,19 @@ module Model.Technology
 open Model.Measures
 open Global
 
+type ArmorLevel = int
 type EngineLevel = int
 type EngineEfficiencyLevel = int
 type PowerModLevel = int
+
+type ArmorTech =
+    {
+        Level: ArmorLevel
+        Name: string
+        Strength: float</hs>
+        DuraniumRatio: float
+        NeutroniumRatio: float
+    }
 
 type EngineTech =
     {
@@ -27,6 +37,22 @@ type PowerModTech =
     }
 
 module Technology =
+    let armor =
+        [
+            { Level = 0;  Name = "Conventional";          Strength = 2.0</hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
+            { Level = 1;  Name = "Duranium";              Strength = 5.0</hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
+            { Level = 2;  Name = "High Density Duranium"; Strength = 6.0</hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
+            { Level = 3;  Name = "Composite";             Strength = 8.0</hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
+            { Level = 4;  Name = "Ceramic Composite";     Strength = 10.0</hs>; DuraniumRatio = 0.9; NeutroniumRatio = 0.1; }
+            { Level = 5;  Name = "Laminate Composite";    Strength = 12.0</hs>; DuraniumRatio = 0.8; NeutroniumRatio = 0.2; }
+            { Level = 6;  Name = "Compressed Carbon";     Strength = 15.0</hs>; DuraniumRatio = 0.7; NeutroniumRatio = 0.3; }
+            { Level = 7;  Name = "Biphase Carbide";       Strength = 18.0</hs>; DuraniumRatio = 0.6; NeutroniumRatio = 0.4; }
+            { Level = 8;  Name = "Crystalline Composite"; Strength = 21.0</hs>; DuraniumRatio = 0.5; NeutroniumRatio = 0.5; }
+            { Level = 9;  Name = "Superdense";            Strength = 25.0</hs>; DuraniumRatio = 0.4; NeutroniumRatio = 0.6; }
+            { Level = 10; Name = "Bonded Superdense";     Strength = 30.0</hs>; DuraniumRatio = 0.3; NeutroniumRatio = 0.7; }
+            { Level = 11; Name = "Coherent Superdense";   Strength = 36.0</hs>; DuraniumRatio = 0.2; NeutroniumRatio = 0.8; }
+            { Level = 12; Name = "Collapsium";            Strength = 45.0</hs>; DuraniumRatio = 0.1; NeutroniumRatio = 0.9; }
+        ]
     let engine =
         [
             { Level = 0;  Name = "Conventional";                PowerPerHs = 0.2<ep/hs> }

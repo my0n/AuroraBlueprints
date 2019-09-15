@@ -11,6 +11,7 @@
     <Compile Include="Model\Measures.fs" />
     <Compile Include="Model\BuildCost.fs" />
     <Compile Include="Model\Technology.fs" />
+    <Compile Include="Model\ArmorCalc.fs" />
     <Compile Include="Model\MaintenanceClass.fs" />
     <Compile Include="Comp\Bridge.fs" />
     <Compile Include="Comp\Sensors.fs" />
@@ -26,6 +27,7 @@
     <Compile Include="Bulma\Card.fs" />
     <Compile Include="Cards\Common.fs" />
     <Compile Include="Cards\Classification.fs" />
+    <Compile Include="Cards\Armor.fs" />
     <Compile Include="Cards\Bridge.fs" />
     <Compile Include="Cards\CrewQuarters.fs" />
     <Compile Include="Cards\Engine.fs" />

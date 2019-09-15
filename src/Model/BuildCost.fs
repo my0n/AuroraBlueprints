@@ -11,6 +11,7 @@ type TotalBuildCost =
         Boronide: float
         Uridium: float
         Mercassium: float
+        Neutronium: float
     }
     static member (+) (a: TotalBuildCost, b: TotalBuildCost) =
         {
@@ -21,6 +22,7 @@ type TotalBuildCost =
             Boronide = a.Boronide + b.Boronide
             Uridium = a.Uridium + b.Uridium
             Mercassium = a.Mercassium + b.Mercassium
+            Neutronium = a.Neutronium + b.Neutronium
         }
     static member Zero
         with get() =
@@ -32,6 +34,7 @@ type TotalBuildCost =
                 Boronide = 0.0
                 Uridium = 0.0
                 Mercassium = 0.0
+                Neutronium = 0.0
             }
 
 type BuildCost =
@@ -43,6 +46,7 @@ type BuildCost =
         Boronide: float</comp>
         Uridium: float</comp>
         Mercassium: float</comp>
+        Neutronium: float</comp>
     }
     static member Zero
         with get() =
@@ -54,6 +58,7 @@ type BuildCost =
                 Boronide = 0.0</comp>
                 Uridium = 0.0</comp>
                 Mercassium = 0.0</comp>
+                Neutronium = 0.0</comp>
             }
     static member (*) (a: BuildCost, b: int<comp>): TotalBuildCost =
         {
@@ -64,5 +69,6 @@ type BuildCost =
             Boronide = a.Boronide * int2float b
             Uridium = a.Uridium * int2float b
             Mercassium = a.Mercassium * int2float b
+            Neutronium = a.Neutronium * int2float b
         }
     

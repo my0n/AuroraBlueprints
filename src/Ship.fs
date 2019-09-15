@@ -8,25 +8,37 @@ open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
 open Comp.ShipComponent
+open Model.Technology
 
 type Ship =
     {
+        // all of the following fields that are marked as "included in x" are only meant for display purposes
+        // they have already been rolled into the corresponding value and should not be counted a second time
+
         Guid: Guid
         Name: string
         ShipClass: string
-        Size: float<hs>
-        BuildCost: TotalBuildCost
+        Size: float<hs> // calculated
+        BuildCost: TotalBuildCost // calculated
         Components: Map<Guid, ShipComponent>
-        MaintenenceClass: MaintenanceClass
+
+        MaintenenceClass: MaintenanceClass // calculated
+
+        // armor
+        ArmorDepth: int
+        ArmorTechnology: ArmorTech
+        ArmorWidth: int // calculated
+        ArmorBuildCost: TotalBuildCost // calculated (included in BuildCost)
+        ArmorSize: float<hs> // calculated (included in Size)
+        ArmorStrength: float // calculated
 
         // crew
         Crew: int<people>
         SpareBerths: int<people>
+        CryogenicBerths: int<people>
         DeployTime: float<mo>
-        // this is included in Size, but shows the portion that is dedicated to crew quarters
-        CrewQuartersSize: float<hs>
-        CrewQuartersBuildCost: TotalBuildCost
-        CryogenicBerths: int<people> // calculated
+        CrewQuartersSize: float<hs> // calculated (included in Size)
+        CrewQuartersBuildCost: TotalBuildCost // calculated (included in BuildCost)
     }
     static member Zero
         with get() =
@@ -38,6 +50,13 @@ type Ship =
                 BuildCost = TotalBuildCost.Zero
                 Components = Map.empty
                 MaintenenceClass = Commercial
+                
+                ArmorDepth = 1
+                ArmorTechnology = Technology.armor.[0]
+                ArmorWidth = 0
+                ArmorBuildCost = TotalBuildCost.Zero
+                ArmorSize = 0.0<hs>
+                ArmorStrength = 0.0
             
                 Crew = 0<people>
                 SpareBerths = 0<people>
@@ -52,9 +71,9 @@ type Ship =
                   |> Map.values
                   |> List.exists (fun c ->
                     match c with
-                    | Engine c      -> c.MaintenenceClass = Military
-                    | Sensors c     -> c.MaintenenceClass = Military
-                    | _             -> false
+                    | Engine c  -> c.MaintenenceClass = Military
+                    | Sensors c -> c.MaintenenceClass = Military
+                    | _         -> false
                   ) with
             | true -> Military
             | false -> Commercial
@@ -92,7 +111,9 @@ type Ship =
                 Mercassium = crewQuartersSize * 7.5</hs>
             }
 
-        let bc =
+        // aggregate
+
+        let buildCostBeforeArmor =
             this.Components
             |> Map.values
             |> List.map (fun c ->
@@ -105,7 +126,7 @@ type Ship =
             |> List.append [ crewQuartersCost ]
             |> List.sum
 
-        let size =
+        let sizeBeforeArmor =
             this.Components
             |> Map.values
             |> List.map (fun c ->
@@ -117,12 +138,22 @@ type Ship =
             )
             |> List.append [ crewQuartersSize ]
             |> List.sum
-            
+
+        // calculate armor
+        let armorCalc =
+            Model.ArmorCalc.shipArmor sizeBeforeArmor this.ArmorDepth this.ArmorTechnology
+
         { this with
-            Size = size
+            Size = sizeBeforeArmor + armorCalc.Size
             Crew = crew
-            BuildCost = bc
+            BuildCost = buildCostBeforeArmor + armorCalc.Cost
             MaintenenceClass = maint
+
+            ArmorBuildCost = armorCalc.Cost
+            ArmorSize = armorCalc.Size
+            ArmorStrength = armorCalc.Strength
+            ArmorWidth = armorCalc.Width
+
             CrewQuartersSize = crewQuartersSize
             CrewQuartersBuildCost = crewQuartersCost
         }

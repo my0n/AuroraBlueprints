@@ -19,22 +19,22 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
         ]
     let form =
         [ HorGrp (None,
-                  [ IntInp ({ Label = Some "Tiny"; Value = comp.Tiny*1</comp>; Max = None },
+                  [ IntInp ({ Label = Some "Tiny"; Value = comp.Tiny*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Tiny = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Small"; Value = comp.Small*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Small"; Value = comp.Small*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Small = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Standard"; Value = comp.Standard*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Standard"; Value = comp.Standard*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Standard = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Large"; Value = comp.Large*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Large"; Value = comp.Large*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Large = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Very Large"; Value = comp.VeryLarge*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Very Large"; Value = comp.VeryLarge*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with VeryLarge = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Ultra Large"; Value = comp.UltraLarge*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Ultra Large"; Value = comp.UltraLarge*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with UltraLarge = n*1<comp> }) |> dispatch)
                            )
                   ]

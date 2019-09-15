@@ -13,6 +13,7 @@ type FltInpOptions =
 type IntInpOptions =
     {
         Label: string option
+        Min: int option
         Max: int option
         Value: int
     }
@@ -87,7 +88,7 @@ let rec render f =
                   [ input [ ClassName "input"
                             Type "number"
                             Value options.Value
-                            Min 0
+                            Min options.Min
                             Max options.Max
                             OnChange (fun event ->
                                         match System.Int32.TryParse event.Value with

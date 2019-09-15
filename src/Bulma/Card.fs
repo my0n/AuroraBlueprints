@@ -16,6 +16,7 @@ type CardHeaderIcon =
     | GlobeAmericas
     | Shield
     | AngleDown
+    | ThLarge
 
 type CardHeaderElement =
     | Title of string
@@ -41,6 +42,7 @@ let inline private renderIcon ic =
     | GlobeAmericas -> "fas fa-globe-americas"
     | Shield -> "fas fa-shield-alt"
     | AngleDown -> "fas fa-angle-down"
+    | ThLarge -> "fas fa-th-large"
 
 type CardProps =
     {

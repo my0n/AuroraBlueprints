@@ -23,31 +23,31 @@ let render (ship: Ship) (comp: Sensors) dispatch =
         ]
     let form =
         [ HorGrp (None,
-                  [ IntInp ({ Label = Some "Standard Geo"; Value = comp.StandardGeo*1</comp>; Max = None },
+                  [ IntInp ({ Label = Some "Standard Geo"; Value = comp.StandardGeo*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with StandardGeo = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Improved Geo"; Value = comp.ImprovedGeo*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Improved Geo"; Value = comp.ImprovedGeo*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with ImprovedGeo = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Advanced Geo"; Value = comp.AdvancedGeo*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Advanced Geo"; Value = comp.AdvancedGeo*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with AdvancedGeo = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Phased Geo"; Value = comp.PhasedGeo*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Phased Geo"; Value = comp.PhasedGeo*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with PhasedGeo = n*1<comp> }) |> dispatch)
                            )
                   ]
                  )
           HorGrp (None,
-                  [ IntInp ({ Label = Some "Standard Grav"; Value = comp.StandardGrav*1</comp>; Max = None },
+                  [ IntInp ({ Label = Some "Standard Grav"; Value = comp.StandardGrav*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with StandardGrav = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Improved Grav"; Value = comp.ImprovedGrav*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Improved Grav"; Value = comp.ImprovedGrav*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with ImprovedGrav = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Advanced Grav"; Value = comp.AdvancedGrav*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Advanced Grav"; Value = comp.AdvancedGrav*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with AdvancedGrav = n*1<comp> }) |> dispatch)
                            )
-                    IntInp ({ Label = Some "Phased Grav"; Value = comp.PhasedGrav*1</comp>; Max = None },
+                    IntInp ({ Label = Some "Phased Grav"; Value = comp.PhasedGrav*1</comp>; Min = Some 0; Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with PhasedGrav = n*1<comp> }) |> dispatch)
                            )
                   ]
