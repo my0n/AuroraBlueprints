@@ -10,6 +10,7 @@ open Bulma.Card
 open Model.Measures
 open Ship
 open Model.MaintenanceClass
+open Comp.ShipComponent
 
 type private SizeOptions =
     | HS
@@ -75,11 +76,11 @@ let private fuelCapAndRange ship =
         | fc when fc > 0.0<kl> -> Some [ Label "Fuel Capacity"; FuelCapacity (Litres, ship.FuelCapacity) ]
         | _ -> None
     let range =
-        match ship.HasEngines with
+        match ship.HasEngines && ship.FuelCapacity > 0.0<kl> with
         | true -> Some [ Label "Range"; Range (BillionKm, ship.FuelRange) ]
         | false -> Some [ Label "Range"; Text "N/A" ]
     let fullPowerTime =
-        match ship.HasEngines with
+        match ship.HasEngines && ship.FuelCapacity > 0.0<kl> with
         | true -> Some [ Time (Adaptive, ship.FullPowerTime) ]
         | false -> None
     
@@ -88,12 +89,38 @@ let private fuelCapAndRange ship =
     |> List.map Line
     |> Block
 
-let private maintenanceClass ship =
-    match ship.MaintenanceClass with
-    | Commercial -> "This design is classed as a Commercial Vessel for maintenance purposes"
-    | Military -> "This design is classed as a Military Vessel for maintenance purposes"
-    |> Text |> List.wrap
-    |> Line |> List.wrap
+let private powerAndMaintenanceClass ship =
+    let pp =
+        ship.Components
+        |> Map.values
+        |> List.map (fun c ->
+            match c with
+            | PowerPlant c when c.Count > 0<comp> ->
+                [ Text c.Name
+                  Text <| sprintf "(%d)" c.Count
+                  Space
+                  Label "Total Power Output"
+                  Text <| sprintf "%.1f" (c.Power * int2float c.Count)
+                  Space
+                  Label "Armour"
+                  Text "0"
+                  Space
+                  Label "Exp"
+                  Text <| sprintf "%.0f%%" (c.PowerBoost.ExplosionChance * 100.0)
+                ]
+                |> Line |> Some
+            | _ -> None
+        )
+        |> List.choose id
+
+    let maint =
+        match ship.MaintenanceClass with
+        | Commercial -> "This design is classed as a Commercial Vessel for maintenance purposes"
+        | Military -> "This design is classed as a Military Vessel for maintenance purposes"
+        |> Text |> List.wrap
+        |> Line
+
+    pp @ [ maint ]
     |> Block
 
 let private describe ship =
@@ -105,7 +132,7 @@ let private describe ship =
          | false -> None
         )
 
-        Some maintenanceClass
+        Some powerAndMaintenanceClass
     ]
     |> List.choose id
     |> List.map (fun a -> a ship)

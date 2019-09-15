@@ -16,7 +16,7 @@ let render (ship: Ship) (comp: Sensors) dispatch =
     let header =
         [
             Name "Sensors"
-            MaintenanceClass comp.MaintenenceClass
+            MaintenanceClass comp.MaintenanceClass
             TotalPrice comp.BuildCost
             SizeInt (1<comp>, comp.Size*1</comp>)
             SensorStrength (comp.GeoSensorRating, comp.GravSensorRating)

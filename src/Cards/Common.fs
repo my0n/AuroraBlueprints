@@ -21,6 +21,7 @@ type ShipComponentCardHeaderItem =
     | MaintenanceClass of MaintenanceClass
     | ArmorStrength of float
     | ArmorSize of int * int
+    | PowerProduction of int<comp> * float<power/comp>
 
 let inline private renderHeader header: CardHeaderElement list =
     header
@@ -136,6 +137,13 @@ let inline private renderHeader header: CardHeaderElement list =
 
         | ArmorSize (depth, width) ->
             Info (sprintf "%d×%d" depth width, sprintf "%d rows deep\n%d columns wide" depth width, ThLarge)
+
+        | PowerProduction (count, pow) ->
+            let hoverText =
+                match count with
+                | 1<comp> | 0<comp> -> sprintf "%.1f power generated" (pow * int2float count)
+                | _ -> sprintf "%.1f (%.1f) power generated" (pow * int2float count) pow
+            Info (sprintf "%.1f" (pow * int2float count), hoverText, Bolt)
     )
 
 let shipComponentCard header contents actions =

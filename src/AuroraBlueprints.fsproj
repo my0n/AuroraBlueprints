@@ -17,6 +17,7 @@
     <Compile Include="Comp\Sensors.fs" />
     <Compile Include="Comp\Engine.fs" />
     <Compile Include="Comp\FuelStorage.fs" />
+    <Compile Include="Comp\PowerPlant.fs" />
     <Compile Include="Comp\ShipComponent.fs" />
     <Compile Include="Ship.fs" />
     <Compile Include="App\Msg.fs" />
@@ -32,17 +33,18 @@
     <Compile Include="Cards\CrewQuarters.fs" />
     <Compile Include="Cards\Engine.fs" />
     <Compile Include="Cards\FuelStorage.fs" />
+    <Compile Include="Cards\PowerPlant.fs" />
     <Compile Include="Cards\Sensors.fs" />
     <Compile Include="Cards\ShipDescription.fs" />
     <Compile Include="ShipView.fs" />
     <Compile Include="NavbarView.fs" />
     <Compile Include="PageState.fs" />
+    <Compile Include="State.fs" />
     <!-- Info -->
     <!-- Counter -->
     <!-- Home -->
     <!-- Navbar -->
     <!-- App -->
-    <Compile Include="State.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />

@@ -32,6 +32,7 @@ let shipInfo dispatch ship =
                 | Engine comp      -> Cards.Engine.render ship comp dispatch
                 | Bridge comp      -> Cards.Bridge.render ship comp dispatch
                 | Sensors comp     -> Cards.Sensors.render ship comp dispatch
+                | PowerPlant comp  -> Cards.PowerPlant.render ship comp dispatch
             )
 
         [ Cards.Classification.render ship dispatch

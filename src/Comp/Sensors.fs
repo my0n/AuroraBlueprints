@@ -25,7 +25,7 @@ type Sensors =
         BuildCost: TotalBuildCost
         GeoSensorRating: int
         GravSensorRating: int
-        MaintenenceClass: MaintenanceClass
+        MaintenanceClass: MaintenanceClass
     }
     static member Zero
         with get() =
@@ -45,7 +45,7 @@ type Sensors =
                 BuildCost = TotalBuildCost.Zero
                 GeoSensorRating = 0
                 GravSensorRating = 0
-                MaintenenceClass = Commercial
+                MaintenanceClass = Commercial
             }
     member this.calculate =
         let total = this.StandardGeo + this.StandardGrav
@@ -79,5 +79,5 @@ type Sensors =
                     BuildPoints = float cost
                     Uridium = float cost
                 }
-            MaintenenceClass = maint
+            MaintenanceClass = maint
         }

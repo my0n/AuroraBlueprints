@@ -24,6 +24,9 @@ type Ship =
         BuildCost: TotalBuildCost // calculated
         MaintenanceClass: MaintenanceClass // calculated
 
+        // power plants
+        TotalPower: float<power>
+
         // engines and fuel
         FuelCapacity: float<kl> // calculated
         TotalEnginePower: float<ep> // calculated
@@ -64,6 +67,7 @@ type Ship =
                 FullPowerTime = 0.0<mo>
                 TotalEnginePower = 0.0<ep>
                 Speed = 0.0<km/s>
+                TotalPower = 0.0<power>
                 
                 ArmorDepth = 1
                 ArmorTechnology = Technology.armor.[0]
@@ -114,6 +118,16 @@ type Ship =
             }
 
         // aggregate
+        let totalPower =
+            this.Components
+            |> Map.values
+            |> List.map (fun c ->
+                match c with
+                | PowerPlant c -> c.Power * int2float c.Count
+                | _ -> 0.0<power>
+            )
+            |> List.sum
+
         let fuelCapacity =
             this.Components
             |> Map.values
@@ -196,6 +210,7 @@ type Ship =
             FullPowerTime = day2mo <| hr2day fuelTime
             TotalEnginePower = totalEp
             Speed = speed
+            TotalPower = totalPower
 
             ArmorBuildCost = armorCalc.Cost
             ArmorSize = armorCalc.Size

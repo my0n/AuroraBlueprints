@@ -7,6 +7,7 @@ type ArmorLevel = int
 type EngineLevel = int
 type EngineEfficiencyLevel = int
 type PowerModLevel = int
+type PowerBoostLevel = int
 
 type ArmorTech =
     {
@@ -34,6 +35,20 @@ type PowerModTech =
     {
         Level: PowerModLevel
         PowerMod: float
+    }
+
+type PowerBoostTech =
+    {
+        Level: PowerBoostLevel
+        PowerBoost: float
+        ExplosionChance: float
+    }
+
+type PowerPlantTech =
+    {
+        Level: PowerBoostLevel
+        Name: string
+        PowerOutput: float<power/hs>
     }
 
 module Technology =
@@ -160,3 +175,32 @@ module Technology =
         let al = highPowerMod |> Map.toList
         let bl = lowPowerMod |> Map.toList
         al @ bl |> Map.ofList
+
+    let powerBoost =
+        [
+            { Level = 0; PowerBoost = 0.00; ExplosionChance = 0.00 }
+            { Level = 1; PowerBoost = 0.05; ExplosionChance = 0.07 }
+            { Level = 2; PowerBoost = 0.10; ExplosionChance = 0.10 }
+            { Level = 3; PowerBoost = 0.15; ExplosionChance = 0.12 }
+            { Level = 4; PowerBoost = 0.20; ExplosionChance = 0.16 }
+            { Level = 5; PowerBoost = 0.25; ExplosionChance = 0.20 }
+            { Level = 6; PowerBoost = 0.30; ExplosionChance = 0.25 }
+            { Level = 7; PowerBoost = 0.40; ExplosionChance = 0.30 }
+            { Level = 8; PowerBoost = 0.50; ExplosionChance = 0.35 }
+        ]
+
+    let powerPlant =
+        [
+            { Level = 0;  Name = "Pressurized Water Reactor";           PowerOutput = 2.0<power/hs> }
+            { Level = 1;  Name = "Pebble Bed Reactor";                  PowerOutput = 3.0<power/hs> }
+            { Level = 2;  Name = "Gas-Cooled Fast Reactor";             PowerOutput = 4.5<power/hs> }
+            { Level = 3;  Name = "Stellarator Fusion Reactor";          PowerOutput = 6.0<power/hs> }
+            { Level = 4;  Name = "Tokamak Fusion Reactor";              PowerOutput = 8.0<power/hs> }
+            { Level = 5;  Name = "Magnetic Confinement Fusion Reactor"; PowerOutput = 10.0<power/hs> }
+            { Level = 6;  Name = "Inertial Confinement Fusion Reactor"; PowerOutput = 12.0<power/hs> }
+            { Level = 7;  Name = "Solid-core Anti-matter Power Plant";  PowerOutput = 16.0<power/hs> }
+            { Level = 8;  Name = "Gas-core Anti-matter Power Plant";    PowerOutput = 20.0<power/hs> }
+            { Level = 9;  Name = "Plasma-core Anti-matter Power Plant"; PowerOutput = 24.0<power/hs> }
+            { Level = 10; Name = "Beam Core Anti-matter Power Plant";   PowerOutput = 32.0<power/hs> }
+            { Level = 11; Name = "Vacuum Energy Power Plant";           PowerOutput = 40.0<power/hs> }
+        ]

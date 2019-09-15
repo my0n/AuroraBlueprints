@@ -23,7 +23,7 @@ type Engine =
         EnginePower: float<ep/comp>
         FuelConsumption: float<kl/hr/comp>
         Crew: int<people/comp>
-        MaintenenceClass: MaintenanceClass
+        MaintenanceClass: MaintenanceClass
         BuildCost: BuildCost
     }
     static member Zero
@@ -43,7 +43,7 @@ type Engine =
                 EnginePower = 0.0<ep/comp>
                 FuelConsumption = 0.0<kl/hr/comp>
                 Crew = 0<people/comp>
-                MaintenenceClass = Commercial
+                MaintenanceClass = Commercial
                 BuildCost = BuildCost.Zero
             }.calculate
     member this.calculate =
@@ -53,7 +53,7 @@ type Engine =
                         * this.EfficiencyTech.Efficiency
                         * Math.Pow(this.PowerModTech.PowerMod, 2.5)
                         * (1.0 - ((int2float this.Size) / 100.0<hs/comp>))
-        let maint = match this.Size < 25<hs/comp> || this.PowerModTech.PowerMod > 0.5 with
+        let maint = match (this.Size < 25<hs/comp> || this.PowerModTech.PowerMod > 0.5) && this.Count > 0<comp> with
                     | true -> Military
                     | false -> Commercial;
         let cl = match maint with Military -> "" | Commercial -> "Commercial "
@@ -63,7 +63,7 @@ type Engine =
             FuelConsumption = consumption
             EnginePower = enginePower
             Crew = crew
-            MaintenenceClass = maint
+            MaintenanceClass = maint
             BuildCost =
                 { BuildCost.Zero with
                     BuildPoints = price

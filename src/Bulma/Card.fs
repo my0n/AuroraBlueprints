@@ -18,6 +18,7 @@ type CardHeaderIcon =
     | AngleDown
     | ThLarge
     | FighterJet
+    | Bolt
 
 type CardHeaderElement =
     | Title of string
@@ -45,6 +46,7 @@ let inline private renderIcon ic =
     | AngleDown -> "fas fa-angle-down"
     | ThLarge -> "fas fa-th-large"
     | FighterJet -> "fas fa-fighter-jet"
+    | Bolt -> "fas fa-bolt"
 
 type CardProps =
     {

@@ -16,6 +16,7 @@ open System
 [<Measure>] type hr
 [<Measure>] type min
 [<Measure>] type s
+[<Measure>] type power
 let inline l2kl (liters: float<l>) = liters / 1000.0<l/kl>
 let inline kl2l (kiloliters: float<kl>) = kiloliters * 1000.0<l/kl>
 let inline hs2ton (hs: float<hs>) = hs * 50.0<ton/hs>

@@ -16,9 +16,10 @@ let init result =
                 CurrentShip = None
                 AllShips = Map.empty
                 AllComponents = Map.empty
-                                %+ Comp.ShipComponent.FuelStorage Comp.FuelStorage.FuelStorage.Zero
-                                %+ Comp.ShipComponent.Engine      Comp.Engine.Engine.Zero
                                 %+ Comp.ShipComponent.Bridge      Comp.Bridge.Bridge.Zero
+                                %+ Comp.ShipComponent.Engine      Comp.Engine.Engine.Zero
+                                %+ Comp.ShipComponent.FuelStorage Comp.FuelStorage.FuelStorage.Zero
+                                %+ Comp.ShipComponent.PowerPlant  Comp.PowerPlant.PowerPlant.Zero
                                 %+ Comp.ShipComponent.Sensors     Comp.Sensors.Sensors.Zero
             }
 
