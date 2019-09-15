@@ -12,7 +12,7 @@ open System
 let render (ship: Ship) dispatch =
     let header =
         [
-            Name "Armor"
+            Name <| sprintf "%s Armor" ship.ArmorTechnology.Name
             TotalPrice ship.ArmorBuildCost
             SizeFloat (1<comp>, ship.ArmorSize*1.0</comp>)
             ArmorStrength ship.ArmorStrength
