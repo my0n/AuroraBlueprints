@@ -85,6 +85,7 @@ type private Card(props) =
                           a [ ClassName "card-header-icon"
                               OnClick (fun event ->
                                 event.stopPropagation() |> ignore
+                                event.preventDefault() |> ignore
                                 cb()
                               )
                             ]
@@ -99,6 +100,7 @@ type private Card(props) =
             | li -> Some <| header [ ClassName "card-header"
                                      OnClick (fun event ->
                                        event.stopPropagation() |> ignore
+                                       event.preventDefault() |> ignore
                                        this.toggleState event
                                      )
                                    ]
