@@ -1,10 +1,10 @@
-module ShipComponents.CrewQuarters
+module Cards.CrewQuarters
 
-open AppModel.Msg
+open App.Msg
 open Bulma.Form
-open Card.Common
+open Cards.Common
 open Model.Measures
-open Model.Ship
+open Ship
 
 let render (ship: Ship) dispatch =
     let header =

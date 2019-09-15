@@ -1,14 +1,15 @@
-module ShipComponents.Sensors
+module Cards.Sensors
 
 open Global
 open System
 
-open AppModel.Msg
+open App.Msg
 open Bulma.Card
 open Bulma.Form
-open Card.Common
+open Cards.Common
 open Model.Measures
-open Model.ShipComponent
+open Comp.Sensors
+open Comp.ShipComponent
 
 let render (comp: Sensors) dispatch =
     let header =

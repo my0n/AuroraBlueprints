@@ -1,11 +1,12 @@
-module ShipComponents.FuelStorage
+module Cards.FuelStorage
 
-open AppModel.Msg
+open App.Msg
 open Bulma.Card
 open Bulma.Form
-open Card.Common
+open Cards.Common
 open Model.Measures
-open Model.ShipComponent
+open Comp.FuelStorage
+open Comp.ShipComponent
 
 let render (comp: FuelStorage) dispatch =
     let header =

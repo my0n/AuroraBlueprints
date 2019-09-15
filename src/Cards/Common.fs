@@ -1,11 +1,11 @@
-module Card.Common
+module Cards.Common
 
 open Global
 
 open Bulma.Card
 open Model.BuildCost
 open Model.Measures
-open Model.ShipComponent
+open Model.MaintenanceClass
 
 type ShipComponentCardHeaderItem =
     | Name of string

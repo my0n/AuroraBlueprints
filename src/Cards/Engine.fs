@@ -1,15 +1,16 @@
-module ShipComponents.Engine
+module Cards.Engine
 
 open Global
 open System
 
-open AppModel.Msg
+open App.Msg
 open Bulma.Card
 open Bulma.Form
-open Card.Common
+open Cards.Common
 open Model.Measures
 open Model.Technology
-open Model.ShipComponent
+open Comp.Engine
+open Comp.ShipComponent
 
 let render (comp: Engine) dispatch =
     let header =

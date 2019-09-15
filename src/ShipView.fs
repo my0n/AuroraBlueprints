@@ -5,12 +5,12 @@ open Fable.Helpers.React.Props
 
 open Global
 
-open AppModel.Model
-open AppModel.Msg
+open App.Model
+open App.Msg
 open Bulma.Button
 open Bulma.Table
-open Model.ShipComponent
-open Model.Ship
+open Comp.ShipComponent
+open Ship
 open Fable.Import.React
 
 let actionBar dispatch =
@@ -28,17 +28,17 @@ let shipInfo dispatch ship =
             |> Map.values
             |> List.map (fun comp ->
                 match comp with
-                | FuelStorage comp -> ShipComponents.FuelStorage.render comp dispatch
-                | Engine comp      -> ShipComponents.Engine.render comp dispatch
-                | Bridge comp      -> ShipComponents.Bridge.render comp dispatch
-                | Sensors comp     -> ShipComponents.Sensors.render comp dispatch
+                | FuelStorage comp -> Cards.FuelStorage.render comp dispatch
+                | Engine comp      -> Cards.Engine.render comp dispatch
+                | Bridge comp      -> Cards.Bridge.render comp dispatch
+                | Sensors comp     -> Cards.Sensors.render comp dispatch
             )
 
-        [ ShipComponents.Classification.render ship dispatch
-          ShipComponents.CrewQuarters.render ship dispatch
+        [ Cards.Classification.render ship dispatch
+          Cards.CrewQuarters.render ship dispatch
         ]
         @ shipComponents
-        @ [ ShipComponents.ShipDescription.render ship ]
+        @ [ Cards.ShipDescription.render ship ]
 
 let root model dispatch =
     let ships = model.AllShips |> Map.values

@@ -1,9 +1,9 @@
-module ShipComponents.Classification
+module Cards.Classification
 
-open AppModel.Msg
+open App.Msg
 open Bulma.Card
 open Bulma.Form
-open Model.Ship
+open Ship
 
 let render (ship: Ship) dispatch =
     let form =

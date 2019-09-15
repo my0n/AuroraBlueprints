@@ -1,9 +1,9 @@
-module AppModel.Model
+module App.Model
 
 open System
 
-open Model.Ship
-open Model.ShipComponent
+open Ship
+open Comp.ShipComponent
 
 type Page =
     | Ships

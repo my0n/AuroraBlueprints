@@ -1,7 +1,7 @@
-module AppModel.Msg
+module App.Msg
 
-open Model.Ship
-open Model.ShipComponent
+open Ship
+open Comp.ShipComponent
 
 type Msg =
     | Noop

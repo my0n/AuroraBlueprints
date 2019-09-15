@@ -1,12 +1,13 @@
-module Model.Ship
+module Ship
 
 open System
 
 open Global
 
 open Model.BuildCost
+open Model.MaintenanceClass
 open Model.Measures
-open Model.ShipComponent
+open Comp.ShipComponent
 
 type Ship =
     {

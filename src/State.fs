@@ -4,10 +4,9 @@ open Elmish
 open Global
 open System
 
-open AppModel.Model
-open AppModel.Msg
-open Model.Ship
-open Model.ShipComponent
+open App.Model
+open App.Msg
+open Ship
 
 let init result =
     let (model, cmd) =
@@ -17,10 +16,10 @@ let init result =
                 CurrentShip = None
                 AllShips = Map.empty
                 AllComponents = Map.empty
-                                %+ FuelStorage FuelStorage.empty
-                                %+ Engine Engine.empty
-                                %+ Bridge Bridge.empty
-                                %+ Sensors Sensors.empty
+                                %+ Comp.ShipComponent.FuelStorage Comp.FuelStorage.FuelStorage.Zero
+                                %+ Comp.ShipComponent.Engine      Comp.Engine.Engine.Zero
+                                %+ Comp.ShipComponent.Bridge      Comp.Bridge.Bridge.Zero
+                                %+ Comp.ShipComponent.Sensors     Comp.Sensors.Sensors.Zero
             }
 
     model, Cmd.batch [ cmd ]

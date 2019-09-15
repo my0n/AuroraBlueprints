@@ -1,11 +1,12 @@
-module ShipComponents.Bridge
+module Cards.Bridge
 
-open AppModel.Msg
+open App.Msg
 open Bulma.Card
 open Bulma.Form
-open Card.Common
+open Cards.Common
 open Model.Measures
-open Model.ShipComponent
+open Comp.Bridge
+open Comp.ShipComponent
 
 let render (comp: Bridge) dispatch =
     let header =
