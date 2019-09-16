@@ -14,7 +14,7 @@ open System
 let render (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
         [
-            Name "Power Plant"
+            Name comp.Name
             Price (comp.Count, comp.BuildCost)
             SizeFloat (comp.Count, comp.Size)
             PowerProduction (comp.Count, comp.Power)
