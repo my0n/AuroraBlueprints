@@ -8,6 +8,7 @@ type EngineLevel = int
 type EngineEfficiencyLevel = int
 type PowerModLevel = int
 type PowerBoostLevel = int
+type ThermalEfficiencyLevel = int
 
 type ArmorTech =
     {
@@ -51,6 +52,14 @@ type PowerPlantTech =
         PowerOutput: float<power/hs>
     }
 
+type ThermalEfficiencyTech =
+    {
+        Level: ThermalEfficiencyLevel
+        Name: string
+        ThermalEfficiency: float<therm/ep>
+        CostMultiplier: float
+    }
+
 module Technology =
     let armor =
         [
@@ -68,6 +77,8 @@ module Technology =
             { Level = 11; Name = "Coherent Superdense";   Strength = 36.0</hs>; DuraniumRatio = 0.2; NeutroniumRatio = 0.8; }
             { Level = 12; Name = "Collapsium";            Strength = 45.0</hs>; DuraniumRatio = 0.1; NeutroniumRatio = 0.9; }
         ]
+        |> List.map (fun e -> e.Level, e) |> Map.ofSeq
+
     let engine =
         [
             { Level = 0;  Name = "Conventional";                PowerPerHs = 0.2<ep/hs> }
@@ -188,6 +199,7 @@ module Technology =
             { Level = 7; PowerBoost = 0.40; ExplosionChance = 0.30 }
             { Level = 8; PowerBoost = 0.50; ExplosionChance = 0.35 }
         ]
+        |> List.map (fun e -> e.Level, e) |> Map.ofSeq
 
     let powerPlant =
         [
@@ -204,3 +216,27 @@ module Technology =
             { Level = 10; Name = "Beam Core Anti-matter Power Plant";   PowerOutput = 32.0<power/hs> }
             { Level = 11; Name = "Vacuum Energy Power Plant";           PowerOutput = 40.0<power/hs> }
         ]
+        |> List.map (fun e -> e.Level, e) |> Map.ofSeq
+
+    let thermalEfficiency =
+        [
+            { Level = 0;  ThermalEfficiency = 1.00<therm/ep>; Name = ""; CostMultiplier = 1.00 }
+            { Level = 1;  ThermalEfficiency = 0.75<therm/ep>; Name = ""; CostMultiplier = 1.25 }
+            { Level = 2;  ThermalEfficiency = 0.50<therm/ep>; Name = ""; CostMultiplier = 1.50 }
+            { Level = 3;  ThermalEfficiency = 0.35<therm/ep>; Name = ""; CostMultiplier = 1.75 }
+            { Level = 4;  ThermalEfficiency = 0.25<therm/ep>; Name = ""; CostMultiplier = 2.00 }
+            { Level = 5;  ThermalEfficiency = 0.16<therm/ep>; Name = ""; CostMultiplier = 2.25 }
+            { Level = 6;  ThermalEfficiency = 0.12<therm/ep>; Name = ""; CostMultiplier = 2.50 }
+            { Level = 7;  ThermalEfficiency = 0.08<therm/ep>; Name = ""; CostMultiplier = 2.75 }
+            { Level = 8;  ThermalEfficiency = 0.06<therm/ep>; Name = ""; CostMultiplier = 3.00 }
+            { Level = 9;  ThermalEfficiency = 0.04<therm/ep>; Name = ""; CostMultiplier = 3.25 }
+            { Level = 10; ThermalEfficiency = 0.03<therm/ep>; Name = ""; CostMultiplier = 3.50 }
+            { Level = 11; ThermalEfficiency = 0.02<therm/ep>; Name = ""; CostMultiplier = 3.75 }
+            { Level = 12; ThermalEfficiency = 0.01<therm/ep>; Name = ""; CostMultiplier = 4.00 }
+        ]
+        |> List.map (fun te ->
+            { te with
+                Name = sprintf "Thermal Reduction: Signature %d%% Normal" <| int (te.ThermalEfficiency * 100.0)
+            }
+        )
+        |> List.map (fun e -> e.Level, e) |> Map.ofSeq

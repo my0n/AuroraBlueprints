@@ -10,6 +10,7 @@ open Comp.ShipComponent
 open Ship
 open Model.Technology
 open System
+open Global
 
 let render (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
@@ -48,10 +49,10 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
                             },
                             (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[n] * 1.0<hs/comp> }) |> dispatch)
                            )
-                    Select ({ Label = Some "Power Plant Technology"; Options = Technology.powerPlant |> List.map (fun v -> v.Level, String.Format("{0} ({1} power/HS)", v.Name, v.PowerOutput)); Value = comp.Technology.Level },
+                    Select ({ Label = Some "Power Plant Technology"; Options = Technology.powerPlant |> Map.toListV (fun v -> String.Format("{0} ({1} power/HS)", v.Name, v.PowerOutput)); Value = comp.Technology.Level },
                             (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Technology = Technology.powerPlant.[n] }) |> dispatch)
                            )
-                    Select ({ Label = Some "Power Boost"; Options = Technology.powerBoost |> List.map (fun v -> v.Level, sprintf "Reactor Power Boost %d%%, Explosion %d%%" (int (v.PowerBoost * 100.0)) (int (v.ExplosionChance * 100.0))); Value = comp.PowerBoost.Level },
+                    Select ({ Label = Some "Power Boost"; Options = Technology.powerBoost |> Map.toListV (fun v -> sprintf "Reactor Power Boost %d%%, Explosion %d%%" (int (v.PowerBoost * 100.0)) (int (v.ExplosionChance * 100.0))); Value = comp.PowerBoost.Level },
                             (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with PowerBoost = Technology.powerBoost.[n] }) |> dispatch)
                            )
                   ]

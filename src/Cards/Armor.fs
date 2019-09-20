@@ -23,7 +23,7 @@ let render (ship: Ship) dispatch =
                   [ IntInp ({ Label = Some "Armor Depth"; Value = ship.ArmorDepth; Min = Some 1; Max = None },
                             (fun n -> Msg.ReplaceShip { ship with ArmorDepth = n } |> dispatch)
                            )
-                    Select ({ Label = Some "Armor Technology"; Options = Technology.armor |> List.map (fun v -> v.Level, String.Format("{0} ({1:0} strength/HS)", v.Name, v.Strength)); Value = ship.ArmorTechnology.Level },
+                    Select ({ Label = Some "Armor Technology"; Options = Technology.armor |> Map.toListV (fun v -> String.Format("{0} ({1:0} strength/HS)", v.Name, v.Strength)); Value = ship.ArmorTechnology.Level },
                             (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = Technology.armor.[n] } |> dispatch)
                            )
                   ]

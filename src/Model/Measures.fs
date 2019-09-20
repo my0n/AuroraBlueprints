@@ -8,6 +8,7 @@ open System
 [<Measure>] type ton
 [<Measure>] type hs
 [<Measure>] type km
+[<Measure>] type therm
 [<Measure>] type comp
 [<Measure>] type people
 [<Measure>] type year
