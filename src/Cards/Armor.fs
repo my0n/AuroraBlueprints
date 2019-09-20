@@ -9,14 +9,19 @@ open Model.Technology
 open Global
 open System
 
+open Nerds.ArmorSizeNerd
+open Nerds.ArmorStrengthNerd
+open Nerds.PriceTotalNerd
+open Nerds.SizeFloatNerd
+
 let render (ship: Ship) dispatch =
     let header =
         [
             Name <| sprintf "%s Armor" ship.ArmorTechnology.Name
-            TotalPrice ship.ArmorBuildCost
-            SizeFloat (1<comp>, ship.ArmorSize*1.0</comp>)
-            ArmorStrength ship.ArmorStrength
-            ArmorSize (ship.ArmorDepth, ship.ArmorWidth)
+            Nerd { TotalBuildCost = ship.ArmorBuildCost }
+            Nerd { Count = 1<comp>; Size = ship.ArmorSize*1.0</comp> }
+            Nerd { Strength = ship.ArmorStrength }
+            Nerd { Width = ship.ArmorWidth; Depth = ship.ArmorDepth }
         ]
     let form =
         [ HorGrp (None,

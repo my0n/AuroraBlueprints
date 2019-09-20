@@ -9,12 +9,15 @@ open Comp.Bridge
 open Comp.ShipComponent
 open Ship
 
+open Nerds.PriceNerd
+open Nerds.SizeIntNerd
+
 let render (ship: Ship) (comp: Bridge) dispatch =
     let header =
         [
             Name "Bridge"
-            Price (comp.Count, comp.BuildCost)
-            SizeInt (comp.Count, comp.Size)
+            Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
+            Nerd { Count = comp.Count; Size = comp.Size }
         ]
     let form =
         [ HorGrp (None,

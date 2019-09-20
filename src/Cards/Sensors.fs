@@ -12,14 +12,19 @@ open Comp.Sensors
 open Comp.ShipComponent
 open Ship
 
+open Nerds.MaintenanceClassNerd
+open Nerds.PriceTotalNerd
+open Nerds.SizeIntNerd
+open Nerds.SensorStrengthNerd
+
 let render (ship: Ship) (comp: Sensors) dispatch =
     let header =
         [
             Name "Sensors"
-            MaintenanceClass comp.MaintenanceClass
-            TotalPrice comp.BuildCost
-            SizeInt (1<comp>, comp.Size*1</comp>)
-            SensorStrength (comp.GeoSensorRating, comp.GravSensorRating)
+            Nerd { MaintenanceClass = comp.MaintenanceClass }
+            Nerd { TotalBuildCost = comp.BuildCost }
+            Nerd { Count = 1<comp>; Size = comp.Size*1</comp> }
+            Nerd { Geo = comp.GeoSensorRating; Grav = comp.GravSensorRating }
         ]
     let form =
         [ HorGrp (None,

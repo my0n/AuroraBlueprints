@@ -13,15 +13,21 @@ open Comp.Engine
 open Comp.ShipComponent
 open Ship
 
+open Nerds.MaintenanceClassNerd
+open Nerds.PriceNerd
+open Nerds.SizeIntNerd
+open Nerds.EnginePowerNerd
+open Nerds.FuelConsumptionNerd
+
 let render (ship: Ship) (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
-            MaintenanceClass comp.MaintenanceClass
-            Price (comp.Count, comp.BuildCost)
-            SizeInt (comp.Count, comp.Size)
-            EnginePower (comp.Count, comp.EnginePower, comp.Size, ship.Speed)
-            FuelConsumption (comp.Count, comp.FuelConsumption, comp.FuelConsumption / comp.EnginePower)
+            Nerd { MaintenanceClass = comp.MaintenanceClass }
+            Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
+            Nerd { Count = comp.Count; Size = comp.Size }
+            Nerd { Count = comp.Count; EnginePower = comp.EnginePower; Size = comp.Size; Speed = ship.Speed }
+            Nerd { Count = comp.Count; Consumption = comp.FuelConsumption; Efficiency = comp.FuelConsumption / comp.EnginePower }
         ]
     let form =
         [ HorGrp (None,

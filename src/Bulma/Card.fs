@@ -5,25 +5,12 @@ open Fable.Helpers.React
 open Fable.Helpers.React.Props
 open Fable.Core
 open Fable.Import
-
-type CardHeaderIcon =
-    | Close
-    | Weight
-    | GasPump
-    | Tachometer
-    | AngleDoubleRight
-    | Dollar
-    | GlobeAmericas
-    | Shield
-    | AngleDown
-    | ThLarge
-    | FighterJet
-    | Bolt
+open Nerds.Icon
 
 type CardHeaderElement =
     | Title of string
-    | Info of string * string * CardHeaderIcon
-    | Button of CardHeaderIcon * (unit -> unit)
+    | Info of React.ReactElement
+    | Button of Icon * (unit -> unit)
     | NoRender
 
 type ColorStatus =
@@ -32,21 +19,6 @@ type ColorStatus =
     | SuccessColor
     | WarningColor
     | DangerColor
-
-let inline private renderIcon ic =
-    match ic with
-    | Close -> "fas fa-times"
-    | Weight -> "fas fa-weight-hanging"
-    | GasPump -> "fas fa-gas-pump"
-    | Tachometer -> "fas fa-tachometer-alt"
-    | AngleDoubleRight -> "fas fa-angle-double-right"
-    | Dollar -> "fas fa-dollar-sign"
-    | GlobeAmericas -> "fas fa-globe-americas"
-    | Shield -> "fas fa-shield-alt"
-    | AngleDown -> "fas fa-angle-down"
-    | ThLarge -> "fas fa-th-large"
-    | FighterJet -> "fas fa-fighter-jet"
-    | Bolt -> "fas fa-bolt"
 
 type CardProps =
     {
@@ -84,8 +56,8 @@ type private Card(props) =
                       | Title t ->
                           div [ ClassName "card-header-title" ] [ str t ]
                           |> Some
-                      | Info (t, hover, ic) ->
-                          div [ ClassName "card-header-subtitle"; HTMLAttr.Title hover ] [ str t; i [ ClassName (renderIcon ic) ] [] ]
+                      | Info (el) ->
+                          div [ ClassName "card-header-subtitle" ] [ el ]
                           |> Some
                       | Button (ic, cb) ->
                           a [ ClassName "card-header-icon"
@@ -96,7 +68,7 @@ type private Card(props) =
                               )
                             ]
                             [ span [ ClassName "icon" ]
-                                   [ i [ ClassName (renderIcon ic) ] [] ]
+                                   [ i [ ClassName (Nerds.Icon.render ic) ] [] ]
                             ]
                           |> Some
                       | NoRender -> None

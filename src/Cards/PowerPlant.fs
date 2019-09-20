@@ -12,13 +12,17 @@ open Model.Technology
 open System
 open Global
 
+open Nerds.PriceNerd
+open Nerds.SizeFloatNerd
+open Nerds.PowerProductionNerd
+
 let render (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name
-            Price (comp.Count, comp.BuildCost)
-            SizeFloat (comp.Count, comp.Size)
-            PowerProduction (comp.Count, comp.Power)
+            Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
+            Nerd { Count = comp.Count; Size = comp.Size }
+            Nerd { Count = comp.Count; PowerOutput = comp.Power }
         ]
 
     let sizeOptions =
