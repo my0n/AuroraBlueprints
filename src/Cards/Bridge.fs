@@ -21,7 +21,10 @@ let render (ship: Ship) (comp: Bridge) dispatch =
         ]
     let form =
         [ HorGrp (None,
-                  [ IntInp ({ Label = Some "Count"; Value = comp.Count*1</comp>; Min = Some 0; Max = None },
+                  [ IntInp ({ Label = Some "Count"
+                              Value = comp.Count*1</comp>
+                              Min = Some 0
+                              Max = None },
                             (fun n -> Msg.ReplaceShipComponent (ship, Bridge { comp with Count = n*1<comp> }) |> dispatch)
                            )
                   ]
