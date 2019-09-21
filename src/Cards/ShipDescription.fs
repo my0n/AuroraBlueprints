@@ -16,6 +16,7 @@ open Nerds.Common
 open Nerds.ArmorSizeNerd
 open Nerds.DeployTimeNerd
 open Nerds.ShipNameNerd
+open Nerds.ThermalSignatureNerd
 open Nerds.VelocityNerd
 
 type private SizeOptions =
@@ -50,15 +51,16 @@ type private ShipDescription =
     | Range of RangeOptions * float<km>
     | Nerd of INerd
 
-let private generalOverview ship =
+let private generalOverview (ship: Ship) =
     Block [ Line [ Nerd { ShipName = ship.Name; ShipClass = ship.ShipClass }
                    Size (Tons, ship.Size)
                    People (Crew, ship.Crew)
                    BP ship.BuildCost.BuildPoints
+                   Nerd { ThermalSignature = ship.ThermalSignature; EngineCount = ship.EngineCount; EngineContribution = ship.EngineThermalSignatureContribution }
                  ]
             Line [ Nerd { Speed = ship.Speed }
                    Nerd { Width = ship.ArmorWidth; Depth = ship.ArmorDepth }
-            ]
+                 ]
             Line [ Nerd { DeployTime = ship.DeployTime }
                    If (ship.SpareBerths > 0<people>,
                        [ Label "Spare Berths"; People (NoLabel, ship.SpareBerths) ])
@@ -68,7 +70,7 @@ let private generalOverview ship =
                  ]
           ]
 
-let private fuelCapAndRange ship =
+let private fuelCapAndRange (ship: Ship) =
     let fc =
         match ship.FuelCapacity with
         | fc when fc > 0.0<kl> -> Some [ Label "Fuel Capacity"; FuelCapacity (Litres, ship.FuelCapacity) ]
@@ -118,7 +120,7 @@ let private powerAndMaintenanceClass ship =
     pp @ [ maint ]
     |> Block
 
-let private describe ship =
+let private describe (ship: Ship) =
     [
         Some generalOverview
 

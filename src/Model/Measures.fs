@@ -30,6 +30,8 @@ let inline hr2day (hr: float<hr>) = hr / 60.0<hr/day>
 let inline hr2min (hr: float<hr>) = hr * 60.0<min/hr>
 let inline min2hr (min: float<min>) = min / 60.0<min/hr>
 let inline min2s (min: float<min>) = min * 60.0<s/min>
+let inline kphr2kps (kphr: float<km/hr>) = kphr / 60.0<min/hr> / 60.0<s/min>
+let inline kps2kphr (kps: float<km/s>) = kps * 60.0<min/hr> * 60.0<s/min>
 
 // fable doesn't support .FloatWithMeasure etc. so that's a box and unbox (parens are important otherwise you get a newobj, call, and callvirt)
 let inline int2float (x: int<'t>): float<'t> = unbox (float x)
