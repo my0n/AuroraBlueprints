@@ -74,5 +74,5 @@ type ShipComponent =
         | Bridge c          -> Bridge c
         | Engine c          -> Engine c.calculate
         | FuelStorage c     -> FuelStorage c
-        | PowerPlant c      -> PowerPlant c.calculate
+        | PowerPlant c      -> PowerPlant c
         | Sensors c         -> Sensors c

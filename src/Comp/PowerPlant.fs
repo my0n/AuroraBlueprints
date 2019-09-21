@@ -16,12 +16,6 @@ type PowerPlant =
         Size: float<hs/comp>
         PowerBoost: PowerBoostTech
         Technology: PowerPlantTech
-
-        // calculated values
-        BuildCost: BuildCost
-        Crew: int<people/comp>
-        Power: float<power/comp>
-        MaintenanceClass: MaintenanceClass
     }
     static member Zero
         with get() =
@@ -34,34 +28,45 @@ type PowerPlant =
                 Size = 1.0<hs/comp>
                 PowerBoost = Technology.powerBoost.[0]
                 Technology = Technology.powerPlant.[0]
+            }
 
-                BuildCost = BuildCost.Zero
-                Crew = 0<people/comp>
-                Power = 0.0<power/comp>
-                MaintenanceClass = Commercial
-            }.calculate
-    member this.calculate =
-        let name = String.Format("{0} Technology PB-{1}", this.Technology.Name, (1.0 + this.PowerBoost.PowerBoost))
-        let power = (1.0 + this.PowerBoost.PowerBoost) * this.Technology.PowerOutput * this.Size
-        let crew =
+    // let name = String.Format("{0} Technology PB-{1}", this.Technology.Name, (1.0 + this.PowerBoost.PowerBoost))
+
+    //#region Calculated Values
+    member private this._BuildCost =
+        lazy (
+            let cost = this.Power * 3.0</power>
+            { BuildCost.Zero with
+                BuildPoints = cost
+                Boronide = cost
+            }
+        )
+    member private this._Crew =
+        lazy (
             match this.Size with
             | sz when sz < 0.75<hs/comp> -> 1.0<people/comp>
             | sz when sz < 1.0<hs/comp> -> 2.0<people/comp>
             | _ -> this.Size * 2.0<people/hs>
-        let costFactor = power * 3.0</power>
-        let cost =
-            { BuildCost.Zero with
-                BuildPoints = costFactor
-                Boronide = costFactor
-            }
+            |> float2int
+        )
+    member private this._Power =
+        lazy (
+            (1.0 + this.PowerBoost.PowerBoost)
+            * this.Technology.PowerOutput
+            * this.Size
+        )
+    member private this._MaintenanceClass =
+        lazy (
+            match this.Count > 0<comp> with
+            | true -> Military
+            | false -> Commercial
+        )
+    //#endregion
 
-        { this with
-            Name = name
-            Power = power
-            Crew = float2int crew
-            BuildCost = cost
-            MaintenanceClass =
-                match this.Count > 0<comp> with
-                | true -> Military
-                | false -> Commercial
-        }
+    //#region Accessors
+    member this.BuildCost with get() = this._BuildCost.Value
+    member this.Crew with get() = this._Crew.Value
+    member this.Power with get() = this._Power.Value
+    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    //#endregion
+
