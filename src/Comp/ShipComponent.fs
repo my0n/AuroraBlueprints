@@ -75,4 +75,4 @@ type ShipComponent =
         | Engine c          -> Engine c.calculate
         | FuelStorage c     -> FuelStorage c.calculate
         | PowerPlant c      -> PowerPlant c.calculate
-        | Sensors c         -> Sensors c.calculate
+        | Sensors c         -> Sensors c
