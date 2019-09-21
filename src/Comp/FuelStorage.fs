@@ -14,11 +14,6 @@ type FuelStorage =
         Large: int<comp>
         VeryLarge: int<comp>
         UltraLarge: int<comp>
-        
-        // calculated values
-        TotalSize: float<hs>
-        FuelCapacity: float<kl>
-        BuildCost: TotalBuildCost
     }
     static member Zero
         with get() =
@@ -31,36 +26,52 @@ type FuelStorage =
                 Large = 0<comp>
                 VeryLarge = 0<comp>
                 UltraLarge = 0<comp>
-
-                TotalSize = 0.0<hs>
-                FuelCapacity = 0.0<kl>
-                BuildCost = TotalBuildCost.Zero
             }
-    member this.calculate =
-        // cost does not scale proportionately to size and capacity
-        let cost = (int2float this.Tiny * 1.0
-                  + int2float this.Small * 1.5
-                  + int2float this.Standard * 5.0
-                  + int2float this.Large * 15.0
-                  + int2float this.VeryLarge * 35.0
-                  + int2float this.UltraLarge * 100.0) * 1.0</comp>
-        { this with
-            TotalSize = (int2float this.Tiny * 0.1
-                       + int2float this.Small * 0.2
-                       + int2float this.Standard * 1.0
-                       + int2float this.Large * 5.0
-                       + int2float this.VeryLarge * 20.0
-                       + int2float this.UltraLarge * 100.0) * 1.0<hs/comp>
-            FuelCapacity = (int2float this.Tiny * 1.0
-                          + int2float this.Small * 2.0
-                          + int2float this.Standard * 10.0
-                          + int2float this.Large * 50.0
-                          + int2float this.VeryLarge * 200.0
-                          + int2float this.UltraLarge * 1000.0) * 5.0<kl/comp>
-            BuildCost =
-                { TotalBuildCost.Zero with
-                    BuildPoints = cost * 2.0
-                    Duranium = cost
-                    Boronide = cost
-                }
-        }
+
+    //#region Calculated Values
+    member private this._TotalSize =
+        lazy (
+            (
+                int2float this.Tiny * 0.1
+                + int2float this.Small * 0.2
+                + int2float this.Standard * 1.0
+                + int2float this.Large * 5.0
+                + int2float this.VeryLarge * 20.0
+                + int2float this.UltraLarge * 100.0
+            ) * 1.0<hs/comp>
+        )
+    member private this._FuelCapacity =
+        lazy (
+            (
+                int2float this.Tiny * 1.0
+                + int2float this.Small * 2.0
+                + int2float this.Standard * 10.0
+                + int2float this.Large * 50.0
+                + int2float this.VeryLarge * 200.0
+                + int2float this.UltraLarge * 1000.0
+            ) * 5.0<kl/comp>
+        )
+    member private this._BuildCost =
+        lazy (
+            let cost =
+                (
+                    int2float this.Tiny * 1.0
+                    + int2float this.Small * 1.5
+                    + int2float this.Standard * 5.0
+                    + int2float this.Large * 15.0
+                    + int2float this.VeryLarge * 35.0
+                    + int2float this.UltraLarge * 100.0
+                ) * 1.0</comp>
+            { TotalBuildCost.Zero with
+                BuildPoints = cost * 2.0
+                Duranium = cost
+                Boronide = cost
+            }
+        )
+    //#endregion
+
+    //#region Accessors
+    member this.TotalSize with get() = this._TotalSize.Value
+    member this.FuelCapacity with get() = this._FuelCapacity.Value
+    member this.BuildCost with get() = this._BuildCost.Value
+    //#endregion

@@ -73,6 +73,6 @@ type ShipComponent =
         match this with
         | Bridge c          -> Bridge c
         | Engine c          -> Engine c.calculate
-        | FuelStorage c     -> FuelStorage c.calculate
+        | FuelStorage c     -> FuelStorage c
         | PowerPlant c      -> PowerPlant c.calculate
         | Sensors c         -> Sensors c
