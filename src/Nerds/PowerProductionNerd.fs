@@ -23,3 +23,5 @@ type PowerProductionNerd =
                 Bolt
         member this.Render
             with get() = true
+        member this.Description
+            with get() = None

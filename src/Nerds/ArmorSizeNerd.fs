@@ -20,3 +20,5 @@ type ArmorSizeNerd =
                 ThLarge
         member this.Render
             with get() = true
+        member this.Description
+            with get() = Some <| sprintf "Armour %d-%d" this.Depth this.Width

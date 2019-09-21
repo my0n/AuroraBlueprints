@@ -24,3 +24,5 @@ type MaintenanceClassNerd =
                 match this.MaintenanceClass with
                 | Commercial -> false
                 | Military -> true
+        member this.Description
+            with get() = None

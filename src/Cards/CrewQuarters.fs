@@ -6,6 +6,7 @@ open Cards.Common
 open Model.Measures
 open Ship
 
+open Nerds.DeployTimeNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeFloatNerd
 
@@ -15,6 +16,7 @@ let render (ship: Ship) dispatch =
             Name "Crew Quarters"
             Nerd { TotalBuildCost = ship.CrewQuartersBuildCost }
             Nerd { Count = 1<comp>; Size = ship.CrewQuartersSize*1.0</comp> }
+            Nerd { DeployTime = ship.DeployTime }
         ]
     let form =
         [ HorGrp (None,

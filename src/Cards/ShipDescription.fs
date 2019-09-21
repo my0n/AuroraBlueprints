@@ -12,6 +12,12 @@ open Ship
 open Model.MaintenanceClass
 open Comp.ShipComponent
 
+open Nerds.Common
+open Nerds.ArmorSizeNerd
+open Nerds.DeployTimeNerd
+open Nerds.ShipNameNerd
+open Nerds.VelocityNerd
+
 type private SizeOptions =
     | HS
     | Tons
@@ -34,7 +40,6 @@ type private ShipDescription =
     | Block of ShipDescription list
     | Line of ShipDescription list
     | If of bool * ShipDescription list
-    | Space
     | Text of string
     | Label of string
     | Size of SizeOptions * float<hs>
@@ -43,25 +48,18 @@ type private ShipDescription =
     | Time of TimeOptions * float<mo>
     | FuelCapacity of FuelCapacityOptions * float<kl>
     | Range of RangeOptions * float<km>
-    | Speed of float<km/s>
-    | ArmorDimensions of int * int
+    | Nerd of INerd
 
 let private generalOverview ship =
-    Block [ Line [ Text ship.Name; Label "class"; Text ship.ShipClass
-                   Space
+    Block [ Line [ Nerd { ShipName = ship.Name; ShipClass = ship.ShipClass }
                    Size (Tons, ship.Size)
-                   Space
                    People (Crew, ship.Crew)
-                   Space
                    BP ship.BuildCost.BuildPoints
                  ]
-            Line [ Speed ship.Speed
-                   Space
-                   Label "Armour"
-                   ArmorDimensions (ship.ArmorDepth, ship.ArmorWidth)
+            Line [ Nerd { Speed = ship.Speed }
+                   Nerd { Width = ship.ArmorWidth; Depth = ship.ArmorDepth }
             ]
-            Line [ Label "Intended Deployment Time"; Time (Months, ship.DeployTime)
-                   Space
+            Line [ Nerd { DeployTime = ship.DeployTime }
                    If (ship.SpareBerths > 0<people>,
                        [ Label "Spare Berths"; People (NoLabel, ship.SpareBerths) ])
                  ]
@@ -98,13 +96,10 @@ let private powerAndMaintenanceClass ship =
             | PowerPlant c when c.Count > 0<comp> ->
                 [ Text c.Name
                   Text <| sprintf "(%d)" c.Count
-                  Space
                   Label "Total Power Output"
                   Text <| sprintf "%.1f" (c.Power * int2float c.Count)
-                  Space
                   Label "Armour"
                   Text "0"
-                  Space
                   Label "Exp"
                   Text <| sprintf "%.0f%%" (c.PowerBoost.ExplosionChance * 100.0)
                 ]
@@ -169,8 +164,6 @@ let rec private renderDescription desc =
         match pred with
         | true -> div [] (List.map renderDescription c)
         | false -> div [] []
-    | Space ->
-        span [ ClassName "ship-description-spacer" ] []
     | Text s ->
         span [ ClassName "ship-description" ] [ str s ]
     | Label s ->
@@ -192,10 +185,8 @@ let rec private renderDescription desc =
     | Range (opt, r) ->
         match opt with
         | BillionKm -> span [ ClassName "ship-description" ] [ str <| sprintf "%.1f billion km" (r / 1000000000.0) ]
-    | Speed (s) ->
-        span [ ClassName "ship-description" ] [ str << sprintf "%.0f km/s" <| rounduom 1.0<km/s> s ]
-    | ArmorDimensions (depth, width) ->
-        span [ ClassName "ship-description" ] [ str <| sprintf "%d-%d" depth width ]
+    | Nerd (nerd) ->
+        div [ ClassName "ship-description" ] [ nerd |> Nerds.Common.render DescriptiveForm ]
 
 let render ship =
     let contents = ship

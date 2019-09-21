@@ -1,25 +1,25 @@
-module Nerds.VelocityNerd
+module Nerds.ShipNameNerd
 
 open Nerds.Icon
 open Nerds.Common
 open Model.Measures
 
-type VelocityNerd =
+type ShipNameNerd =
     {
-        Speed: float<km/s>
+        ShipName: string
+        ShipClass: string
     }
     interface INerd with
         member this.Text
             with get() =
-                sprintf "%.0f" this.Speed
+                sprintf "%s class %s" this.ShipName this.ShipClass
         member this.Tooltip
-            with get() =
-                sprintf "%.0f km/s" this.Speed
+            with get() = ""
         member this.Icon
             with get() =
-                AngleDoubleRight
+                NoIcon
         member this.Render
             with get() = true
         member this.Description
             with get() =
-                Some << sprintf "%.0f km/s" <| rounduom 1.0<km/s> this.Speed
+                Some <| sprintf "%s class %s" this.ShipName this.ShipClass

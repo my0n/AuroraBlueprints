@@ -19,7 +19,7 @@ let inline private renderHeader header: CardHeaderElement list =
             | false -> NoRender
             | true ->
                 nerd
-                |> Nerds.Common.render
+                |> Nerds.Common.render IconForm
                 |> Info
     )
 

@@ -1,25 +1,26 @@
-module Nerds.VelocityNerd
+module Nerds.DeployTimeNerd
 
 open Nerds.Icon
 open Nerds.Common
 open Model.Measures
+open System
 
-type VelocityNerd =
+type DeployTimeNerd =
     {
-        Speed: float<km/s>
+        DeployTime: float<mo>
     }
     interface INerd with
         member this.Text
             with get() =
-                sprintf "%.0f" this.Speed
+                String.Format("{0}", this.DeployTime)
         member this.Tooltip
             with get() =
-                sprintf "%.0f km/s" this.Speed
+                String.Format("{0} months", this.DeployTime)
         member this.Icon
             with get() =
-                AngleDoubleRight
+                Calendar
         member this.Render
             with get() = true
         member this.Description
             with get() =
-                Some << sprintf "%.0f km/s" <| rounduom 1.0<km/s> this.Speed
+                Some <| String.Format("Intended Deployment Time {0} months", this.DeployTime)
