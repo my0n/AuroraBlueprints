@@ -6,7 +6,7 @@ open System
 
 open App.Model
 open App.Msg
-open Ship
+open Comp.Ship
 
 let init result =
     let (model, cmd) =

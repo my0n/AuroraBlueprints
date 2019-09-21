@@ -11,7 +11,7 @@ open Model.Measures
 open Model.Technology
 open Comp.Engine
 open Comp.ShipComponent
-open Ship
+open Comp.Ship
 
 open Nerds.MaintenanceClassNerd
 open Nerds.PriceNerd

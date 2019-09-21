@@ -7,7 +7,7 @@ open Cards.Common
 open Model.Measures
 open Comp.FuelStorage
 open Comp.ShipComponent
-open Ship
+open Comp.Ship
 
 open Nerds.PriceTotalNerd
 open Nerds.SizeFloatNerd

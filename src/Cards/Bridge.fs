@@ -7,7 +7,7 @@ open Cards.Common
 open Model.Measures
 open Comp.Bridge
 open Comp.ShipComponent
-open Ship
+open Comp.Ship
 
 open Nerds.PriceNerd
 open Nerds.SizeIntNerd

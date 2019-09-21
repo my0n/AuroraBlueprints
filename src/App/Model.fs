@@ -2,7 +2,7 @@ module App.Model
 
 open System
 
-open Ship
+open Comp.Ship
 open Comp.ShipComponent
 
 type Page =

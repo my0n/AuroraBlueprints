@@ -10,7 +10,7 @@ open Cards.Common
 open Model.Measures
 open Comp.Sensors
 open Comp.ShipComponent
-open Ship
+open Comp.Ship
 
 open Nerds.MaintenanceClassNerd
 open Nerds.PriceTotalNerd

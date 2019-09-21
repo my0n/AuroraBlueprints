@@ -8,7 +8,7 @@ open System
 
 open Bulma.Card
 open Model.Measures
-open Ship
+open Comp.Ship
 open Model.MaintenanceClass
 open Comp.ShipComponent
 

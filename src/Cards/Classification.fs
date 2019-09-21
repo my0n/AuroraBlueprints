@@ -3,7 +3,7 @@ module Cards.Classification
 open App.Msg
 open Bulma.Card
 open Bulma.Form
-open Ship
+open Comp.Ship
 
 let render (ship: Ship) dispatch =
     let form =

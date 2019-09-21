@@ -10,7 +10,7 @@ open App.Msg
 open Bulma.Button
 open Bulma.Table
 open Comp.ShipComponent
-open Ship
+open Comp.Ship
 open Fable.Import.React
 
 let actionBar dispatch =
@@ -92,5 +92,5 @@ let root model dispatch =
                   @+ div [ ClassName "content" ] (shipInfo dispatch model.CurrentShip)
                 )
             div [ ClassName "column" ]
-                [ Bulma.Table.render componentListOptions comps None (fun _ -> ()) ]
+                [ Bulma.Table.render componentListOptions comps None ignore ]
         ]

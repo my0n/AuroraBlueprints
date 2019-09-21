@@ -7,7 +7,7 @@ open Cards.Common
 open Model.Measures
 open Comp.PowerPlant
 open Comp.ShipComponent
-open Ship
+open Comp.Ship
 open Model.Technology
 open System
 open Global

@@ -4,7 +4,7 @@ open App.Msg
 open Bulma.Form
 open Cards.Common
 open Model.Measures
-open Ship
+open Comp.Ship
 open Model.Technology
 open Global
 open System

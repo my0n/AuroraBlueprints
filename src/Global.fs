@@ -5,9 +5,7 @@ open System
 module List =
     let inline wrap element = [ element ]
     let inline lookup (m: Map<'key, 'value>) =
-        List.map (fun key ->
-            m.TryFind key
-        )
+        List.map m.TryFind
         >> List.choose id
     let inline tryFindMap (fn: 't -> 'u option) =
         Seq.map fn

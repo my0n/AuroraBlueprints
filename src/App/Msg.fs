@@ -1,6 +1,6 @@
 module App.Msg
 
-open Ship
+open Comp.Ship
 open Comp.ShipComponent
 
 type Msg =

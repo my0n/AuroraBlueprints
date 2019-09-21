@@ -19,7 +19,7 @@
     <Compile Include="Comp\FuelStorage.fs" />
     <Compile Include="Comp\PowerPlant.fs" />
     <Compile Include="Comp\ShipComponent.fs" />
-    <Compile Include="Ship.fs" />
+    <Compile Include="Comp\Ship.fs" />
     <Compile Include="App\Msg.fs" />
     <Compile Include="App\Model.fs" />
     <Compile Include="Nerds\Icon.fs" />

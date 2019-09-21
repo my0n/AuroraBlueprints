@@ -1,4 +1,4 @@
-module Ship
+module Comp.Ship
 
 open System
 
