@@ -2,7 +2,6 @@ module Cards.FuelStorage
 
 open App.Msg
 open Bulma.Card
-open Bulma.Form
 open Cards.Common
 open Model.Measures
 open Comp.FuelStorage
@@ -22,29 +21,60 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
             Nerd { FuelCapacity = comp.FuelCapacity }
         ]
     let form =
-        [ HorGrp (None,
-                  [ IntInp ({ Label = Some "Tiny"; Value = comp.Tiny*1</comp>; Min = Some 0; Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Tiny = n*1<comp> }) |> dispatch)
-                           )
-                    IntInp ({ Label = Some "Small"; Value = comp.Small*1</comp>; Min = Some 0; Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Small = n*1<comp> }) |> dispatch)
-                           )
-                    IntInp ({ Label = Some "Standard"; Value = comp.Standard*1</comp>; Min = Some 0; Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Standard = n*1<comp> }) |> dispatch)
-                           )
-                    IntInp ({ Label = Some "Large"; Value = comp.Large*1</comp>; Min = Some 0; Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Large = n*1<comp> }) |> dispatch)
-                           )
-                    IntInp ({ Label = Some "Very Large"; Value = comp.VeryLarge*1</comp>; Min = Some 0; Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with VeryLarge = n*1<comp> }) |> dispatch)
-                           )
-                    IntInp ({ Label = Some "Ultra Large"; Value = comp.UltraLarge*1</comp>; Min = Some 0; Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with UltraLarge = n*1<comp> }) |> dispatch)
-                           )
-                  ]
-                 )
+        [
+            Bulma.FC.HorizontalGroup
+                None
+                [
+                    Bulma.FC.IntInput
+                        {
+                            Label = Some "Tiny"
+                            Value = comp.Tiny
+                            Min = Some 0
+                            Max = None
+                        }
+                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Tiny = n }) |> dispatch)
+                    Bulma.FC.IntInput
+                        {
+                            Label = Some "Small"
+                            Value = comp.Small
+                            Min = Some 0
+                            Max = None
+                        }
+                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Small = n }) |> dispatch)
+                    Bulma.FC.IntInput
+                        {
+                            Label = Some "Standard"
+                            Value = comp.Standard
+                            Min = Some 0
+                            Max = None
+                        }
+                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Standard = n }) |> dispatch)
+                    Bulma.FC.IntInput
+                        {
+                            Label = Some "Large"
+                            Value = comp.Large
+                            Min = Some 0
+                            Max = None
+                        }
+                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Large = n }) |> dispatch)
+                    Bulma.FC.IntInput
+                        {
+                            Label = Some "Very Large"
+                            Value = comp.VeryLarge
+                            Min = Some 0
+                            Max = None
+                        }
+                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with VeryLarge = n }) |> dispatch)
+                    Bulma.FC.IntInput
+                        {
+                            Label = Some "Ultra Large"
+                            Value = comp.UltraLarge
+                            Min = Some 0
+                            Max = None
+                        }
+                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with UltraLarge = n }) |> dispatch)
+                ]
         ]
-        |> Bulma.Form.render
     let actions =
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, FuelStorage comp) |> dispatch)

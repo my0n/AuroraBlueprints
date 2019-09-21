@@ -42,7 +42,7 @@
     <Compile Include="Nerds\VelocityNerd.fs" />
     <Compile Include="Bulma\Button.fs" />
     <Compile Include="Bulma\Table.fs" />
-    <Compile Include="Bulma\Form.fs" />
+    <Compile Include="Bulma\FC.fs" />
     <Compile Include="Bulma\Card.fs" />
     <Compile Include="Cards\Common.fs" />
     <Compile Include="Cards\Classification.fs" />

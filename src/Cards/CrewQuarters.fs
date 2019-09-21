@@ -1,7 +1,8 @@
 module Cards.CrewQuarters
 
+open Global
 open App.Msg
-open Bulma.Form
+open Bulma.FC
 open Cards.Common
 open Model.Measures
 open Comp.Ship
@@ -19,16 +20,25 @@ let render (ship: Ship) dispatch =
             Nerd { DeployTime = ship.DeployTime }
         ]
     let form =
-        [ HorGrp (None,
-                  [ FltInp ({ Label = Some "Deployment Time"; Value = ship.DeployTime*1.0</mo> },
-                            (fun n -> Msg.ReplaceShip { ship with DeployTime = n*1.0<mo> } |> dispatch)
-                           )
-                    IntInp ({ Label = Some "Spare Crew Berths"; Value = ship.SpareBerths*1</people>; Min = Some 0; Max = None },
-                            (fun n -> Msg.ReplaceShip { ship with SpareBerths = n*1<people> } |> dispatch)
-                           )
-                  ]
-                 )
+        [
+            Bulma.FC.HorizontalGroup
+                None
+                [
+                    Bulma.FC.FloatInput
+                        {
+                            Label = Some "Deployment Time"
+                            Value = ship.DeployTime
+                        }
+                        (fun n -> Msg.ReplaceShip { ship with DeployTime = n } |> dispatch)
+                    Bulma.FC.IntInput
+                        {
+                            Label = Some "Spare Crew Berths"
+                            Value = ship.SpareBerths
+                            Min = Some 0
+                            Max = None
+                        }
+                        (fun n -> Msg.ReplaceShip { ship with SpareBerths = n } |> dispatch)
+                ]
         ]
-        |> Bulma.Form.render
     let actions = []
     shipComponentCard header form actions

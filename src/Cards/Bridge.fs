@@ -1,10 +1,10 @@
 module Cards.Bridge
 
+open Global
 open App.Msg
 open Bulma.Card
-open Bulma.Form
+open Bulma.FC
 open Cards.Common
-open Model.Measures
 open Comp.Bridge
 open Comp.ShipComponent
 open Comp.Ship
@@ -20,19 +20,20 @@ let render (ship: Ship) (comp: Bridge) dispatch =
             Nerd { Count = comp.Count; Size = comp.Size }
         ]
     let form =
-        [ HorGrp (None,
-                  [ IntInp ({ Label = Some "Count"
-                              Value = comp.Count*1</comp>
-                              Min = Some 0
-                              Max = None },
-                            (fun n -> Msg.ReplaceShipComponent (ship, Bridge { comp with Count = n*1<comp> }) |> dispatch)
-                           )
-                  ]
-                 )
-        ]
-        |> Bulma.Form.render
+        Bulma.FC.HorizontalGroup
+            None
+            [
+                Bulma.FC.IntInput
+                    {
+                        Label = Some "Count"
+                        Value = comp.Count
+                        Min = Some 0
+                        Max = None
+                    }
+                    (fun n -> Msg.ReplaceShipComponent (ship, Bridge { comp with Count = n }) |> dispatch)
+            ]
     let actions =
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Bridge comp) |> dispatch)
         ]
-    shipComponentCard header form actions
+    shipComponentCard header (List.wrap form) actions

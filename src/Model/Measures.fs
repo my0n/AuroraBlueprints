@@ -36,6 +36,8 @@ let inline kps2kphr (kps: float<km/s>) = kps * 60.0<min/hr> * 60.0<s/min>
 // fable doesn't support .FloatWithMeasure etc. so that's a box and unbox (parens are important otherwise you get a newobj, call, and callvirt)
 let inline int2float (x: int<'t>): float<'t> = unbox (float x)
 let inline float2int (x: float<'t>): int<'t> = unbox (int x)
+let inline int2int<[<Measure>] 't> (x: int): int<'t> = unbox x
+let inline float2float<[<Measure>] 't> (x: float): float<'t> = unbox x
 
 // ceil doesn't support UOM afaik, also I wanted an int
 let inline ceiluom (a: float<'t>): int<'t> = unbox (int (ceil (float a)))

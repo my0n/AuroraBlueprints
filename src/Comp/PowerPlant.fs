@@ -19,18 +19,20 @@ type PowerPlant =
     }
     static member Zero
         with get() =
-            {
-                Guid = Guid.NewGuid()
-                Name = ""
-                Manufacturer = "Aurora Industries"
+            let zero =
+                {
+                    Guid = Guid.NewGuid()
+                    Name = ""
+                    Manufacturer = "Aurora Industries"
 
-                Count = 0<comp>
-                Size = 1.0<hs/comp>
-                PowerBoost = Technology.powerBoost.[0]
-                Technology = Technology.powerPlant.[0]
+                    Count = 0<comp>
+                    Size = 1.0<hs/comp>
+                    PowerBoost = Technology.powerBoost.[0]
+                    Technology = Technology.powerPlant.[0]
+                }
+            { zero with
+                Name = zero.GeneratedName
             }
-
-    // let name = String.Format("{0} Technology PB-{1}", this.Technology.Name, (1.0 + this.PowerBoost.PowerBoost))
 
     //#region Calculated Values
     member private this._BuildCost =
@@ -61,6 +63,10 @@ type PowerPlant =
             | true -> Military
             | false -> Commercial
         )
+    member private this._GeneratedName =
+        lazy (
+            String.Format("{0} Technology PB-{1}", this.Technology.Name, (1.0 + this.PowerBoost.PowerBoost))
+        )
     //#endregion
 
     //#region Accessors
@@ -68,5 +74,6 @@ type PowerPlant =
     member this.Crew with get() = this._Crew.Value
     member this.Power with get() = this._Power.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    member this.GeneratedName with get() = this._GeneratedName.Value
     //#endregion
 

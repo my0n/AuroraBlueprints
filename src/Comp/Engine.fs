@@ -22,25 +22,24 @@ type Engine =
     }
     static member Zero
         with get() =
-            {
-                Guid = Guid.NewGuid()
+            let zero =
+                {
+                    Guid = Guid.NewGuid()
 
-                Name = ""
-                Manufacturer = "Aurora Industries"
+                    Name = ""
+                    Manufacturer = "Aurora Industries"
 
-                EngineTech = Technology.engine.[0]
-                PowerModTech = Technology.allPowerMods.[0]
-                EfficiencyTech = Technology.engineEfficiency.[0]
-                ThermalEfficiencyTech = Technology.thermalEfficiency.[0]
-                Size = 1<hs/comp>
-                Count = 1<comp>
+                    EngineTech = Technology.engine.[0]
+                    PowerModTech = Technology.allPowerMods.[0]
+                    EfficiencyTech = Technology.engineEfficiency.[0]
+                    ThermalEfficiencyTech = Technology.thermalEfficiency.[0]
+                    Size = 1<hs/comp>
+                    Count = 1<comp>
+                }
+            { zero with
+                Name = zero.GeneratedName
             }
 
-    // let cl =
-    //     match maint with
-    //     | Military -> ""
-    //     | Commercial -> "Commercial "
-    // Name = sprintf "%.0fEP %s%s Engine" enginePower cl this.EngineTech.Name
 
     //#region Calculated Values
     member private this._EnginePower =
@@ -84,6 +83,14 @@ type Engine =
                 Gallicite = cost
             }
         )
+    member private this._GeneratedName =
+        lazy (
+            let cl =
+                match this.MaintenanceClass with
+                | Military -> ""
+                | Commercial -> "Commercial "
+            sprintf "%.0fEP %s%s Engine" this.EnginePower cl this.EngineTech.Name
+        )
     //#endregion
 
     //#region Accessors
@@ -93,4 +100,5 @@ type Engine =
     member this.Crew with get() = this._Crew.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.BuildCost with get() = this._BuildCost.Value
+    member this.GeneratedName with get() = this._GeneratedName.Value
     //#endregion
