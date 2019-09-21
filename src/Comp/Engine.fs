@@ -19,14 +19,6 @@ type Engine =
         ThermalEfficiencyTech: ThermalEfficiencyTech
         Size: int<hs/comp>
         Count: int<comp>
-
-        // calculated values
-        EnginePower: float<ep/comp>
-        ThermalOutput: float<therm/comp>
-        FuelConsumption: float<kl/hr/comp>
-        Crew: int<people/comp>
-        MaintenanceClass: MaintenanceClass
-        BuildCost: BuildCost
     }
     static member Zero
         with get() =
@@ -42,53 +34,63 @@ type Engine =
                 ThermalEfficiencyTech = Technology.thermalEfficiency.[0]
                 Size = 1<hs/comp>
                 Count = 1<comp>
+            }
 
-                EnginePower = 0.0<ep/comp>
-                ThermalOutput = 0.0<therm/comp>
-                FuelConsumption = 0.0<kl/hr/comp>
-                Crew = 0<people/comp>
-                MaintenanceClass = Commercial
-                BuildCost = BuildCost.Zero
-            }.calculate
-    member this.calculate =
-        let crew =
-            flooruom (float this.Size * this.PowerModTech.PowerMod)
-            * 1<people/comp>
-        let enginePower =
+    // let cl =
+    //     match maint with
+    //     | Military -> ""
+    //     | Commercial -> "Commercial "
+    // Name = sprintf "%.0fEP %s%s Engine" enginePower cl this.EngineTech.Name
+
+    //#region Calculated Values
+    member private this._EnginePower =
+        lazy (
             int2float this.Size
             * this.EngineTech.PowerPerHs
             * this.PowerModTech.PowerMod
-        let consumption =
-            enginePower
+        )
+    member private this._ThermalOutput =
+        lazy (
+            this.EnginePower
+            * this.ThermalEfficiencyTech.ThermalEfficiency
+        )
+    member private this._FuelConsumption =
+        lazy (
+            this.EnginePower
             * this.EfficiencyTech.Efficiency
             * Math.Pow(this.PowerModTech.PowerMod, 2.5)
             * (1.0 - ((int2float this.Size) / 100.0<hs/comp>))
-        let price =
-            enginePower
-            * (this.PowerModTech.PowerMod / 2.0)
-            * this.ThermalEfficiencyTech.CostMultiplier
-            * 1.0</ep>
-        let therms =
-            enginePower
-            * this.ThermalEfficiencyTech.ThermalEfficiency
-        let maint =
+        )
+    member private this._Crew =
+        lazy (
+            flooruom (float this.Size * this.PowerModTech.PowerMod)
+            * 1<people/comp>
+        )
+    member private this._MaintenanceClass =
+        lazy (
             match (this.Size < 25<hs/comp> || this.PowerModTech.PowerMod > 0.5) && this.Count > 0<comp> with
             | true -> Military
-            | false -> Commercial;
-        let cl =
-            match maint with
-            | Military -> ""
-            | Commercial -> "Commercial "
-        { this with
-            Name = sprintf "%.0fEP %s%s Engine" enginePower cl this.EngineTech.Name
-            FuelConsumption = consumption
-            EnginePower = enginePower
-            ThermalOutput = therms
-            Crew = crew
-            MaintenanceClass = maint
-            BuildCost =
-                { BuildCost.Zero with
-                    BuildPoints = price
-                    Gallicite = price
-                }
-        }
+            | false -> Commercial
+        )
+    member private this._BuildCost =
+        lazy (
+            let cost =
+                this.EnginePower
+                * (this.PowerModTech.PowerMod / 2.0)
+                * this.ThermalEfficiencyTech.CostMultiplier
+                * 1.0</ep>
+            { BuildCost.Zero with
+                BuildPoints = cost
+                Gallicite = cost
+            }
+        )
+    //#endregion
+
+    //#region Accessors
+    member this.EnginePower with get(): float<ep/comp> = this._EnginePower.Value
+    member this.ThermalOutput with get() = this._ThermalOutput.Value
+    member this.FuelConsumption with get() = this._FuelConsumption.Value
+    member this.Crew with get() = this._Crew.Value
+    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    member this.BuildCost with get() = this._BuildCost.Value
+    //#endregion

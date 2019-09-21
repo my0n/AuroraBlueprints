@@ -84,4 +84,4 @@ let update msg model =
     | RemoveComponentFromShip (ship, shipComponent) ->
         model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %- shipComponent })
     | ReplaceShipComponent (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent.calculate })
+        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent })

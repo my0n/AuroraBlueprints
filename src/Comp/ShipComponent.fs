@@ -69,10 +69,4 @@ type ShipComponent =
         | FuelStorage c     -> FuelStorage { c with Guid = Guid.NewGuid() }
         | PowerPlant c      -> PowerPlant { c with Guid = Guid.NewGuid() }
         | Sensors c         -> Sensors { c with Guid = Guid.NewGuid() }
-    member this.calculate =
-        match this with
-        | Bridge c          -> Bridge c
-        | Engine c          -> Engine c.calculate
-        | FuelStorage c     -> FuelStorage c
-        | PowerPlant c      -> PowerPlant c
-        | Sensors c         -> Sensors c
+        
