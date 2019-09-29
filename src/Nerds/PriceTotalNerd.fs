@@ -41,4 +41,6 @@ type PriceTotalNerd =
         member this.Render
             with get() = true
         member this.Description
-            with get() = None
+            with get() =
+                sprintf "%.0f BP" this.TotalBuildCost.BuildPoints
+                |> Some

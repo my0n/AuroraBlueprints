@@ -16,6 +16,7 @@ open Nerds.Common
 open Nerds.ArmorSizeNerd
 open Nerds.CryogenicBerthsNerd
 open Nerds.DeployTimeNerd
+open Nerds.PriceTotalNerd
 open Nerds.ShipNameNerd
 open Nerds.SizeNerd
 open Nerds.SpareBerthsNerd
@@ -41,7 +42,6 @@ type private ShipDescription =
     | If of bool * ShipDescription list
     | Text of string
     | Label of string
-    | BP of float
     | Time of TimeOptions * float<mo>
     | FuelCapacity of FuelCapacityOptions * float<kl>
     | Range of RangeOptions * float<km>
@@ -53,7 +53,7 @@ let private generalOverview (ship: Ship) =
             Nerd { ShipName = ship.Name; ShipClass = ship.ShipClass }
             Nerd { RenderMode = Tons; Count = 1<comp>; Size = ship.Size*1</comp> }
             Nerd { TotalCrew = ship.Crew }
-            BP ship.BuildCost.BuildPoints
+            Nerd { TotalBuildCost = ship.BuildCost }
             Nerd { ThermalSignature = ship.ThermalSignature; EngineCount = ship.EngineCount; EngineContribution = ship.EngineThermalSignatureContribution }
         ]
         [
@@ -162,8 +162,6 @@ let rec private renderDescription desc =
         span [ ClassName "ship-description" ] [ str s ]
     | Label s ->
         span [ ClassName "ship-description has-text-light" ] [ str s ]
-    | BP s ->
-        span [ ClassName "ship-description" ] [ str <| sprintf "%.0f BP" s ]
     | Time (opt, t) -> renderTime opt t
     | FuelCapacity (opt, fc) ->
         match opt with
