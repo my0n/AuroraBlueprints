@@ -20,6 +20,9 @@ type Icon =
     | Boxes
     | CalendarAlt
     | Calendar
+    | Users
+    | UserPlus
+    | Snowflake
 
 let inline render ic =
     match ic with
@@ -42,3 +45,6 @@ let inline render ic =
     | Boxes -> "fas fa-boxes"
     | CalendarAlt -> "fas fa-calendar-alt"
     | Calendar -> "fas fa-calendar"
+    | Users -> "fas fa-users"
+    | UserPlus -> "fas fa-user-plus"
+    | Snowflake -> "fas fa-snowflake"

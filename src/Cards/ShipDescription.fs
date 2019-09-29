@@ -14,10 +14,13 @@ open Comp.ShipComponent
 
 open Nerds.Common
 open Nerds.ArmorSizeNerd
+open Nerds.CryogenicBerthsNerd
 open Nerds.DeployTimeNerd
 open Nerds.ShipNameNerd
 open Nerds.SizeNerd
+open Nerds.SpareBerthsNerd
 open Nerds.ThermalSignatureNerd
+open Nerds.TotalCrewNerd
 open Nerds.VelocityNerd
 
 type private PeopleOptions =
@@ -35,12 +38,9 @@ type private TimeOptions =
     | Adaptive
 
 type private ShipDescription =
-    | Block of ShipDescription list
-    | Line of ShipDescription list
     | If of bool * ShipDescription list
     | Text of string
     | Label of string
-    | People of PeopleOptions * int<people>
     | BP of float
     | Time of TimeOptions * float<mo>
     | FuelCapacity of FuelCapacityOptions * float<kl>
@@ -48,23 +48,26 @@ type private ShipDescription =
     | Nerd of INerd
 
 let private generalOverview (ship: Ship) =
-    Block [ Line [ Nerd { ShipName = ship.Name; ShipClass = ship.ShipClass }
-                   Nerd { RenderMode = Tons; Count = 1<comp>; Size = ship.Size*1</comp> }
-                   People (Crew, ship.Crew)
-                   BP ship.BuildCost.BuildPoints
-                   Nerd { ThermalSignature = ship.ThermalSignature; EngineCount = ship.EngineCount; EngineContribution = ship.EngineThermalSignatureContribution }
-                 ]
-            Line [ Nerd { Speed = ship.Speed }
-                   Nerd { Width = ship.ArmorWidth; Depth = ship.ArmorDepth }
-                 ]
-            Line [ Nerd { DeployTime = ship.DeployTime }
-                   If (ship.SpareBerths > 0<people>,
-                       [ Label "Spare Berths"; People (NoLabel, ship.SpareBerths) ])
-                 ]
-            Line [ If (ship.CryogenicBerths > 0<people>,
-                       [ Label "Cryogenic Berths"; People (NoLabel, ship.CryogenicBerths) ])
-                 ]
-          ]
+    [
+        [
+            Nerd { ShipName = ship.Name; ShipClass = ship.ShipClass }
+            Nerd { RenderMode = Tons; Count = 1<comp>; Size = ship.Size*1</comp> }
+            Nerd { TotalCrew = ship.Crew }
+            BP ship.BuildCost.BuildPoints
+            Nerd { ThermalSignature = ship.ThermalSignature; EngineCount = ship.EngineCount; EngineContribution = ship.EngineThermalSignatureContribution }
+        ]
+        [
+            Nerd { Speed = ship.Speed }
+            Nerd { Width = ship.ArmorWidth; Depth = ship.ArmorDepth }
+        ]
+        [
+            Nerd { DeployTime = ship.DeployTime }
+            Nerd { SpareBerths = ship.SpareBerths }
+        ]
+        [
+            Nerd { CryogenicBerths = ship.CryogenicBerths }
+        ]
+    ]
 
 let private fuelCapAndRange (ship: Ship) =
     let fc =
@@ -82,8 +85,6 @@ let private fuelCapAndRange (ship: Ship) =
     
     [ fc; range; fullPowerTime ]
     |> List.choose id
-    |> List.map Line
-    |> Block
 
 let private powerAndMaintenanceClass ship =
     let pp =
@@ -92,16 +93,17 @@ let private powerAndMaintenanceClass ship =
         |> List.map (fun c ->
             match c with
             | PowerPlant c when c.Count > 0<comp> ->
-                [ Text c.Name
-                  Text <| sprintf "(%d)" c.Count
-                  Label "Total Power Output"
-                  Text <| sprintf "%.1f" (c.Power * int2float c.Count)
-                  Label "Armour"
-                  Text "0"
-                  Label "Exp"
-                  Text <| sprintf "%.0f%%" (c.PowerBoost.ExplosionChance * 100.0)
+                [
+                    Text c.Name
+                    Text <| sprintf "(%d)" c.Count
+                    Label "Total Power Output"
+                    Text <| sprintf "%.1f" (c.Power * int2float c.Count)
+                    Label "Armour"
+                    Text "0"
+                    Label "Exp"
+                    Text <| sprintf "%.0f%%" (c.PowerBoost.ExplosionChance * 100.0)
                 ]
-                |> Line |> Some
+                |> Some
             | _ -> None
         )
         |> List.choose id
@@ -110,11 +112,10 @@ let private powerAndMaintenanceClass ship =
         match ship.MaintenanceClass with
         | Commercial -> "This design is classed as a Commercial Vessel for maintenance purposes"
         | Military -> "This design is classed as a Military Vessel for maintenance purposes"
-        |> Text |> List.wrap
-        |> Line
+        |> Text
+        |> List.wrap
 
     pp @ [ maint ]
-    |> Block
 
 let private describe (ship: Ship) =
     [
@@ -129,7 +130,6 @@ let private describe (ship: Ship) =
     ]
     |> List.choose id
     |> List.map (fun a -> a ship)
-    |> Block
 
 let private renderTime opt t =
     match opt with
@@ -154,10 +154,6 @@ let private renderTime opt t =
 
 let rec private renderDescription desc =
     match desc with
-    | Block c ->
-        div [ ClassName "ship-description-block" ] (List.map renderDescription c)
-    | Line c ->
-        div [] (List.map renderDescription c)
     | If (pred, c) ->
         match pred with
         | true -> div [] (List.map renderDescription c)
@@ -166,10 +162,6 @@ let rec private renderDescription desc =
         span [ ClassName "ship-description" ] [ str s ]
     | Label s ->
         span [ ClassName "ship-description has-text-light" ] [ str s ]
-    | People (opt, s) ->
-        match opt with
-        | NoLabel -> span [ ClassName "ship-description" ] [ str <| sprintf "%d" s ]
-        | Crew -> span [ ClassName "ship-description" ] [ str <| sprintf "%d crew" s ]
     | BP s ->
         span [ ClassName "ship-description" ] [ str <| sprintf "%.0f BP" s ]
     | Time (opt, t) -> renderTime opt t
@@ -179,13 +171,18 @@ let rec private renderDescription desc =
     | Range (opt, r) ->
         match opt with
         | BillionKm -> span [ ClassName "ship-description" ] [ str <| sprintf "%.1f billion km" (r / 1000000000.0) ]
-    | Nerd (nerd) ->
+    | Nerd nerd ->
         div [ ClassName "ship-description" ] [ nerd |> Nerds.Common.render DescriptiveForm ]
 
 let render ship =
-    let contents = ship
-                   |> describe
-                   |> renderDescription
+    let contents =
+        let renderLine = List.map renderDescription >> div []
+        let renderBlock = List.map renderLine >> div [ ClassName "ship-description-block" ]
+        let renderDescription = List.map renderBlock >> div [ ClassName "ship-description-block" ]
+
+        ship
+        |> describe
+        |> renderDescription
     Bulma.Card.render {
         HeaderItems = [ Title "Description" ]
         Contents = [ contents ]
