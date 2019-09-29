@@ -12,7 +12,6 @@ type ArmorCalculation =
         Volume: int<hs>
         Strength: float<armorStrength>
         Width: int
-        Cost: TotalBuildCost
     }
     static member Zero
         with get() =
@@ -22,15 +21,7 @@ type ArmorCalculation =
                 Volume = 0<hs>
                 Strength = 0.0<armorStrength>
                 Width = 0
-                Cost = TotalBuildCost.Zero
             }
-
-let private materials costFactor technology =
-    { TotalBuildCost.Zero with
-        BuildPoints = costFactor
-        Duranium = technology.DuraniumRatio * costFactor
-        Neutronium = technology.NeutroniumRatio * costFactor
-    }
 
 let private increaseCoverage shipSize (technology: ArmorTech) calc layer =
     let area =
@@ -55,7 +46,6 @@ let private increaseCoverage shipSize (technology: ArmorTech) calc layer =
         Strength = strength
         Volume = volume
         Width = 0
-        Cost = TotalBuildCost.Zero
     }
 
 let rec private addLayer shipSize technology calc layer =
@@ -72,6 +62,5 @@ let shipArmor (shipSize: int<ton>) (depth: int) technology =
         | _ -> Seq.fold (addLayer shipSize technology) ArmorCalculation.Zero {1 .. depth + 1}
 
     { calc with
-        Cost = materials (calc.Area * 1.0</hsSA>) technology
         Width = flooruom (calc.Strength * 1.0</armorStrength> / float depth)
     }
