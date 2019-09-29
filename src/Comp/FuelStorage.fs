@@ -71,7 +71,7 @@ type FuelStorage =
     //#endregion
 
     //#region Accessors
-    member this.TotalSize with get() = this._TotalSize.Value
-    member this.FuelCapacity with get() = this._FuelCapacity.Value
     member this.BuildCost with get() = this._BuildCost.Value
+    member this.FuelCapacity with get() = this._FuelCapacity.Value
+    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion

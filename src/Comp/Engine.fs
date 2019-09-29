@@ -98,12 +98,12 @@ type Engine =
     //#endregion
 
     //#region Accessors
-    member this.EnginePower with get(): float<ep/comp> = this._EnginePower.Value
-    member this.ThermalOutput with get() = this._ThermalOutput.Value
-    member this.FuelConsumption with get() = this._FuelConsumption.Value
-    member this.Crew with get() = this._Crew.Value
-    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.BuildCost with get() = this._BuildCost.Value
+    member this.Crew with get() = this._Crew.Value
+    member this.EnginePower with get(): float<ep/comp> = this._EnginePower.Value
+    member this.FuelConsumption with get() = this._FuelConsumption.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
+    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    member this.ThermalOutput with get() = this._ThermalOutput.Value
     member this.TotalSize with get() = this._TotalSize.Value
     //#endregion

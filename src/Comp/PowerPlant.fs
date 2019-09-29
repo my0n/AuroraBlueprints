@@ -76,9 +76,9 @@ type PowerPlant =
     //#region Accessors
     member this.BuildCost with get() = this._BuildCost.Value
     member this.Crew with get() = this._Crew.Value
-    member this.Power with get() = this._Power.Value
-    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
+    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    member this.Power with get() = this._Power.Value
     member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 

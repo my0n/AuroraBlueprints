@@ -90,13 +90,13 @@ type Sensors =
     //#endregion
 
     //#region Accessors
-    member private this.Count with get() = this._Count.Value
-    member this.TotalSize with get() = this._TotalSize.Value
-    member this.Crew with get() = this._Crew.Value
     member this.BuildCost with get() = this._BuildCost.Value
-    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    member private this.Count with get() = this._Count.Value
+    member this.Crew with get() = this._Crew.Value
     member this.GeoSensorRating with get() = this._GeoSensorRating.Value
     member this.GravSensorRating with get() = this._GravSensorRating.Value
+    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 
     
