@@ -11,14 +11,14 @@ open System
 open Nerds.ArmorSizeNerd
 open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
-open Nerds.SizeFloatNerd
+open Nerds.SizeNerd
 
 let render (ship: Ship) dispatch =
     let header =
         [
             Name <| sprintf "%s Armor" ship.ArmorTechnology.Name
             Nerd { TotalBuildCost = ship.ArmorBuildCost }
-            Nerd { Count = 1<comp>; Size = ship.ArmorSize*1.0</comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = ship.ArmorSize*1</comp> }
             Nerd { Strength = ship.ArmorStrength }
             Nerd { Width = ship.ArmorWidth; Depth = ship.ArmorDepth }
         ]

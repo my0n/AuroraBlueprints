@@ -13,7 +13,7 @@ open Comp.Ship
 
 open Nerds.MaintenanceClassNerd
 open Nerds.PriceTotalNerd
-open Nerds.SizeIntNerd
+open Nerds.SizeNerd
 open Nerds.SensorStrengthNerd
 
 let render (ship: Ship) (comp: Sensors) dispatch =
@@ -22,7 +22,7 @@ let render (ship: Ship) (comp: Sensors) dispatch =
             Name "Sensors"
             Nerd { MaintenanceClass = comp.MaintenanceClass }
             Nerd { TotalBuildCost = comp.BuildCost }
-            Nerd { Count = 1<comp>; Size = comp.Size*1</comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.TotalSize*1</comp> }
             Nerd { Geo = comp.GeoSensorRating; Grav = comp.GravSensorRating }
         ]
     let form =

@@ -58,7 +58,7 @@ type Engine =
             this.EnginePower
             * this.EfficiencyTech.Efficiency
             * Math.Pow(this.PowerModTech.PowerMod, 2.5)
-            * (1.0 - ((int2float this.Size) / 100.0<hs/comp>))
+            * (1.0 - ((int2float this.Size * 1.0<comp/hs>) / 100.0))
         )
     member private this._Crew =
         lazy (
@@ -91,6 +91,10 @@ type Engine =
                 | Commercial -> "Commercial "
             sprintf "%.0fEP %s%s Engine" this.EnginePower cl this.EngineTech.Name
         )
+    member private this._TotalSize =
+        lazy (
+            hs2tonint <| this.Size * this.Count
+        )
     //#endregion
 
     //#region Accessors
@@ -101,4 +105,5 @@ type Engine =
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.BuildCost with get() = this._BuildCost.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
+    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion

@@ -1,11 +1,12 @@
 module Nerds.ArmorStrengthNerd
 
+open Model.Measures
 open Nerds.Icon
 open Nerds.Common
 
 type ArmorStrengthNerd =
     {
-        Strength: float
+        Strength: float<armorStrength>
     }
     interface INerd with
         member this.Text

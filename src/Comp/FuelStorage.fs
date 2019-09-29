@@ -32,13 +32,13 @@ type FuelStorage =
     member private this._TotalSize =
         lazy (
             (
-                int2float this.Tiny * 0.1
-                + int2float this.Small * 0.2
-                + int2float this.Standard * 1.0
-                + int2float this.Large * 5.0
-                + int2float this.VeryLarge * 20.0
-                + int2float this.UltraLarge * 100.0
-            ) * 1.0<hs/comp>
+                this.Tiny * 5
+                + this.Small * 10
+                + this.Standard * 50
+                + this.Large * 250
+                + this.VeryLarge * 1000
+                + this.UltraLarge * 5000
+            ) * 1<ton/comp>
         )
     member private this._FuelCapacity =
         lazy (

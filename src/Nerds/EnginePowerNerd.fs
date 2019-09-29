@@ -8,7 +8,7 @@ type EnginePowerNerd =
     {
         Count: int<comp>
         EnginePower: float<ep/comp>
-        Size: int<hs/comp>
+        Size: int<ton/comp>
         Speed: float<km/s>
     }
     interface INerd with

@@ -16,12 +16,9 @@ open Nerds.Common
 open Nerds.ArmorSizeNerd
 open Nerds.DeployTimeNerd
 open Nerds.ShipNameNerd
+open Nerds.SizeNerd
 open Nerds.ThermalSignatureNerd
 open Nerds.VelocityNerd
-
-type private SizeOptions =
-    | HS
-    | Tons
 
 type private PeopleOptions =
     | NoLabel
@@ -43,7 +40,6 @@ type private ShipDescription =
     | If of bool * ShipDescription list
     | Text of string
     | Label of string
-    | Size of SizeOptions * float<hs>
     | People of PeopleOptions * int<people>
     | BP of float
     | Time of TimeOptions * float<mo>
@@ -53,7 +49,7 @@ type private ShipDescription =
 
 let private generalOverview (ship: Ship) =
     Block [ Line [ Nerd { ShipName = ship.Name; ShipClass = ship.ShipClass }
-                   Size (Tons, ship.Size)
+                   Nerd { RenderMode = Tons; Count = 1<comp>; Size = ship.Size*1</comp> }
                    People (Crew, ship.Crew)
                    BP ship.BuildCost.BuildPoints
                    Nerd { ThermalSignature = ship.ThermalSignature; EngineCount = ship.EngineCount; EngineContribution = ship.EngineThermalSignatureContribution }
@@ -170,10 +166,6 @@ let rec private renderDescription desc =
         span [ ClassName "ship-description" ] [ str s ]
     | Label s ->
         span [ ClassName "ship-description has-text-light" ] [ str s ]
-    | Size (opt, s) ->
-        match opt with
-        | HS -> span [ ClassName "ship-description" ] [ str <| sprintf "%.0f HS" s ]
-        | Tons -> span [ ClassName "ship-description" ] [ str << sprintf "%.0f tons" <| hs2ton s ]
     | People (opt, s) ->
         match opt with
         | NoLabel -> span [ ClassName "ship-description" ] [ str <| sprintf "%d" s ]

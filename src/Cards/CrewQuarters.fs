@@ -9,14 +9,14 @@ open Comp.Ship
 
 open Nerds.DeployTimeNerd
 open Nerds.PriceTotalNerd
-open Nerds.SizeFloatNerd
+open Nerds.SizeNerd
 
 let render (ship: Ship) dispatch =
     let header =
         [
             Name "Crew Quarters"
             Nerd { TotalBuildCost = ship.CrewQuartersBuildCost }
-            Nerd { Count = 1<comp>; Size = ship.CrewQuartersSize*1.0</comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = ship.CrewQuartersSize*1</comp> }
             Nerd { DeployTime = ship.DeployTime }
         ]
     let form =

@@ -1,5 +1,6 @@
 module Cards.PowerPlant
 
+open Model.Measures
 open App.Msg
 open Bulma.Card
 open Cards.Common
@@ -12,7 +13,7 @@ open System
 open Global
 
 open Nerds.PriceNerd
-open Nerds.SizeFloatNerd
+open Nerds.SizeNerd
 open Nerds.PowerProductionNerd
 
 let render (ship: Ship) (comp: PowerPlant) dispatch =
@@ -20,12 +21,13 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
         [
             Name comp.Name
             Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
-            Nerd { Count = comp.Count; Size = comp.Size }
+            Nerd { RenderMode = HS; Count = comp.Count; Size = float2int <| comp.Size * 50.0<ton/hs> }
             Nerd { Count = comp.Count; PowerOutput = comp.Power }
         ]
 
     let sizeOptions =
-        [ 0.1 .. 0.1 .. 0.9] @ [1.0 .. 30.0]
+        [ 0.1 .. 0.1 .. 0.9 ] @ [1.0 .. 1.0 .. 30.0]
+        |> List.map (fun o -> o * 1.0<hs/comp>)
 
     let form =
         [
@@ -72,10 +74,10 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
                                 |> List.mapi (fun i o -> i, sprintf "%.1f" o)
                             Value =
                                 sizeOptions
-                                |> List.tryFindIndex (fun o -> o = comp.Size * 1.0<comp/hs>)
+                                |> List.tryFindIndex (fun o -> o = comp.Size)
                                 |> Option.defaultValue 1
                         }
-                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[n] * 1.0<hs/comp> }) |> dispatch)
+                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[n]}) |> dispatch)
                     Bulma.FC.Select
                         {
                             Label = Some "Power Plant Technology"

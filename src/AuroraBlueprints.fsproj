@@ -36,8 +36,7 @@
     <Compile Include="Nerds\PriceTotalNerd.fs" />
     <Compile Include="Nerds\SensorStrengthNerd.fs" />
     <Compile Include="Nerds\ShipNameNerd.fs" />
-    <Compile Include="Nerds\SizeFloatNerd.fs" />
-    <Compile Include="Nerds\SizeIntNerd.fs" />
+    <Compile Include="Nerds\SizeNerd.fs" />
     <Compile Include="Nerds\ThermalSignatureNerd.fs" />
     <Compile Include="Nerds\VelocityNerd.fs" />
     <Compile Include="Bulma\Button.fs" />

@@ -1,5 +1,7 @@
 module Cards.Engine
 
+open Model.Measures
+
 open Global
 open System
 
@@ -13,7 +15,7 @@ open Comp.Ship
 
 open Nerds.MaintenanceClassNerd
 open Nerds.PriceNerd
-open Nerds.SizeIntNerd
+open Nerds.SizeNerd
 open Nerds.EnginePowerNerd
 open Nerds.FuelConsumptionNerd
 
@@ -23,8 +25,8 @@ let render (ship: Ship) (comp: Engine) dispatch =
             Name comp.Name
             Nerd { MaintenanceClass = comp.MaintenanceClass }
             Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
-            Nerd { Count = comp.Count; Size = comp.Size }
-            Nerd { Count = comp.Count; EnginePower = comp.EnginePower; Size = comp.Size; Speed = ship.Speed }
+            Nerd { RenderMode = HS; Count = comp.Count; Size = comp.Size * 50<ton/hs> }
+            Nerd { Count = comp.Count; EnginePower = comp.EnginePower; Size = comp.Size * 50<ton/hs>; Speed = ship.Speed }
             Nerd { Count = comp.Count; Consumption = comp.FuelConsumption; Efficiency = comp.FuelConsumption / comp.EnginePower }
         ]
     let form =

@@ -1,5 +1,7 @@
 module Cards.Bridge
 
+open Model.Measures
+
 open Global
 open App.Msg
 open Bulma.Card
@@ -10,14 +12,14 @@ open Comp.ShipComponent
 open Comp.Ship
 
 open Nerds.PriceNerd
-open Nerds.SizeIntNerd
+open Nerds.SizeNerd
 
 let render (ship: Ship) (comp: Bridge) dispatch =
     let header =
         [
             Name "Bridge"
             Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
-            Nerd { Count = comp.Count; Size = comp.Size }
+            Nerd { RenderMode = HS; Count = comp.Count; Size = comp.Size * 50<ton/hs> }
         ]
     let form =
         Bulma.FC.HorizontalGroup

@@ -17,6 +17,7 @@ type Bridge =
                 Count = 1<comp>
             }
     member this.Size = 1<hs/comp>
+    member this.TotalSize = hs2tonint <| this.Size * this.Count
     member this.Crew = 5<people/comp>
     member this.BuildCost =
         { BuildCost.Zero with

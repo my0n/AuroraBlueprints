@@ -40,9 +40,9 @@ type Sensors =
             + this.AdvancedGeo + this.AdvancedGrav
             + this.PhasedGeo + this.PhasedGrav
         )
-    member private this._Size =
+    member private this._TotalSize =
         lazy (
-            this.Count * 5<hs/comp>
+            hs2tonint <| this.Count * 5<hs/comp>
         )
     member private this._Crew =
         lazy (
@@ -91,7 +91,7 @@ type Sensors =
 
     //#region Accessors
     member private this.Count with get() = this._Count.Value
-    member this.Size with get() = this._Size.Value
+    member this.TotalSize with get() = this._TotalSize.Value
     member this.Crew with get() = this._Crew.Value
     member this.BuildCost with get() = this._BuildCost.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value

@@ -8,9 +8,9 @@ open Model.Technology
 type ArmorCalculation =
     {
         Size: float<hs>
-        Area: float
+        Area: float<hsSA>
         Volume: int<hs>
-        Strength: float
+        Strength: float<armorStrength>
         Width: int
         Cost: TotalBuildCost
     }
@@ -18,15 +18,12 @@ type ArmorCalculation =
         with get() =
             {
                 Size = 0.0<hs>
-                Area = 0.0
+                Area = 0.0<hsSA>
                 Volume = 0<hs>
-                Strength = 0.0
+                Strength = 0.0<armorStrength>
                 Width = 0
                 Cost = TotalBuildCost.Zero
             }
-
-let private surfaceArea (volume: float<hs>) =
-    4.0 * Math.PI * (powuom (2.0/3.0) ((3.0/(4.0*Math.PI)) * volume))
 
 let private materials costFactor technology =
     { TotalBuildCost.Zero with
@@ -36,10 +33,22 @@ let private materials costFactor technology =
     }
 
 let private increaseCoverage shipSize (technology: ArmorTech) calc layer =
-    let area = (int2float calc.Volume |> surfaceArea |> rounduom 10.0<hs>) * 1.0</hs>
-    let strength = float layer * area / 4.0
-    let size = (strength / technology.Strength) |> rounduom 10.0<hs>
-    let volume = ceiluom (shipSize + calc.Size)
+    let area =
+        int2float calc.Volume
+        |> hs2sa
+        |> rounduom 10.0<hsSA>
+    let strength =
+        float layer
+        * area
+        / 4.0<hsSA/armorStrength>
+    let size =
+        strength
+        / technology.Strength
+        |> rounduom 10.0<hs>
+    let volume =
+        shipSize
+        + calc.Size
+        |> ceiluom
     {
         Size = size
         Area = area
@@ -55,13 +64,14 @@ let rec private addLayer shipSize technology calc layer =
     | size when calc.Size = size -> applied
     | _ -> addLayer shipSize technology applied layer
 
-let shipArmor (shipSize: float<hs>) (depth: int) technology =
+let shipArmor (shipSize: int<ton>) (depth: int) technology =
+    let shipSize = ton2hs <| int2float shipSize
     let calc =
         match depth with
         | depth when depth < 1 -> ArmorCalculation.Zero
         | _ -> Seq.fold (addLayer shipSize technology) ArmorCalculation.Zero {1 .. depth + 1}
 
     { calc with
-        Cost = materials calc.Area technology
-        Width = flooruom (calc.Strength / float depth)
+        Cost = materials (calc.Area * 1.0</hsSA>) technology
+        Width = flooruom (calc.Strength * 1.0</armorStrength> / float depth)
     }

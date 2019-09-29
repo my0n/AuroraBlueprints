@@ -5,6 +5,7 @@ open Fable.Helpers.React.Props
 
 open Global
 
+open Model.Measures
 open App.Model
 open App.Msg
 open Bulma.Button
@@ -58,7 +59,7 @@ let root model dispatch =
             }
             {
                 Name = "Size (HS)"
-                Value = String (fun ship -> sprintf "%.1f" ship.Size)
+                Value = String (fun ship -> sprintf "%.1f" << ton2hs <| int2float ship.Size)
             }
             {
                 Name = ""

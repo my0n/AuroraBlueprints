@@ -44,39 +44,55 @@ type Ship =
     //#region Cost
     member private this._Cost =
         lazy (
-            this.CrewQuartersBuildCost + this.ArmorCalculation.Cost
+            this.CrewQuartersBuildCost
+            + this.ArmorBuildCost
         )
     member private this._CrewQuartersBuildCost =
         lazy (
             { TotalBuildCost.Zero with
-                BuildPoints = this.CrewQuartersSize * 10.0</hs>
-                Duranium = this.CrewQuartersSize * 2.5</hs>
-                Mercassium = this.CrewQuartersSize * 7.5</hs>
+                BuildPoints = int2float this.CrewQuartersSize * 0.2</ton>
+                Duranium = int2float this.CrewQuartersSize * 0.05</ton>
+                Mercassium = int2float this.CrewQuartersSize * 0.15</ton>
             }
         )
     //#endregion
 
     //#region Size
+    member private this._TotalBerths =
+        lazy (
+            this.SpareBerths
+            + this.Crew
+        )
+    member private this._TonsPerPerson =
+        lazy (
+            this.DeployTime
+            * 1.0<ton/people/mo>
+            |> powuom (1.0/3.0)
+            |> rounduom 10.0<ton/people>
+        )
     member private this._CrewQuartersSize =
         lazy (
-            let berths = this.SpareBerths + this.Crew
-            let tonsPerPerson = this.DeployTime * 1.0<ton/people/mo>
-                                |> powuom (1.0/3.0)
-                                |> rounduom 10.0<ton/people>
-            rounduom 2.0<ton> (int2float berths * tonsPerPerson)
-            |> ton2hs
+            int2float this.TotalBerths
+            * this.TonsPerPerson
+            |> rounduom 2.0<ton>
+            |> float2int
         )
-    member private this._SizeBeforeArmor =
+    member private this._ComponentSize =
         lazy (
             this.Components
             |> Map.values
-            |> List.map (fun c -> c.Size)
-            |> List.append [ this.CrewQuartersSize ]
-            |> List.sum
+            |> List.sumBy (fun c -> c.TotalSize)
+        )
+    member private this._SizeBeforeArmor =
+        lazy (
+            this.ComponentSize
+            + this.CrewQuartersSize
         )
     member private this._Size =
         lazy (
-            this.CrewQuartersSize + this.SizeBeforeArmor + this.ArmorCalculation.Size
+            this.CrewQuartersSize
+            + this.ComponentSize
+            + this.ArmorSize
         )
     //#endregion
 
@@ -133,7 +149,9 @@ type Ship =
         lazy (
             match this.HasEngines && this.FuelCapacity > 0.0<kl> with
             | true ->
-                this.TotalEnginePower * 1000.0<(km/s)/(ep/hs)> / 1.0<hs> // TODO
+                this.TotalEnginePower
+                * 1000.0<(km/s)/(ep/hs)>
+                / ton2hs (int2float this.Size)
             | false ->
                 1.0<km/s>
         )
@@ -175,7 +193,9 @@ type Ship =
         lazy (
             match this.HasEngines && this.FuelCapacity > 0.0<kl> with
             | true ->
-                kps2kphr this.Speed * this.FuelCapacity / this.FuelConsumption
+                kps2kphr this.Speed
+                * this.FuelCapacity
+                / this.FuelConsumption
             | false ->
                 0.0<km>
         )
@@ -229,15 +249,16 @@ type Ship =
     //#endregion
 
     //#region Accessors
+    member this.ArmorBuildCost with get(): TotalBuildCost = this.ArmorCalculation.Cost
     member private this.ArmorCalculation with get(): Model.ArmorCalc.ArmorCalculation = this._ArmorCalculation.Value
-    member this.ArmorBuildCost with get() = this.ArmorCalculation.Cost
-    member this.ArmorSize with get() = this.ArmorCalculation.Size
+    member this.ArmorSize with get() = float2int <| hs2ton this.ArmorCalculation.Size
     member this.ArmorStrength with get() = this.ArmorCalculation.Strength
     member this.ArmorWidth with get() = this.ArmorCalculation.Width
-    member this.BuildCost with get() = this._Cost.Value
-    member this.Crew with get() = this._Crew.Value
-    member this.CrewQuartersBuildCost with get() = this._CrewQuartersBuildCost.Value
-    member this.CrewQuartersSize with get() = this._CrewQuartersSize.Value
+    member this.BuildCost with get(): TotalBuildCost = this._Cost.Value
+    member private this.ComponentSize with get(): int<ton> = this._ComponentSize.Value
+    member this.Crew with get(): int<people> = this._Crew.Value
+    member this.CrewQuartersBuildCost with get(): TotalBuildCost = this._CrewQuartersBuildCost.Value
+    member this.CrewQuartersSize with get(): int<ton> = this._CrewQuartersSize.Value
     member this.EngineCount with get() = this._EngineCount.Value
     member this.EngineThermalSignatureContribution with get() = this._EngineThermalSignatureContribution.Value
     member this.HasEngines with get() = this._HasEngines.Value
@@ -246,10 +267,12 @@ type Ship =
     member this.FuelRange with get() = this._FuelRange.Value
     member this.FullPowerTime with get() = this._FullPowerTime.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
-    member this.Size with get() = this._Size.Value
-    member private this.SizeBeforeArmor with get() = this._SizeBeforeArmor.Value
+    member this.Size with get(): int<ton> = this._Size.Value
+    member private this.SizeBeforeArmor with get(): int<ton> = this._SizeBeforeArmor.Value
     member this.Speed with get() = this._Speed.Value
     member this.ThermalSignature with get() = this._ThermalSignature.Value
-    member this.TotalEnginePower with get() = this._TotalEnginePower.Value
+    member this.TonsPerPerson with get() = this._TonsPerPerson.Value
+    member this.TotalBerths with get() = this._TotalBerths.Value
+    member this.TotalEnginePower with get(): float<ep> = this._TotalEnginePower.Value
     member this.TotalPower with get() = this._TotalPower.Value
     //#endregion

@@ -54,14 +54,14 @@ type ShipComponent =
             | FuelStorage c -> c.BuildCost
             | PowerPlant c  -> c.BuildCost * c.Count
             | Sensors c     -> c.BuildCost
-    member this.Size
+    member this.TotalSize
         with get() =
             match this with
-            | Bridge c      -> int2float c.Size * int2float c.Count
-            | Engine c      -> int2float c.Size * int2float c.Count
+            | Bridge c      -> c.TotalSize
+            | Engine c      -> c.TotalSize
             | FuelStorage c -> c.TotalSize
-            | PowerPlant c  -> c.Size * int2float c.Count
-            | Sensors c     -> int2float c.Size
+            | PowerPlant c  -> c.TotalSize
+            | Sensors c     -> c.TotalSize
     member this.duplicate =
         match this with
         | Bridge c          -> Bridge { c with Guid = Guid.NewGuid() }

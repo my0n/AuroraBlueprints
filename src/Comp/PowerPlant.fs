@@ -67,6 +67,10 @@ type PowerPlant =
         lazy (
             String.Format("{0} Technology PB-{1}", this.Technology.Name, (1.0 + this.PowerBoost.PowerBoost))
         )
+    member private this._TotalSize =
+        lazy (
+            float2int << hs2ton <| int2float this.Count * this.Size
+        )
     //#endregion
 
     //#region Accessors
@@ -75,5 +79,6 @@ type PowerPlant =
     member this.Power with get() = this._Power.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
+    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 

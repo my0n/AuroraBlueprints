@@ -9,7 +9,7 @@ open Comp.ShipComponent
 open Comp.Ship
 
 open Nerds.PriceTotalNerd
-open Nerds.SizeFloatNerd
+open Nerds.SizeNerd
 open Nerds.FuelCapacityNerd
 
 let render (ship: Ship) (comp: FuelStorage) dispatch =
@@ -17,7 +17,7 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
         [
             Name "Fuel Storage"
             Nerd { TotalBuildCost = comp.BuildCost }
-            Nerd { Count = 1<comp>; Size = comp.TotalSize*1.0</comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.TotalSize*1</comp> }
             Nerd { FuelCapacity = comp.FuelCapacity }
         ]
     let form =
