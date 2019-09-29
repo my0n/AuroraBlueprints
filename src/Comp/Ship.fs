@@ -55,6 +55,15 @@ type Ship =
                 Mercassium = int2float this.CrewQuartersSize * 0.15</ton>
             }
         )
+    member private this._ArmorBuildCost =
+        lazy (
+            let costFactor = this.ArmorStrength * 1.0</armorStrength>
+            { TotalBuildCost.Zero with
+                BuildPoints = costFactor
+                Duranium = this.ArmorTechnology.DuraniumRatio * costFactor
+                Neutronium = this.ArmorTechnology.NeutroniumRatio * costFactor
+            }
+        )
     //#endregion
 
     //#region Size
@@ -100,16 +109,6 @@ type Ship =
     member private this._ArmorCalculation =
         lazy (
             Model.ArmorCalc.shipArmor this.SizeBeforeArmor this.ArmorDepth this.ArmorTechnology
-        )
-
-    member private this._ArmorBuildCost =
-        lazy (
-            let costFactor = this.ArmorStrength * 1.0</armorStrength>
-            { TotalBuildCost.Zero with
-                BuildPoints = costFactor
-                Duranium = this.ArmorTechnology.DuraniumRatio * costFactor
-                Neutronium = this.ArmorTechnology.NeutroniumRatio * costFactor
-            }
         )
     //#endregion
 
