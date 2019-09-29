@@ -14,10 +14,13 @@ open Comp.ShipComponent
 
 open Nerds.Common
 open Nerds.ArmorSizeNerd
+open Nerds.CryogenicBerthsNerd
 open Nerds.DeployTimeNerd
 open Nerds.ShipNameNerd
 open Nerds.SizeNerd
+open Nerds.SpareBerthsNerd
 open Nerds.ThermalSignatureNerd
+open Nerds.TotalCrewNerd
 open Nerds.VelocityNerd
 
 type private PeopleOptions =
@@ -38,7 +41,6 @@ type private ShipDescription =
     | If of bool * ShipDescription list
     | Text of string
     | Label of string
-    | People of PeopleOptions * int<people>
     | BP of float
     | Time of TimeOptions * float<mo>
     | FuelCapacity of FuelCapacityOptions * float<kl>
@@ -50,7 +52,7 @@ let private generalOverview (ship: Ship) =
         [
             Nerd { ShipName = ship.Name; ShipClass = ship.ShipClass }
             Nerd { RenderMode = Tons; Count = 1<comp>; Size = ship.Size*1</comp> }
-            People (Crew, ship.Crew)
+            Nerd { TotalCrew = ship.Crew }
             BP ship.BuildCost.BuildPoints
             Nerd { ThermalSignature = ship.ThermalSignature; EngineCount = ship.EngineCount; EngineContribution = ship.EngineThermalSignatureContribution }
         ]
@@ -60,10 +62,10 @@ let private generalOverview (ship: Ship) =
         ]
         [
             Nerd { DeployTime = ship.DeployTime }
-            If (ship.SpareBerths > 0<people>, [ Label "Spare Berths"; People (NoLabel, ship.SpareBerths) ])
+            Nerd { SpareBerths = ship.SpareBerths }
         ]
         [
-            If (ship.CryogenicBerths > 0<people>, [ Label "Cryogenic Berths"; People (NoLabel, ship.CryogenicBerths) ])
+            Nerd { CryogenicBerths = ship.CryogenicBerths }
         ]
     ]
 
@@ -160,10 +162,6 @@ let rec private renderDescription desc =
         span [ ClassName "ship-description" ] [ str s ]
     | Label s ->
         span [ ClassName "ship-description has-text-light" ] [ str s ]
-    | People (opt, s) ->
-        match opt with
-        | NoLabel -> span [ ClassName "ship-description" ] [ str <| sprintf "%d" s ]
-        | Crew -> span [ ClassName "ship-description" ] [ str <| sprintf "%d crew" s ]
     | BP s ->
         span [ ClassName "ship-description" ] [ str <| sprintf "%.0f BP" s ]
     | Time (opt, t) -> renderTime opt t
@@ -173,7 +171,7 @@ let rec private renderDescription desc =
     | Range (opt, r) ->
         match opt with
         | BillionKm -> span [ ClassName "ship-description" ] [ str <| sprintf "%.1f billion km" (r / 1000000000.0) ]
-    | Nerd (nerd) ->
+    | Nerd nerd ->
         div [ ClassName "ship-description" ] [ nerd |> Nerds.Common.render DescriptiveForm ]
 
 let render ship =
