@@ -18,6 +18,7 @@
     <Compile Include="Comp\Engine.fs" />
     <Compile Include="Comp\FuelStorage.fs" />
     <Compile Include="Comp\PowerPlant.fs" />
+    <Compile Include="Comp\TroopTransport.fs" />
     <Compile Include="Comp\ShipComponent.fs" />
     <Compile Include="Comp\Ship.fs" />
     <Compile Include="App\Msg.fs" />
@@ -41,6 +42,7 @@
     <Compile Include="Nerds\SpareBerthsNerd.fs" />
     <Compile Include="Nerds\ThermalSignatureNerd.fs" />
     <Compile Include="Nerds\TotalCrewNerd.fs" />
+    <Compile Include="Nerds\TroopTransportNerd.fs" />
     <Compile Include="Nerds\VelocityNerd.fs" />
     <Compile Include="Bulma\Button.fs" />
     <Compile Include="Bulma\Table.fs" />
@@ -55,6 +57,7 @@
     <Compile Include="Cards\FuelStorage.fs" />
     <Compile Include="Cards\PowerPlant.fs" />
     <Compile Include="Cards\Sensors.fs" />
+    <Compile Include="Cards\TroopTransport.fs" />
     <Compile Include="Cards\ShipDescription.fs" />
     <Compile Include="ShipView.fs" />
     <Compile Include="NavbarView.fs" />

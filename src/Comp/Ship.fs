@@ -129,6 +129,39 @@ type Ship =
         )
     //#endregion
 
+    //#region Troop Transport
+    member private this._CryoDropCapability =
+        lazy (
+            this.Components
+            |> Map.values
+            |> List.sumBy (fun c ->
+                match c with
+                | TroopTransport c -> c.CryoDropCapability
+                | _ -> 0<company>
+            )
+        )
+    member private this._CombatDropCapability =
+        lazy (
+            this.Components
+            |> Map.values
+            |> List.sumBy (fun c ->
+                match c with
+                | TroopTransport c -> c.CombatDropCapability
+                | _ -> 0<company>
+            )
+        )
+    member private this._TroopTransportCapability =
+        lazy (
+            this.Components
+            |> Map.values
+            |> List.sumBy (fun c ->
+                match c with
+                | TroopTransport c -> c.TroopTransportCapability
+                | _ -> 0<company>
+            )
+        )
+    //#endregion
+
     //#region Engines
     member private this._EngineCount =
         lazy (
@@ -264,10 +297,12 @@ type Ship =
     member this.ArmorStrength with get() = this.ArmorCalculation.Strength
     member this.ArmorWidth with get() = this.ArmorCalculation.Width
     member this.BuildCost with get(): TotalBuildCost = this._Cost.Value
+    member this.CombatDropCapability with get() = this._CombatDropCapability.Value
     member private this.ComponentSize with get(): int<ton> = this._ComponentSize.Value
     member this.Crew with get(): int<people> = this._Crew.Value
     member this.CrewQuartersBuildCost with get(): TotalBuildCost = this._CrewQuartersBuildCost.Value
     member this.CrewQuartersSize with get(): int<ton> = this._CrewQuartersSize.Value
+    member this.CryoDropCapability with get() = this._CryoDropCapability.Value
     member this.EngineCount with get() = this._EngineCount.Value
     member this.EngineThermalSignatureContribution with get() = this._EngineThermalSignatureContribution.Value
     member this.HasEngines with get() = this._HasEngines.Value
@@ -284,4 +319,5 @@ type Ship =
     member this.TotalBerths with get() = this._TotalBerths.Value
     member this.TotalEnginePower with get(): float<ep> = this._TotalEnginePower.Value
     member this.TotalPower with get() = this._TotalPower.Value
+    member this.TroopTransportCapability with get() = this._TroopTransportCapability.Value
     //#endregion
