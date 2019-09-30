@@ -22,6 +22,7 @@ open Nerds.SizeNerd
 open Nerds.SpareBerthsNerd
 open Nerds.ThermalSignatureNerd
 open Nerds.TotalCrewNerd
+open Nerds.TroopTransportNerd
 open Nerds.VelocityNerd
 
 type private PeopleOptions =
@@ -65,6 +66,9 @@ let private generalOverview (ship: Ship) =
             Nerd { SpareBerths = ship.SpareBerths }
         ]
         [
+            Nerd { TroopTransport = ship.TroopTransportCapability; CombatDrop = 0<company>;                CryoDrop = 0<company> }
+            Nerd { TroopTransport = 0<company>;                    CombatDrop = ship.CombatDropCapability; CryoDrop = 0<company> }
+            Nerd { TroopTransport = 0<company>;                    CombatDrop = 0<company>;                CryoDrop = ship.CryoDropCapability }
             Nerd { CryogenicBerths = ship.CryogenicBerths }
         ]
     ]
@@ -152,29 +156,48 @@ let private renderTime opt t =
         |> span [ ClassName "ship-description" ]
     | Months -> span [ ClassName "ship-description" ] [ str <| String.Format("{0} months", t) ]
 
+
+let private renderNerd (nerd: INerd) =
+    nerd.Description
+    |> Option.map (fun d ->
+        div [ HTMLAttr.Title nerd.Tooltip ] [ str d ]
+    )
+
 let rec private renderDescription desc =
     match desc with
     | If (pred, c) ->
         match pred with
-        | true -> div [] (List.map renderDescription c)
-        | false -> div [] []
+        | true ->
+            div [] (List.map renderDescription c |> List.choose id)
+            |> Some
+        | false -> None
     | Text s ->
         span [ ClassName "ship-description" ] [ str s ]
+        |> Some
     | Label s ->
         span [ ClassName "ship-description has-text-light" ] [ str s ]
-    | Time (opt, t) -> renderTime opt t
+        |> Some
+    | Time (opt, t) ->
+        renderTime opt t
+        |> Some
     | FuelCapacity (opt, fc) ->
         match opt with
         | Litres -> span [ ClassName "ship-description" ] [ str << sprintf "%.0f Litres" <| kl2l fc ]
+        |> Some
     | Range (opt, r) ->
         match opt with
         | BillionKm -> span [ ClassName "ship-description" ] [ str <| sprintf "%.1f billion km" (r / 1000000000.0) ]
+        |> Some
     | Nerd nerd ->
-        div [ ClassName "ship-description" ] [ nerd |> Nerds.Common.render DescriptiveForm ]
+        nerd
+        |> renderNerd
+        |> Option.map (fun nerd ->
+            div [ ClassName "ship-description" ] [ nerd ]
+        )
 
 let render ship =
     let contents =
-        let renderLine = List.map renderDescription >> div []
+        let renderLine = List.map renderDescription >> List.choose id >> div []
         let renderBlock = List.map renderLine >> div [ ClassName "ship-description-block" ]
         let renderDescription = List.map renderBlock >> div [ ClassName "ship-description-block" ]
 

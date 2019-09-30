@@ -20,6 +20,8 @@ open System
 [<Measure>] type min
 [<Measure>] type s
 [<Measure>] type power
+[<Measure>] type company
+[<Measure>] type battalion
 
 // fable doesn't support .FloatWithMeasure etc. so that's a box and unbox (parens are important otherwise you get a newobj, call, and callvirt)
 let inline int2float (x: int<'t>): float<'t> = unbox (float x)
@@ -46,6 +48,7 @@ let inline min2hr (min: float<min>) = min / 60.0<min/hr>
 let inline min2s (min: float<min>) = min * 60.0<s/min>
 let inline kphr2kps (kphr: float<km/hr>) = kphr / 60.0<min/hr> / 60.0<s/min>
 let inline kps2kphr (kps: float<km/s>) = kps * 60.0<min/hr> * 60.0<s/min>
+let inline company2battalion (c: int<company>) = float c / 5.0</battalion>
 
 // hs conversions
 let inline hs2ton (hs: float<hs>) = hs * 50.0<ton/hs>

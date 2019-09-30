@@ -24,6 +24,17 @@ type TotalBuildCost =
             Mercassium = a.Mercassium + b.Mercassium
             Neutronium = a.Neutronium + b.Neutronium
         }
+    static member (*) (a: TotalBuildCost, b: float) =
+        {
+            BuildPoints = a.BuildPoints * b
+            Duranium = a.Duranium * b
+            Corbomite = a.Corbomite * b
+            Gallicite = a.Gallicite * b
+            Boronide = a.Boronide * b
+            Uridium = a.Uridium * b
+            Mercassium = a.Mercassium * b
+            Neutronium = a.Neutronium * b
+        }
     static member Zero
         with get() =
             {

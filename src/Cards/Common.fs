@@ -2,12 +2,21 @@ module Cards.Common
 
 open Global
 
+open Fable.Helpers.React
+open Fable.Helpers.React.Props
 open Bulma.Card
 open Nerds.Common
 
 type ShipComponentCardHeaderItem =
     | Name of string
     | Nerd of INerd
+
+let renderNerd (nerd: INerd) =
+    div [ HTMLAttr.Title nerd.Tooltip ]
+        [ str nerd.Text
+          i [ ClassName << Nerds.Icon.render <| nerd.Icon ]
+            []
+        ]
 
 let inline private renderHeader header: CardHeaderElement list =
     header
@@ -19,7 +28,7 @@ let inline private renderHeader header: CardHeaderElement list =
             | false -> NoRender
             | true ->
                 nerd
-                |> Nerds.Common.render IconForm
+                |> renderNerd
                 |> Info
     )
 
