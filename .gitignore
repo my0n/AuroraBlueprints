@@ -1,5 +1,8 @@
 public/bundle.js*
 
+# VSCode
+.vscode/
+
 # Node
 node_modules/
 
