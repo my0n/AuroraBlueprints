@@ -52,6 +52,7 @@ type ThermalEfficiencyTech =
 
 type TechCategory =
     | DefensiveSystems
+    | LogisticsAndGroundCombat
     | SensorsAndFireControl
 
 type Tech =
@@ -76,10 +77,14 @@ type Tech =
     | BondedSuperdenseArmor
     | CoherentSuperdenseArmor
     | CollapsiumArmor
+    | ImprovedCargoHandlingSystem
+    | AdvancedCargoHandlingSystem
+    | GravAssistedCargoHandlingSystem
 
 type TechType =
     | SurveySensor
     | Armor of {| Strength: float<armorStrength/hs>; DuraniumRatio: float; NeutroniumRatio: float |}
+    | CargoHandling of {| TractorStrength: float |}
 
 type TechNode =
     {
@@ -263,6 +268,32 @@ let allTechnologies =
             Category = DefensiveSystems
             Type = Armor {| Strength = 45.0<armorStrength/hs>; DuraniumRatio = 0.1; NeutroniumRatio = 0.9 |}
             Parents = [CoherentSuperdenseArmor]
+        }
+        //#endregion
+        //#region Cargo Handling Systems
+        {
+            Tech = ImprovedCargoHandlingSystem
+            Name = "Improved Cargo Handling System"
+            Cost = 10000<rp>
+            Category = LogisticsAndGroundCombat
+            Type = CargoHandling {| TractorStrength = 10.0 |}
+            Parents = []
+        }
+        {
+            Tech = AdvancedCargoHandlingSystem
+            Name = "Advanced Cargo Handling System"
+            Cost = 40000<rp>
+            Category = LogisticsAndGroundCombat
+            Type = CargoHandling {| TractorStrength = 20.0 |}
+            Parents = [ImprovedCargoHandlingSystem]
+        }
+        {
+            Tech = GravAssistedCargoHandlingSystem
+            Name = "Grav-Assisted Cargo Handling System"
+            Cost = 150000<rp>
+            Category = LogisticsAndGroundCombat
+            Type = CargoHandling {| TractorStrength = 40.0 |}
+            Parents = [AdvancedCargoHandlingSystem]
         }
         //#endregion
     ]

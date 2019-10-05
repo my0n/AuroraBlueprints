@@ -2,6 +2,7 @@ module Comp.ShipComponent
 
 open System
 open Comp.Bridge
+open Comp.CargoHold
 open Comp.Engine
 open Comp.FuelStorage
 open Comp.PowerPlant
@@ -12,6 +13,7 @@ open Model.Measures
 
 type ShipComponent =
     | Bridge of Bridge
+    | CargoHold of CargoHold
     | Engine of Engine
     | FuelStorage of FuelStorage
     | PowerPlant of PowerPlant
@@ -21,6 +23,7 @@ type ShipComponent =
         with get() =
             match this with
             | Bridge c         -> c.Guid
+            | CargoHold c      -> c.Guid
             | Engine c         -> c.Guid
             | FuelStorage c    -> c.Guid
             | PowerPlant c     -> c.Guid
@@ -30,6 +33,7 @@ type ShipComponent =
         with get() =
             match this with
             | Bridge c         -> "Bridge"
+            | CargoHold c      -> "Cargo Hold"
             | Engine c         -> c.Name
             | FuelStorage c    -> "Fuel Storage"
             | PowerPlant c     -> c.Name
@@ -47,6 +51,7 @@ type ShipComponent =
         with get() =
             match this with
             | Bridge c         -> c.Crew * c.Count
+            | CargoHold c      -> c.Crew
             | Engine c         -> c.Crew * c.Count
             | FuelStorage c    -> 0<people>
             | PowerPlant c     -> c.Crew * c.Count
@@ -56,6 +61,7 @@ type ShipComponent =
         with get() =
             match this with
             | Bridge c         -> c.BuildCost * c.Count
+            | CargoHold c      -> c.BuildCost
             | Engine c         -> c.BuildCost * c.Count
             | FuelStorage c    -> c.BuildCost
             | PowerPlant c     -> c.BuildCost * c.Count
@@ -65,6 +71,7 @@ type ShipComponent =
         with get() =
             match this with
             | Bridge c         -> c.TotalSize
+            | CargoHold c      -> c.TotalSize
             | Engine c         -> c.TotalSize
             | FuelStorage c    -> c.TotalSize
             | PowerPlant c     -> c.TotalSize
@@ -73,6 +80,7 @@ type ShipComponent =
     member this.duplicate =
         match this with
         | Bridge c             -> Bridge { c with Guid = Guid.NewGuid() }
+        | CargoHold c          -> CargoHold { c with Guid = Guid.NewGuid() }
         | Engine c             -> Engine { c with Guid = Guid.NewGuid() }
         | FuelStorage c        -> FuelStorage { c with Guid = Guid.NewGuid() }
         | PowerPlant c         -> PowerPlant { c with Guid = Guid.NewGuid() }

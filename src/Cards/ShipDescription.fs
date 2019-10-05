@@ -13,6 +13,7 @@ open Comp.ShipComponent
 
 open Nerds.Common
 open Nerds.ArmorSizeNerd
+open Nerds.CargoCapacityNerd
 open Nerds.ComponentArmorNerd
 open Nerds.CryogenicBerthsNerd
 open Nerds.DeployTimeNerd
@@ -27,6 +28,7 @@ open Nerds.SpareBerthsNerd
 open Nerds.ThermalSignatureNerd
 open Nerds.TimeAtFullPowerNerd
 open Nerds.TotalCrewNerd
+open Nerds.TractorStrengthNerd
 open Nerds.TroopTransportNerd
 open Nerds.VelocityNerd
 
@@ -55,7 +57,9 @@ let private generalOverview (ship: Ship) =
             Nerd { TroopTransport = ship.TroopTransportCapability; CombatDrop = 0<company>;                CryoDrop = 0<company> }
             Nerd { TroopTransport = 0<company>;                    CombatDrop = ship.CombatDropCapability; CryoDrop = 0<company> }
             Nerd { TroopTransport = 0<company>;                    CombatDrop = 0<company>;                CryoDrop = ship.CryoDropCapability }
+            Nerd { CargoCapacity = ship.CargoCapacity }
             Nerd { CryogenicBerths = ship.CryogenicBerths }
+            Nerd { TractorStrength = ship.CargoHandlingMultiplier; LoadTime = ship.LoadTime }
         ]
     ]
 

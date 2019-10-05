@@ -23,6 +23,8 @@ open System
 [<Measure>] type company
 [<Measure>] type battalion
 [<Measure>] type rp
+[<Measure>] type cargoCapacity
+[<Measure>] type tractorStrength
 
 // fable doesn't support .FloatWithMeasure etc. so that's a box and unbox (parens are important otherwise you get a newobj, call, and callvirt)
 let inline int2float (x: int<'t>): float<'t> = unbox (float x)

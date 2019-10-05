@@ -129,6 +129,37 @@ type Ship =
         )
     //#endregion
 
+    //#region Cargo
+    member private this._CargoCapacity =
+        lazy (
+            this.Components
+            |> Map.values
+            |> List.sumBy (fun c ->
+                match c with
+                | CargoHold c -> c.CargoCapacity
+                | _ -> 0<cargoCapacity>
+            )
+        )
+    member private this._CargoHandlingMultiplier =
+        lazy (
+            this.Components
+            |> Map.values
+            |> List.sumBy (fun c ->
+                match c with
+                | CargoHold c -> c.TractorStrength
+                | _ -> 0<tractorStrength>
+            )
+            |> max 1<tractorStrength>
+        )
+    member private this._LoadTime =
+        lazy (
+            int2float this.CargoCapacity
+            / 100.0<cargoCapacity/hr>
+            / int2float this.CargoHandlingMultiplier
+            * 1.0<tractorStrength>
+        )
+    //#endregion
+
     //#region Troop Transport
     member private this._CryoDropCapability =
         lazy (
@@ -297,6 +328,8 @@ type Ship =
     member this.ArmorStrength with get() = this.ArmorCalculation.Strength
     member this.ArmorWidth with get() = this.ArmorCalculation.Width
     member this.BuildCost with get(): TotalBuildCost = this._Cost.Value
+    member this.CargoCapacity with get() = this._CargoCapacity.Value
+    member this.CargoHandlingMultiplier with get() = this._CargoHandlingMultiplier.Value
     member this.CombatDropCapability with get() = this._CombatDropCapability.Value
     member private this.ComponentSize with get(): int<ton> = this._ComponentSize.Value
     member this.Crew with get(): int<people> = this._Crew.Value
@@ -310,6 +343,7 @@ type Ship =
     member this.FuelConsumption with get() = this._FuelConsumption.Value
     member this.FuelRange with get() = this._FuelRange.Value
     member this.FullPowerTime with get() = this._FullPowerTime.Value
+    member this.LoadTime with get() = this._LoadTime.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.Size with get(): int<ton> = this._Size.Value
     member private this.SizeBeforeArmor with get(): int<ton> = this._SizeBeforeArmor.Value

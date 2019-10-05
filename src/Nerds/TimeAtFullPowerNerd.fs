@@ -11,7 +11,7 @@ type private NiceTime =
     | Minutes of float<min>
     | Seconds of float<s>
 
-let private toNiceTime t =
+let inline private toNiceTime t =
     let years = mo2year t
     let days = mo2day t
     let hours = day2hr days

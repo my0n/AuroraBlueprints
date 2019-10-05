@@ -30,6 +30,7 @@ let shipInfo dispatch tech ship =
             |> List.map (fun comp ->
                 match comp with
                 | Bridge comp         -> Cards.Bridge.render ship comp dispatch
+                | CargoHold comp      -> Cards.CargoHold.render tech ship comp dispatch
                 | Engine comp         -> Cards.Engine.render ship comp dispatch
                 | FuelStorage comp    -> Cards.FuelStorage.render ship comp dispatch
                 | PowerPlant comp     -> Cards.PowerPlant.render ship comp dispatch
