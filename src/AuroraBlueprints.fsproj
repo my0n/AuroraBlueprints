@@ -27,9 +27,11 @@
     <Compile Include="Nerds\Common.fs" />
     <Compile Include="Nerds\ArmorSizeNerd.fs" />
     <Compile Include="Nerds\ArmorStrengthNerd.fs" />
+    <Compile Include="Nerds\ComponentArmorNerd.fs" />
     <Compile Include="Nerds\CryogenicBerthsNerd.fs" />
     <Compile Include="Nerds\DeployTimeNerd.fs" />
     <Compile Include="Nerds\EnginePowerNerd.fs" />
+    <Compile Include="Nerds\ExplosionChanceNerd.fs" />
     <Compile Include="Nerds\FuelCapacityNerd.fs" />
     <Compile Include="Nerds\FuelConsumptionNerd.fs" />
     <Compile Include="Nerds\MaintenanceClassNerd.fs" />
@@ -38,9 +40,11 @@
     <Compile Include="Nerds\PriceTotalNerd.fs" />
     <Compile Include="Nerds\SensorStrengthNerd.fs" />
     <Compile Include="Nerds\ShipNameNerd.fs" />
+    <Compile Include="Nerds\ShipRangeNerd.fs" />
     <Compile Include="Nerds\SizeNerd.fs" />
     <Compile Include="Nerds\SpareBerthsNerd.fs" />
     <Compile Include="Nerds\ThermalSignatureNerd.fs" />
+    <Compile Include="Nerds\TimeAtFullPowerNerd.fs" />
     <Compile Include="Nerds\TotalCrewNerd.fs" />
     <Compile Include="Nerds\TroopTransportNerd.fs" />
     <Compile Include="Nerds\VelocityNerd.fs" />

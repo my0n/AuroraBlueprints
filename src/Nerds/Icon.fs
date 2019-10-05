@@ -24,6 +24,7 @@ type Icon =
     | UserPlus
     | Snowflake
     | ParachuteBox
+    | Bomb
 
 let inline render ic =
     match ic with
@@ -50,3 +51,4 @@ let inline render ic =
     | UserPlus -> "fas fa-user-plus"
     | Snowflake -> "fas fa-snowflake"
     | ParachuteBox -> "fas fa-parachute-box"
+    | Bomb -> "fas fa-bomb"

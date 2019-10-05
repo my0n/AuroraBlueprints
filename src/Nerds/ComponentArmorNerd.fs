@@ -1,26 +1,25 @@
-module Nerds.FuelCapacityNerd
+module Nerds.ComponentArmorNerd
 
 open Nerds.Icon
 open Nerds.Common
-open Model.Measures
 
-type FuelCapacityNerd =
+type ComponentArmorNerd =
     {
-        FuelCapacity: float<kl>
+        Depth: int
     }
     interface INerd with
         member this.Text
             with get() =
-                sprintf "%.0f" this.FuelCapacity
+                sprintf "%d" this.Depth
         member this.Tooltip
             with get() =
-                sprintf "%.0f kL" this.FuelCapacity
+                sprintf "%d armor" this.Depth
         member this.Icon
             with get() =
-                GasPump
+                Shield
         member this.Render
             with get() = true
         member this.Description
             with get() =
-                sprintf "Fuel Capacity %.0f Litres" <| kl2l this.FuelCapacity
+                sprintf "Armour %d" this.Depth
                 |> Some

@@ -1,13 +1,6 @@
 module Nerds.Common
 
 open Nerds.Icon
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
-
-type NerdRenderer =
-    | NoLabel
-    | IconForm
-    | DescriptiveForm
 
 type INerd =
     abstract member Text: string with get

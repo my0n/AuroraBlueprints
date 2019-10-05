@@ -1,26 +1,25 @@
-module Nerds.FuelCapacityNerd
+module Nerds.ExplosionChanceNerd
 
 open Nerds.Icon
 open Nerds.Common
-open Model.Measures
 
-type FuelCapacityNerd =
+type ExplosionChanceNerd =
     {
-        FuelCapacity: float<kl>
+        ExplosionChance: float
     }
     interface INerd with
         member this.Text
             with get() =
-                sprintf "%.0f" this.FuelCapacity
+                sprintf "%.0f%%" (this.ExplosionChance * 100.0)
         member this.Tooltip
             with get() =
-                sprintf "%.0f kL" this.FuelCapacity
+                sprintf "%.0f%% explosion chance" (this.ExplosionChance * 100.0)
         member this.Icon
             with get() =
-                GasPump
+                Bomb
         member this.Render
             with get() = true
         member this.Description
             with get() =
-                sprintf "Fuel Capacity %.0f Litres" <| kl2l this.FuelCapacity
+                sprintf "Exp %.0f%%" (this.ExplosionChance * 100.0)
                 |> Some

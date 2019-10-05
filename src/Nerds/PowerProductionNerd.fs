@@ -24,4 +24,6 @@ type PowerProductionNerd =
         member this.Render
             with get() = true
         member this.Description
-            with get() = None
+            with get() =
+                sprintf "Total Power Output %.1f" (this.PowerOutput * int2float this.Count)
+                |> Some

@@ -1,26 +1,26 @@
-module Nerds.FuelCapacityNerd
+module Nerds.ShipRangeNerd
 
 open Nerds.Icon
 open Nerds.Common
 open Model.Measures
 
-type FuelCapacityNerd =
+type ShipRangeNerd =
     {
-        FuelCapacity: float<kl>
+        Range: float<km>
     }
     interface INerd with
         member this.Text
             with get() =
-                sprintf "%.0f" this.FuelCapacity
+                sprintf "%.1f" (this.Range / 1000000000.0)
         member this.Tooltip
             with get() =
-                sprintf "%.0f kL" this.FuelCapacity
+                sprintf "%.1f billion km" (this.Range / 1000000000.0)
         member this.Icon
             with get() =
-                GasPump
+                NoIcon
         member this.Render
             with get() = true
         member this.Description
             with get() =
-                sprintf "Fuel Capacity %.0f Litres" <| kl2l this.FuelCapacity
+                sprintf "%.1f billion km" (this.Range / 1000000000.0)
                 |> Some
