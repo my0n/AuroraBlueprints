@@ -45,4 +45,4 @@ let render (ship: Ship) dispatch =
                     (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = Technology.armor.[n] } |> dispatch)
             ]
     let actions = []
-    shipComponentCard header (List.wrap form) actions
+    shipComponentCard "armor" header [ form ] actions

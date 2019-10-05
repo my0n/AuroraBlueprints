@@ -41,4 +41,4 @@ let render (ship: Ship) dispatch =
                 ]
         ]
     let actions = []
-    shipComponentCard header form actions
+    shipComponentCard "crewquarters" header form actions

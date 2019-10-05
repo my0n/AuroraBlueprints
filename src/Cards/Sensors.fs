@@ -104,4 +104,4 @@ let render (ship: Ship) (comp: Sensors) dispatch =
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Sensors comp) |> dispatch)
         ]
-    shipComponentCard header form actions
+    shipComponentCard (comp.Guid.ToString ()) header form actions

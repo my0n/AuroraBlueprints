@@ -22,7 +22,7 @@ let actionBar dispatch =
 let shipInfo dispatch ship =
     match ship with
     | None ->
-        [ div [ ClassName "title is-4" ] [ str "No ship selected." ] ]
+        div [ ClassName "title is-4" ] [ str "No ship selected." ]
     | Some ship ->
         let shipComponents =
             ship.Components
@@ -43,6 +43,7 @@ let shipInfo dispatch ship =
         ]
         @ shipComponents
         @ [ Cards.ShipDescription.render ship ]
+        |> ofList
 
 let root model dispatch =
     let ships = model.AllShips |> Map.values
@@ -91,7 +92,7 @@ let root model dispatch =
             div [ ClassName "column is-8" ]
                 (
                   [ actionBar dispatch ]
-                  @+ div [ ClassName "content" ] (shipInfo dispatch model.CurrentShip)
+                  @+ div [ ClassName "content" ] [ shipInfo dispatch model.CurrentShip ]
                 )
             div [ ClassName "column" ]
                 [ Bulma.Table.render componentListOptions comps None ignore ]

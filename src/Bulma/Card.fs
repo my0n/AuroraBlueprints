@@ -22,6 +22,7 @@ type ColorStatus =
 
 type CardProps =
     {
+        key: string
         HeaderItems: CardHeaderElement list
         Contents: React.ReactElement list
         Actions: (string * ColorStatus * (unit -> unit)) list
@@ -33,11 +34,13 @@ type CardState =
         IsBodyVisible: bool
     }
 
-type private Card(props) =
+type private Card(props) as this =
     inherit React.Component<CardProps, CardState>(props)
-    do base.setInitState({ IsBodyVisible = true })
+    do this.setInitState({ IsBodyVisible = true })
 
-    member this.toggleState _ =
+    let toggleState _ = this.ToggleState
+
+    member this.ToggleState =
         this.setState(fun s p ->
             { s with
                 IsBodyVisible = not s.IsBodyVisible
@@ -48,8 +51,8 @@ type private Card(props) =
         let h =
             let mutable headers = this.props.HeaderItems
             if this.props.HasExpanderToggle then do
-                headers <- headers @ [ Button (AngleDown, this.toggleState) ]
-
+                headers <- headers @ [ Button (AngleDown, toggleState) ]
+            
             match headers
                   |> List.map (fun hi ->
                       match hi with
@@ -74,15 +77,20 @@ type private Card(props) =
                       | NoRender -> None
                   )
                   |> List.choose id with
-            | [] -> None
-            | li -> Some <| header [ ClassName "card-header"
-                                     OnClick (fun event ->
-                                       event.stopPropagation() |> ignore
-                                       event.preventDefault() |> ignore
-                                       this.toggleState event
-                                     )
-                                   ]
-                                   li
+            | [] ->
+                None
+            | li ->
+                header
+                    [
+                        ClassName "card-header"
+                        OnClick (fun event ->
+                            event.stopPropagation() |> ignore
+                            event.preventDefault() |> ignore
+                            toggleState event
+                        )
+                    ]
+                    li
+                |> Some
         let c = div [ classList [ "card-content", true; "is-hidden", not this.state.IsBodyVisible ] ] this.props.Contents
         let f =
             match this.props.Actions with

@@ -32,8 +32,9 @@ let inline private renderHeader header: CardHeaderElement list =
                 |> Info
     )
 
-let shipComponentCard header contents actions =
+let shipComponentCard key header contents actions =
     Bulma.Card.render {
+        key = key
         HeaderItems = renderHeader header
         Contents = contents
         Actions = actions

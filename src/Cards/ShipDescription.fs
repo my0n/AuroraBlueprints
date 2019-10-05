@@ -155,6 +155,7 @@ let render ship =
         |> describe
         |> renderContents
     Bulma.Card.render {
+        key = "description"
         HeaderItems = [ Title "Description" ]
         Contents = [ contents ]
         Actions = []
