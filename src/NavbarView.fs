@@ -16,8 +16,11 @@ let navButton label page currentPage =
 let navButtons currentPage =
     span [ ClassName "navbar-item" ]
          [ div
-             [ ClassName "field is-grouped" ]
-             [ navButton "Ships" Ships currentPage]
+            [ ClassName "field is-grouped" ]
+            [
+                navButton "Ships" Ships currentPage
+                navButton "Tech" Tech currentPage
+            ]
          ]
 
 let root currentPage =

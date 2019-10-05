@@ -36,6 +36,7 @@ let render (ship: Ship) (comp: TroopTransport) dispatch =
                             Value = comp.CompanyTransport
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, TroopTransport { comp with CompanyTransport = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -44,6 +45,7 @@ let render (ship: Ship) (comp: TroopTransport) dispatch =
                             Value = comp.BattalionTransport
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, TroopTransport { comp with BattalionTransport = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -52,6 +54,7 @@ let render (ship: Ship) (comp: TroopTransport) dispatch =
                             Value = comp.CompanyDropModule
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, TroopTransport { comp with CompanyDropModule = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -60,6 +63,7 @@ let render (ship: Ship) (comp: TroopTransport) dispatch =
                             Value = comp.BattalionDropModule
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, TroopTransport { comp with BattalionDropModule = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -68,6 +72,7 @@ let render (ship: Ship) (comp: TroopTransport) dispatch =
                             Value = comp.CompanyCryoDropModule
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, TroopTransport { comp with CompanyCryoDropModule = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -76,6 +81,7 @@ let render (ship: Ship) (comp: TroopTransport) dispatch =
                             Value = comp.BattalionCryoDropModule
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, TroopTransport { comp with BattalionCryoDropModule = n }) |> dispatch)
                 ]

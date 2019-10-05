@@ -31,6 +31,7 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
                             Value = comp.Tiny
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Tiny = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -39,6 +40,7 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
                             Value = comp.Small
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Small = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -47,6 +49,7 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
                             Value = comp.Standard
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Standard = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -55,6 +58,7 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
                             Value = comp.Large
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Large = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -63,6 +67,7 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
                             Value = comp.VeryLarge
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with VeryLarge = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -71,6 +76,7 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
                             Value = comp.UltraLarge
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with UltraLarge = n }) |> dispatch)
                 ]

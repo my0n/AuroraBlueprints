@@ -9,6 +9,7 @@ open App.Model
 let pageParser: Parser<Page->Page,Page> =
     oneOf [
         map Ships (s "ships")
+        map Tech (s "tech")
     ]
 
 let urlUpdate (result : Page option) model =

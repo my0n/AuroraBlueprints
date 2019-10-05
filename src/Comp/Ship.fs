@@ -19,7 +19,7 @@ type Ship =
 
         // armor
         ArmorDepth: int
-        ArmorTechnology: ArmorTech
+        ArmorTechnology: Technology.ArmorTech
 
         // crew
         SpareBerths: int<people>

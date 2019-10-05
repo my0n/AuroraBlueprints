@@ -10,7 +10,7 @@ $family-primary: "Roboto"
 $family-secondary: "Roboto"
 
 $text: #fff
-$text-light: darken($text, 5%)
+$text-light: transparentize($text, 0.7)
 $text-strong: $text
 $title-color: $text
 $label-color: $text
@@ -66,3 +66,15 @@ $card-background-color: $blue
   
 .card-header-subtitle > div > i
   padding-left: 0.25em
+
+input.pseudodisabled
+  color: transparentize(black, .7)
+  background-color: darken(white, 15%)
+  cursor: not-allowed
+
+.label.pseudodisabled
+  color: transparentize($text, .7)
+  cursor: not-allowed
+
+option.pseudodisabled
+  color: transparentize(black, .7)

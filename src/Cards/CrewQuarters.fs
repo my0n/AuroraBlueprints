@@ -36,6 +36,7 @@ let render (ship: Ship) dispatch =
                             Value = ship.SpareBerths
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShip { ship with SpareBerths = n } |> dispatch)
                 ]

@@ -1,5 +1,6 @@
 module App.Msg
 
+open Model.Technology
 open Comp.Ship
 open Comp.ShipComponent
 
@@ -24,3 +25,7 @@ type Msg =
     | CopyComponentToShip of Ship * ShipComponent
     | RemoveComponentFromShip of Ship * ShipComponent
     | ReplaceShipComponent of Ship * ShipComponent
+
+    // Technology
+    | AddTechnology of Tech
+    | RemoveTechnology of Tech

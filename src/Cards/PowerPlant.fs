@@ -40,6 +40,7 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
                             Value = comp.Count
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Count = n }) |> dispatch)
                     Bulma.FC.WithLabel
@@ -71,7 +72,13 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
                             Label = Some "Size"
                             Options =
                                 sizeOptions
-                                |> List.mapi (fun i o -> i, sprintf "%.1f" o)
+                                |> List.mapi (fun i o ->
+                                    {|
+                                        Key = i
+                                        Text = sprintf "%.1f" o
+                                        Disallowed = false
+                                    |}
+                                )
                             Value =
                                 sizeOptions
                                 |> List.tryFindIndex (fun o -> o = comp.Size)
@@ -83,7 +90,13 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
                             Label = Some "Power Plant Technology"
                             Options =
                                 Technology.powerPlant
-                                |> Map.toListV (fun v -> String.Format("{0} ({1} power/HS)", v.Name, v.PowerOutput))
+                                |> Map.mapKvp (fun k v ->
+                                    {|
+                                        Key = k
+                                        Text = String.Format("{0} ({1} power/HS)", v.Name, v.PowerOutput)
+                                        Disallowed = false
+                                    |}
+                                )
                             Value = comp.Technology.Level
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Technology = Technology.powerPlant.[n] }) |> dispatch)
@@ -92,7 +105,13 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
                             Label = Some "Power Boost"
                             Options =
                                 Technology.powerBoost
-                                |> Map.toListV (fun v -> sprintf "Reactor Power Boost %d%%, Explosion %d%%" (int (v.PowerBoost * 100.0)) (int (v.ExplosionChance * 100.0)))
+                                |> Map.mapKvp (fun k v ->
+                                    {|
+                                        Key = k
+                                        Text = sprintf "Reactor Power Boost %d%%, Explosion %d%%" (int (v.PowerBoost * 100.0)) (int (v.ExplosionChance * 100.0))
+                                        Disallowed = false
+                                    |}
+                                )
                             Value = comp.PowerBoost.Level
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with PowerBoost = Technology.powerBoost.[n] }) |> dispatch)

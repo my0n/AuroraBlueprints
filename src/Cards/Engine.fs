@@ -40,6 +40,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
                             Value = comp.Count
                             Min = Some 0
                             Max = None
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Count = n }) |> dispatch)
                     Bulma.FC.WithLabel
@@ -72,6 +73,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
                             Value = comp.Size
                             Min = Some 1
                             Max = Some 50
+                            Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Size = n }) |> dispatch)
                     Bulma.FC.Select
@@ -79,7 +81,13 @@ let render (ship: Ship) (comp: Engine) dispatch =
                             Label = Some "Engine Technology"
                             Options =
                                 Technology.engine
-                                |> Map.toListV (fun v -> String.Format("{0} ({1:0} EP/HS)", v.Name, v.PowerPerHs))
+                                |> Map.mapKvp (fun k v ->
+                                    {|
+                                        Key = k
+                                        Text = String.Format("{0} ({1:0} EP/HS)", v.Name, v.PowerPerHs)
+                                        Disallowed = false
+                                    |}
+                                )
                             Value = comp.EngineTech.Level
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EngineTech = Technology.engine.[n] }) |> dispatch)
@@ -88,7 +96,13 @@ let render (ship: Ship) (comp: Engine) dispatch =
                             Label = Some "Engine Efficiency"
                             Options =
                                 Technology.engineEfficiency
-                                |> Map.toListV (fun v -> sprintf "%.2fx fuel consumption" v.Efficiency)
+                                |> Map.mapKvp (fun k v ->
+                                    {|
+                                        Key = k
+                                        Text = sprintf "%.2fx fuel consumption" v.Efficiency
+                                        Disallowed = false
+                                    |}
+                                )
                             Value = comp.EfficiencyTech.Level
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EfficiencyTech = Technology.engineEfficiency.[n] }) |> dispatch)
@@ -97,7 +111,13 @@ let render (ship: Ship) (comp: Engine) dispatch =
                             Label = Some "Engine Power"
                             Options =
                                 Technology.allPowerMods
-                                |> Map.toListV (fun v -> sprintf "%.2fx engine power" v.PowerMod)
+                                |> Map.mapKvp (fun k v ->
+                                    {|
+                                        Key = k
+                                        Text = sprintf "%.2fx engine power" v.PowerMod
+                                        Disallowed = false
+                                    |}
+                                )
                             Value = comp.PowerModTech.Level
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with PowerModTech = Technology.allPowerMods.[n] }) |> dispatch)
@@ -106,7 +126,13 @@ let render (ship: Ship) (comp: Engine) dispatch =
                             Label = Some "Thermal Efficiency"
                             Options =
                                 Technology.thermalEfficiency
-                                |> Map.toListV (fun v -> v.Name)
+                                |> Map.mapKvp (fun k v ->
+                                    {|
+                                        Key = k
+                                        Text = v.Name
+                                        Disallowed = false
+                                    |}
+                                )
                             Value = comp.ThermalEfficiencyTech.Level
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with ThermalEfficiencyTech = Technology.thermalEfficiency.[n] }) |> dispatch)

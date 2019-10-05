@@ -3,17 +3,18 @@ module Cards.Armor
 open Global
 open App.Msg
 open Cards.Common
-open Model.Measures
 open Comp.Ship
-open Model.Technology
 open System
+
+open Model.Measures
+open Model.Technology
 
 open Nerds.ArmorSizeNerd
 open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (ship: Ship) dispatch =
+let render (tech: Set<Tech>) (ship: Ship) dispatch =
     let header =
         [
             Name <| sprintf "%s Armor" ship.ArmorTechnology.Name
@@ -32,6 +33,7 @@ let render (ship: Ship) dispatch =
                         Value = ship.ArmorDepth
                         Min = Some 1
                         Max = None
+                        Disabled = false
                     }
                     (fun n -> Msg.ReplaceShip { ship with ArmorDepth = n } |> dispatch)
                 Bulma.FC.Select
@@ -39,7 +41,13 @@ let render (ship: Ship) dispatch =
                         Label = Some "Armor Technology"
                         Options =
                             Technology.armor
-                            |> Map.toListV (fun v -> String.Format("{0} ({1:0} strength/HS)", v.Name, v.Strength))
+                            |> Map.mapKvp (fun k v ->
+                                {|
+                                    Key = k
+                                    Text = String.Format("{0} ({1:0} strength/HS)", v.Name, v.Strength)
+                                    Disallowed = not <| tech.Contains v.Tech
+                                |}
+                            )
                         Value = ship.ArmorTechnology.Level
                     }
                     (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = Technology.armor.[n] } |> dispatch)

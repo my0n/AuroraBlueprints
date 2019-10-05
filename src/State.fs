@@ -22,6 +22,7 @@ let init result =
                                 %+ Comp.ShipComponent.PowerPlant     Comp.PowerPlant.PowerPlant.Zero
                                 %+ Comp.ShipComponent.Sensors        Comp.Sensors.Sensors.Zero
                                 %+ Comp.ShipComponent.TroopTransport Comp.TroopTransport.TroopTransport.Zero
+                CurrentTechnology = Set.empty
             }
 
     model, Cmd.batch [ cmd ]
@@ -86,3 +87,9 @@ let update msg model =
         model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %- shipComponent })
     | ReplaceShipComponent (ship, shipComponent) ->
         model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent })
+
+    // Technologies
+    | AddTechnology tech ->
+        { model with CurrentTechnology = model.CurrentTechnology |> Set.add tech }, Cmd.none
+    | RemoveTechnology tech ->
+        { model with CurrentTechnology = model.CurrentTechnology |> Set.remove tech }, Cmd.none

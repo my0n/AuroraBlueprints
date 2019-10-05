@@ -19,6 +19,11 @@ type FieldOpts =
     | HasAddons = 2
 
 [<Flags>]
+type LabelOpts =
+    | Empty = 0
+    | IsDisallowed = 1
+
+[<Flags>]
 type FieldLabelOpts =
     | Empty = 0
     | IsNormal = 1
@@ -70,8 +75,11 @@ let HorizontalGroup lbl els =
     |> optLbl lbl (FieldLabel FieldLabelOpts.IsNormal)
     |> Field FieldOpts.IsHorizontal
     
-let Label lbl =
-    label [ ClassName "label" ] [ str lbl ]
+let Label (opts: LabelOpts) lbl =
+    div [ classList [ "label", true
+                      "pseudodisabled", opts.HasFlag LabelOpts.IsDisallowed
+                    ]
+        ] [ str lbl ]
 
 type FltInpOptions<[<Measure>] 'a> =
     {
@@ -93,7 +101,7 @@ let FloatInput (opts: FltInpOptions<'a>) (cb: float<'a> -> unit) =
     |> List.wrap
     |> Control ControlOpts.IsSmall
     |> List.wrap
-    |> optLbl opts.Label Label
+    |> optLbl opts.Label (Label LabelOpts.Empty)
     |> Control ControlOpts.Empty
 
 type IntInpOptions<[<Measure>] 'a> =
@@ -102,10 +110,11 @@ type IntInpOptions<[<Measure>] 'a> =
         Min: int option
         Max: int option
         Value: int<'a>
+        Disabled: bool
     }
 
 let IntInput (opts: IntInpOptions<'a>) (cb: int<'a> -> unit) =
-    input [ ClassName "input"
+    input [ classList [ "input", true; "pseudodisabled", opts.Disabled ]
             Type "number"
             Value opts.Value
             Min opts.Min
@@ -119,7 +128,14 @@ let IntInput (opts: IntInpOptions<'a>) (cb: int<'a> -> unit) =
     |> List.wrap
     |> Control ControlOpts.IsSmall
     |> List.wrap
-    |> optLbl opts.Label Label
+    |> (fun c ->
+        let lblOpts =
+            match opts.Disabled with
+            | true -> LabelOpts.IsDisallowed
+            | false -> LabelOpts.Empty
+        c
+        |> optLbl opts.Label (Label lblOpts)
+    )
     |> Control ControlOpts.Empty
 
 let TextInput value cb =
@@ -135,8 +151,25 @@ let WithLabel lbl els =
     els
     |> Control ControlOpts.Empty
     |> List.wrap
-    |> List.append [ Label lbl ]
+    |> List.append [ Label LabelOpts.Empty lbl ]
     |> Control ControlOpts.Empty
+
+type CheckboxOptions =
+    {
+        Disabled: bool
+        Checked: bool
+        Label: string
+    }
+
+let Checkbox opts cb =
+    label [ ClassName "checkbox"; Disabled opts.Disabled ]
+          [ input [ Type "checkbox"
+                    OnChange (fun event -> cb event.Checked)
+                    Disabled opts.Disabled
+                    Checked opts.Checked
+                  ]
+            str opts.Label
+          ]
 
 let Radio name lbl cb =
     label [ ClassName "radio" ]
@@ -155,7 +188,7 @@ let RadioGroup opts =
 type SelectOptions =
     {
         Label: string option
-        Options: (int * string) list
+        Options: {| Key: int; Text: string; Disallowed: bool |} list
         Value: int
     }
 
@@ -168,15 +201,15 @@ let Select opts cb =
                             )
                  ]
                  (opts.Options
-                  |> List.map (fun (k, v) ->
-                    option [ Value k; Selected (k = opts.Value) ] [ str v ]
+                  |> List.map (fun o ->
+                    option [ classList [ "pseudodisabled", o.Disallowed ]; Value o.Key; Selected (o.Key = opts.Value) ] [ str o.Text ]
                   )
                  )
         ]
     |> List.wrap
     |> Control ControlOpts.IsExpanded
     |> List.wrap
-    |> optLbl opts.Label Label
+    |> optLbl opts.Label (Label LabelOpts.Empty)
     |> Control ControlOpts.Empty
 
 let AddonGroup els = Field FieldOpts.HasAddons els

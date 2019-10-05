@@ -19,7 +19,7 @@ let actionBar dispatch =
         [ Bulma.Button.render "New Ship" (fun _ -> Msg.NewShip |> dispatch)
         ]
 
-let shipInfo dispatch ship =
+let shipInfo dispatch tech ship =
     match ship with
     | None ->
         div [ ClassName "title is-4" ] [ str "No ship selected." ]
@@ -33,12 +33,12 @@ let shipInfo dispatch ship =
                 | Engine comp         -> Cards.Engine.render ship comp dispatch
                 | FuelStorage comp    -> Cards.FuelStorage.render ship comp dispatch
                 | PowerPlant comp     -> Cards.PowerPlant.render ship comp dispatch
-                | Sensors comp        -> Cards.Sensors.render ship comp dispatch
+                | Sensors comp        -> Cards.Sensors.render tech ship comp dispatch
                 | TroopTransport comp -> Cards.TroopTransport.render ship comp dispatch
             )
 
         [ Cards.Classification.render ship dispatch
-          Cards.Armor.render ship dispatch
+          Cards.Armor.render tech ship dispatch
           Cards.CrewQuarters.render ship dispatch
         ]
         @ shipComponents
@@ -92,7 +92,7 @@ let root model dispatch =
             div [ ClassName "column is-8" ]
                 (
                   [ actionBar dispatch ]
-                  @+ div [ ClassName "content" ] [ shipInfo dispatch model.CurrentShip ]
+                  @+ div [ ClassName "content" ] [ shipInfo dispatch model.CurrentTechnology model.CurrentShip ]
                 )
             div [ ClassName "column" ]
                 [ Bulma.Table.render componentListOptions comps None ignore ]

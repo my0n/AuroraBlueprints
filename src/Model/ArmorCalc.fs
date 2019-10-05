@@ -23,7 +23,7 @@ type ArmorCalculation =
                 Width = 0
             }
 
-let private increaseCoverage shipSize (technology: ArmorTech) calc layer =
+let private increaseCoverage shipSize (technology: Technology.ArmorTech) calc layer =
     let area =
         int2float calc.Volume
         |> hs2sa

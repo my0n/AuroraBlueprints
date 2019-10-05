@@ -31,6 +31,7 @@ let render (ship: Ship) (comp: Bridge) dispatch =
                         Value = comp.Count
                         Min = Some 0
                         Max = None
+                        Disabled = false
                     }
                     (fun n -> Msg.ReplaceShipComponent (ship, Bridge { comp with Count = n }) |> dispatch)
             ]

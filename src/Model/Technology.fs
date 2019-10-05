@@ -3,21 +3,11 @@ module Model.Technology
 open Model.Measures
 open Global
 
-type ArmorLevel = int
 type EngineLevel = int
 type EngineEfficiencyLevel = int
 type PowerModLevel = int
 type PowerBoostLevel = int
 type ThermalEfficiencyLevel = int
-
-type ArmorTech =
-    {
-        Level: ArmorLevel
-        Name: string
-        Strength: float<armorStrength/hs>
-        DuraniumRatio: float
-        NeutroniumRatio: float
-    }
 
 type EngineTech =
     {
@@ -60,24 +50,249 @@ type ThermalEfficiencyTech =
         CostMultiplier: float
     }
 
+type TechCategory =
+    | DefensiveSystems
+    | SensorsAndFireControl
+
+type Tech =
+    | GeologicalSurveySensors
+    | ImprovedGeologicalSensors
+    | AdvancedGeologicalSensors
+    | PhasedGeologicalSensors
+    | GravitationalSurveySensors
+    | ImprovedGravitationalSensors
+    | AdvancedGravitationalSensors
+    | PhasedGravitationalSensors
+    | ConventionalArmor
+    | DuraniumArmor
+    | HighDensityDuraniumArmor
+    | CompositeArmor
+    | CeramicCompositeArmor
+    | LaminateCompositeArmor
+    | CompressedCarbonArmor
+    | BiphaseCarbideArmor
+    | CrystallineCompositeArmor
+    | SuperdenseArmor
+    | BondedSuperdenseArmor
+    | CoherentSuperdenseArmor
+    | CollapsiumArmor
+
+type TechType =
+    | SurveySensor
+    | Armor of {| Strength: float<armorStrength/hs>; DuraniumRatio: float; NeutroniumRatio: float |}
+
+type TechNode =
+    {
+        Tech: Tech
+        Name: string
+        Cost: int<rp>
+        Category: TechCategory
+        Type: TechType
+        Parents: Tech list
+    }
+
+let allTechnologies =
+    [
+        //#region Survey sensors
+        {
+            Tech = GeologicalSurveySensors
+            Name = "Geological Survey Sensors"
+            Cost = 1000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = []
+        }
+        {
+            Tech = ImprovedGeologicalSensors
+            Name = "Improved Geological Sensors"
+            Cost = 10000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = [GeologicalSurveySensors]
+        }
+        {
+            Tech = AdvancedGeologicalSensors
+            Name = "Advanced Geological Sensors"
+            Cost = 35000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = [ImprovedGeologicalSensors]
+        }
+        {
+            Tech = PhasedGeologicalSensors
+            Name = "Phased Geological Sensors"
+            Cost = 100000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = [AdvancedGeologicalSensors]
+        }
+        {
+            Tech = GravitationalSurveySensors
+            Name = "Gravitational Survey Sensors"
+            Cost = 2000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = []
+        }
+        {
+            Tech = ImprovedGravitationalSensors
+            Name = "Improved Gravitational Sensors"
+            Cost = 10000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = [GravitationalSurveySensors]
+        }
+        {
+            Tech = AdvancedGravitationalSensors
+            Name = "Advanced Gravitational Sensors"
+            Cost = 35000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = [ImprovedGravitationalSensors]
+        }
+        {
+            Tech = PhasedGravitationalSensors
+            Name = "Phased Gravitational Sensors"
+            Cost = 100000<rp>
+            Category = SensorsAndFireControl
+            Type = SurveySensor
+            Parents = [AdvancedGravitationalSensors]
+        }
+        //#endregion
+        //#region Armor
+        {
+            Tech = ConventionalArmor
+            Name = "Conventional Armor"
+            Cost = 250<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 2.0<armorStrength/hs>; DuraniumRatio = 1.0; NeutroniumRatio = 0.0 |}
+            Parents = []
+        }
+        {
+            Tech = DuraniumArmor
+            Name = "Duranium Armor"
+            Cost = 500<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 5.0<armorStrength/hs>; DuraniumRatio = 1.0; NeutroniumRatio = 0.0 |}
+            Parents = [ConventionalArmor]
+        }
+        {
+            Tech = HighDensityDuraniumArmor
+            Name = "High Density Duranium Armor"
+            Cost = 2500<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 6.0<armorStrength/hs>; DuraniumRatio = 1.0; NeutroniumRatio = 0.0 |}
+            Parents = [DuraniumArmor]
+        }
+        {
+            Tech = CompositeArmor
+            Name = "Composite Armor"
+            Cost = 5000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 8.0<armorStrength/hs>; DuraniumRatio = 1.0; NeutroniumRatio = 0.0 |}
+            Parents = [HighDensityDuraniumArmor]
+        }
+        {
+            Tech = CeramicCompositeArmor
+            Name = "Ceramic Composite Armor"
+            Cost = 10000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 10.0<armorStrength/hs>; DuraniumRatio = 0.9; NeutroniumRatio = 0.1 |}
+            Parents = [CompositeArmor]
+        }
+        {
+            Tech = LaminateCompositeArmor
+            Name = "Laminate Composite Armor"
+            Cost = 20000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 12.0<armorStrength/hs>; DuraniumRatio = 0.8; NeutroniumRatio = 0.2 |}
+            Parents = [CeramicCompositeArmor]
+        }
+        {
+            Tech = CompressedCarbonArmor
+            Name = "Compressed Carbon Armor"
+            Cost = 40000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 15.0<armorStrength/hs>; DuraniumRatio = 0.7; NeutroniumRatio = 0.3 |}
+            Parents = [LaminateCompositeArmor]
+        }
+        {
+            Tech = BiphaseCarbideArmor
+            Name = "Biphase Carbide Armor"
+            Cost = 80000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 18.0<armorStrength/hs>; DuraniumRatio = 0.6; NeutroniumRatio = 0.4 |}
+            Parents = [CompressedCarbonArmor]
+        }
+        {
+            Tech = CrystallineCompositeArmor
+            Name = "Crystalline Composite Armor"
+            Cost = 150000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 21.0<armorStrength/hs>; DuraniumRatio = 0.5; NeutroniumRatio = 0.5 |}
+            Parents = [BiphaseCarbideArmor]
+        }
+        {
+            Tech = SuperdenseArmor
+            Name = "Superdense Armor"
+            Cost = 300000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 25.0<armorStrength/hs>; DuraniumRatio = 0.4; NeutroniumRatio = 0.6 |}
+            Parents = [CrystallineCompositeArmor]
+        }
+        {
+            Tech = BondedSuperdenseArmor
+            Name = "Bonded Superdense Armor"
+            Cost = 600000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 30.0<armorStrength/hs>; DuraniumRatio = 0.3; NeutroniumRatio = 0.7 |}
+            Parents = [SuperdenseArmor]
+        }
+        {
+            Tech = CoherentSuperdenseArmor
+            Name = "Coherent Superdense Armor"
+            Cost = 1250000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 36.0<armorStrength/hs>; DuraniumRatio = 0.2; NeutroniumRatio = 0.8 |}
+            Parents = [BondedSuperdenseArmor]
+        }
+        {
+            Tech = CollapsiumArmor
+            Name = "Collapsium Armor"
+            Cost = 2500000<rp>
+            Category = DefensiveSystems
+            Type = Armor {| Strength = 45.0<armorStrength/hs>; DuraniumRatio = 0.1; NeutroniumRatio = 0.9 |}
+            Parents = [CoherentSuperdenseArmor]
+        }
+        //#endregion
+    ]
+
 module Technology =
-    let armor =
-        [
-            { Level = 0;  Name = "Conventional";          Strength = 2.0<armorStrength/hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
-            { Level = 1;  Name = "Duranium";              Strength = 5.0<armorStrength/hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
-            { Level = 2;  Name = "High Density Duranium"; Strength = 6.0<armorStrength/hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
-            { Level = 3;  Name = "Composite";             Strength = 8.0<armorStrength/hs>;  DuraniumRatio = 1.0; NeutroniumRatio = 0.0; }
-            { Level = 4;  Name = "Ceramic Composite";     Strength = 10.0<armorStrength/hs>; DuraniumRatio = 0.9; NeutroniumRatio = 0.1; }
-            { Level = 5;  Name = "Laminate Composite";    Strength = 12.0<armorStrength/hs>; DuraniumRatio = 0.8; NeutroniumRatio = 0.2; }
-            { Level = 6;  Name = "Compressed Carbon";     Strength = 15.0<armorStrength/hs>; DuraniumRatio = 0.7; NeutroniumRatio = 0.3; }
-            { Level = 7;  Name = "Biphase Carbide";       Strength = 18.0<armorStrength/hs>; DuraniumRatio = 0.6; NeutroniumRatio = 0.4; }
-            { Level = 8;  Name = "Crystalline Composite"; Strength = 21.0<armorStrength/hs>; DuraniumRatio = 0.5; NeutroniumRatio = 0.5; }
-            { Level = 9;  Name = "Superdense";            Strength = 25.0<armorStrength/hs>; DuraniumRatio = 0.4; NeutroniumRatio = 0.6; }
-            { Level = 10; Name = "Bonded Superdense";     Strength = 30.0<armorStrength/hs>; DuraniumRatio = 0.3; NeutroniumRatio = 0.7; }
-            { Level = 11; Name = "Coherent Superdense";   Strength = 36.0<armorStrength/hs>; DuraniumRatio = 0.2; NeutroniumRatio = 0.8; }
-            { Level = 12; Name = "Collapsium";            Strength = 45.0<armorStrength/hs>; DuraniumRatio = 0.1; NeutroniumRatio = 0.9; }
-        ]
-        |> List.map (fun e -> e.Level, e) |> Map.ofSeq
+    type ArmorLevel = int
+    type ArmorTech =
+        {|
+            Level: ArmorLevel
+            Name: string
+            Strength: float<armorStrength/hs>
+            DuraniumRatio: float
+            NeutroniumRatio: float
+            Tech: Tech
+        |}
+    let private _armor =
+        lazy (
+            allTechnologies
+            |> List.map (fun t ->
+                match t.Type with
+                | Armor a -> Some {| a with Name = t.Name; Tech = t.Tech |}
+                | _ -> None
+            )
+            |> List.choose id
+            |> List.sortBy (fun t -> t.Strength)
+            |> List.mapi (fun i t -> {| t with Level = i |})
+            |> List.map (fun e -> e.Level, e)
+            |> Map.ofSeq
+        )
+    let armor = _armor.Value
 
     let engine =
         [
@@ -235,8 +450,10 @@ module Technology =
             { Level = 12; ThermalEfficiency = 0.01<therm/ep>; Name = ""; CostMultiplier = 4.00 }
         ]
         |> List.map (fun te ->
-            { te with
-                Name = sprintf "Thermal Reduction: Signature %d%% Normal" <| int (te.ThermalEfficiency * 100.0)
-            }
+            let te =
+                { te with
+                    Name = sprintf "Thermal Reduction: Signature %d%% Normal" <| int (te.ThermalEfficiency * 100.0)
+                }
+            te.Level, te
         )
-        |> List.map (fun e -> e.Level, e) |> Map.ofSeq
+        |> Map.ofSeq

@@ -21,6 +21,7 @@ module Map =
         |> List.map (fun (k, v) ->
             (k, vfn v)
         )
+    let inline mapKvp fn = Map.toSeq >> Seq.map (fun (k, v) -> fn k v) >> Seq.toList
     
 let inline (@+) (l: 'a list) (a: 'a) = l @ [a]
 let inline (@+?) (l: 'a list) (a: 'a option) = l @ (match a with Some a -> [a] | None -> [])
