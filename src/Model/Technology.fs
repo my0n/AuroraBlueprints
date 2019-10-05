@@ -35,13 +35,6 @@ type PowerBoostTech =
         ExplosionChance: float
     }
 
-type PowerPlantTech =
-    {
-        Level: PowerBoostLevel
-        Name: string
-        PowerOutput: float<power/hs>
-    }
-
 type ThermalEfficiencyTech =
     {
         Level: ThermalEfficiencyLevel
@@ -53,6 +46,7 @@ type ThermalEfficiencyTech =
 type TechCategory =
     | DefensiveSystems
     | LogisticsAndGroundCombat
+    | PowerAndPropulsion
     | SensorsAndFireControl
 
 type Tech =
@@ -80,11 +74,24 @@ type Tech =
     | ImprovedCargoHandlingSystem
     | AdvancedCargoHandlingSystem
     | GravAssistedCargoHandlingSystem
+    | PressurizedWaterReactor
+    | PebbleBedReactor
+    | GasCooledFastReactor
+    | StellaratorFusionReactor
+    | TokamakFusionReactor
+    | MagneticConfinementFusionReactor
+    | InertialConfinementFusionReactor
+    | SolidcoreAntimatterPowerPlant
+    | GascoreAntimatterPowerPlant
+    | PlasmacoreAntimatterPowerPlant
+    | BeamCoreAntimatterPowerPlant
+    | VacuumEnergyPowerPlant
 
 type TechType =
-    | SurveySensor
     | Armor of {| Strength: float<armorStrength/hs>; DuraniumRatio: float; NeutroniumRatio: float |}
     | CargoHandling of {| TractorStrength: float |}
+    | Reactor of {| PowerOutput: float<power/hs> |}
+    | SurveySensor
 
 type TechNode =
     {
@@ -296,9 +303,108 @@ let allTechnologies =
             Parents = [AdvancedCargoHandlingSystem]
         }
         //#endregion
+        //#region Reactors
+        {
+            Tech = PressurizedWaterReactor
+            Name = "Pressurized Water Reactor"
+            Cost = 1500<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 2.0<power/hs> |}
+            Parents = []
+        }
+        {
+            Tech = PebbleBedReactor
+            Name = "Pebble Bed Reactor"
+            Cost = 3000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 3.0<power/hs> |}
+            Parents = [PressurizedWaterReactor]
+        }
+        {
+            Tech = GasCooledFastReactor
+            Name = "Gas-Cooled Fast Reactor"
+            Cost = 6000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 4.5<power/hs> |}
+            Parents = [PebbleBedReactor]
+        }
+        {
+            Tech = StellaratorFusionReactor
+            Name = "Stellarator Fusion Reactor"
+            Cost = 12000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 6.0<power/hs> |}
+            Parents = [GasCooledFastReactor]
+        }
+        {
+            Tech = TokamakFusionReactor
+            Name = "Tokamak Fusion Reactor"
+            Cost = 24000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 8.0<power/hs> |}
+            Parents = [StellaratorFusionReactor]
+        }
+        {
+            Tech = MagneticConfinementFusionReactor
+            Name = "Magnetic Confinement Fusion Reactor"
+            Cost = 45000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 10.0<power/hs> |}
+            Parents = [TokamakFusionReactor]
+        }
+        {
+            Tech = InertialConfinementFusionReactor
+            Name = "Inertial Confinement Fusion Reactor"
+            Cost = 90000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 12.0<power/hs> |}
+            Parents = [MagneticConfinementFusionReactor]
+        }
+        {
+            Tech = SolidcoreAntimatterPowerPlant
+            Name = "Solid-core Anti-matter Power Plant"
+            Cost = 180000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 16.0<power/hs> |}
+            Parents = [InertialConfinementFusionReactor]
+        }
+        {
+            Tech = GascoreAntimatterPowerPlant
+            Name = "Gas-core Anti-matter Power Plant"
+            Cost = 375000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 20.0<power/hs> |}
+            Parents = [SolidcoreAntimatterPowerPlant]
+        }
+        {
+            Tech = PlasmacoreAntimatterPowerPlant
+            Name = "Plasma-core Anti-matter Power Plant"
+            Cost = 750000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 24.0<power/hs> |}
+            Parents = [GascoreAntimatterPowerPlant]
+        }
+        {
+            Tech = BeamCoreAntimatterPowerPlant
+            Name = "Beam Core Anti-matter Power Plant"
+            Cost = 1500000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 32.0<power/hs> |}
+            Parents = [PlasmacoreAntimatterPowerPlant]
+        }
+        {
+            Tech = VacuumEnergyPowerPlant
+            Name = "Vacuum Energy Power Plant"
+            Cost = 3000000<rp>
+            Category = PowerAndPropulsion
+            Type = Reactor {| PowerOutput = 40.0<power/hs> |}
+            Parents = [BeamCoreAntimatterPowerPlant]
+        }
+        //#endregion
     ]
 
 module Technology =
+    //#region Armor
     type ArmorLevel = int
     type ArmorTech =
         {|
@@ -324,6 +430,32 @@ module Technology =
             |> Map.ofSeq
         )
     let armor = _armor.Value
+    //#endregion
+    //#region Reactors
+    type PowerPlantLevel = int
+    type PowerPlantTech =
+        {|
+            Level: ArmorLevel
+            Name: string
+            PowerOutput: float<power/hs>
+            Tech: Tech
+        |}
+    let private _powerPlant =
+        lazy (
+            allTechnologies
+            |> List.map (fun t ->
+                match t.Type with
+                | Reactor a -> Some {| a with Name = t.Name; Tech = t.Tech |}
+                | _ -> None
+            )
+            |> List.choose id
+            |> List.sortBy (fun t -> t.PowerOutput)
+            |> List.mapi (fun i t -> {| t with Level = i |})
+            |> List.map (fun e -> e.Level, e)
+            |> Map.ofSeq
+        )
+    let powerPlant = _powerPlant.Value
+    //#endregion
 
     let engine =
         [
@@ -444,23 +576,6 @@ module Technology =
             { Level = 6; PowerBoost = 0.30; ExplosionChance = 0.25 }
             { Level = 7; PowerBoost = 0.40; ExplosionChance = 0.30 }
             { Level = 8; PowerBoost = 0.50; ExplosionChance = 0.35 }
-        ]
-        |> List.map (fun e -> e.Level, e) |> Map.ofSeq
-
-    let powerPlant =
-        [
-            { Level = 0;  Name = "Pressurized Water Reactor";           PowerOutput = 2.0<power/hs> }
-            { Level = 1;  Name = "Pebble Bed Reactor";                  PowerOutput = 3.0<power/hs> }
-            { Level = 2;  Name = "Gas-Cooled Fast Reactor";             PowerOutput = 4.5<power/hs> }
-            { Level = 3;  Name = "Stellarator Fusion Reactor";          PowerOutput = 6.0<power/hs> }
-            { Level = 4;  Name = "Tokamak Fusion Reactor";              PowerOutput = 8.0<power/hs> }
-            { Level = 5;  Name = "Magnetic Confinement Fusion Reactor"; PowerOutput = 10.0<power/hs> }
-            { Level = 6;  Name = "Inertial Confinement Fusion Reactor"; PowerOutput = 12.0<power/hs> }
-            { Level = 7;  Name = "Solid-core Anti-matter Power Plant";  PowerOutput = 16.0<power/hs> }
-            { Level = 8;  Name = "Gas-core Anti-matter Power Plant";    PowerOutput = 20.0<power/hs> }
-            { Level = 9;  Name = "Plasma-core Anti-matter Power Plant"; PowerOutput = 24.0<power/hs> }
-            { Level = 10; Name = "Beam Core Anti-matter Power Plant";   PowerOutput = 32.0<power/hs> }
-            { Level = 11; Name = "Vacuum Energy Power Plant";           PowerOutput = 40.0<power/hs> }
         ]
         |> List.map (fun e -> e.Level, e) |> Map.ofSeq
 

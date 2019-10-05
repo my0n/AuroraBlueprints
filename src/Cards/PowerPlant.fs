@@ -16,7 +16,7 @@ open Nerds.PriceNerd
 open Nerds.SizeNerd
 open Nerds.PowerProductionNerd
 
-let render (ship: Ship) (comp: PowerPlant) dispatch =
+let render (tech: Set<Tech>) (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name
@@ -94,7 +94,7 @@ let render (ship: Ship) (comp: PowerPlant) dispatch =
                                     {|
                                         Key = k
                                         Text = String.Format("{0} ({1} power/HS)", v.Name, v.PowerOutput)
-                                        Disallowed = false
+                                        Disallowed = not <| tech.Contains v.Tech
                                     |}
                                 )
                             Value = comp.Technology.Level

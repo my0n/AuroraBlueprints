@@ -15,7 +15,7 @@ type PowerPlant =
         Count: int<comp>
         Size: float<hs/comp>
         PowerBoost: PowerBoostTech
-        Technology: PowerPlantTech
+        Technology: Technology.PowerPlantTech
     }
     static member Zero
         with get() =

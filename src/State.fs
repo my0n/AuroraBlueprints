@@ -8,6 +8,8 @@ open App.Model
 open App.Msg
 open Comp.Ship
 
+open Model.Technology
+
 let init result =
     let (model, cmd) =
         PageState.urlUpdate result
@@ -93,4 +95,14 @@ let update msg model =
     | AddTechnology tech ->
         { model with CurrentTechnology = model.CurrentTechnology |> Set.add tech }, Cmd.none
     | RemoveTechnology tech ->
-        { model with CurrentTechnology = model.CurrentTechnology |> Set.remove tech }, Cmd.none
+        let rec parents unchk chk =
+            match unchk with
+            | [] -> chk
+            | x::xs ->
+                let p =
+                    allTechnologies
+                    |> List.filter (fun t -> t.Parents |> List.contains x)
+                    |> List.map (fun t -> t.Tech)
+                    |> List.filter model.CurrentTechnology.Contains
+                parents (xs @ p) (chk @ [x])
+        { model with CurrentTechnology = Set.difference model.CurrentTechnology (Set.ofList <| parents [tech] []) }, Cmd.none
