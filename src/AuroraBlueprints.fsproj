@@ -72,11 +72,6 @@
     <Compile Include="NavbarView.fs" />
     <Compile Include="PageState.fs" />
     <Compile Include="State.fs" />
-    <!-- Info -->
-    <!-- Counter -->
-    <!-- Home -->
-    <!-- Navbar -->
-    <!-- App -->
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
