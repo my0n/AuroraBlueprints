@@ -11,6 +11,13 @@ module List =
         Seq.map fn
         >> Seq.choose id
         >> Seq.tryFind (fun _ -> true)
+    let inline withPrev l =
+        l
+        |> List.mapi (fun i a ->
+            match i with
+            | 0 -> (None, a)
+            | _ -> (Some l.[i - 1], a)
+        )
 
 module Map =
     let inline keys m = m |> Map.toList |> List.map (fun (a, b) -> a)

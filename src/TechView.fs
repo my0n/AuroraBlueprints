@@ -5,7 +5,6 @@ open Fable.Helpers.React.Props
 
 open Global
 
-open Model.Technology
 open Model.Measures
 open App.Model
 open App.Msg
@@ -23,7 +22,7 @@ let changeTech value tech =
     | false ->
         RemoveTechnology tech
 
-let techs all current dispatch =
+let techs (all: Technology.TechNode list) current dispatch =
     all
     |> List.map (fun tech ->
         let researched =
@@ -57,6 +56,6 @@ let root model dispatch =
     div [ ClassName "columns" ]
         [
             div [ ClassName "column is-2" ] [ ]
-            div [ ClassName "column is-8" ] [ techs allTechnologies model.CurrentTechnology dispatch ]
+            div [ ClassName "column is-8" ] [ techs Technology.allTechnologies model.CurrentTechnology dispatch ]
             div [ ClassName "column" ] [ ]
         ]

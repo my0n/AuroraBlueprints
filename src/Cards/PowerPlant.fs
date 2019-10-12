@@ -8,7 +8,6 @@ open Model.Measures
 open Comp.PowerPlant
 open Comp.ShipComponent
 open Comp.Ship
-open Model.Technology
 open System
 open Global
 
@@ -16,7 +15,7 @@ open Nerds.PriceNerd
 open Nerds.SizeNerd
 open Nerds.PowerProductionNerd
 
-let render (tech: Set<Tech>) (ship: Ship) (comp: PowerPlant) dispatch =
+let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name

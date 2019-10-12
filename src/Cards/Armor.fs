@@ -7,14 +7,13 @@ open Comp.Ship
 open System
 
 open Model.Measures
-open Model.Technology
 
 open Nerds.ArmorSizeNerd
 open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (tech: Set<Tech>) (ship: Ship) dispatch =
+let render (tech: Set<Technology.Tech>) (ship: Ship) dispatch =
     let header =
         [
             Name ship.ArmorTechnology.Name

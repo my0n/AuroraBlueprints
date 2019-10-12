@@ -2,7 +2,6 @@ module App.Model
 
 open System
 
-open Model.Technology
 open Comp.Ship
 open Comp.ShipComponent
 
@@ -21,7 +20,7 @@ type Model =
         CurrentShip: Ship option
         AllShips: Map<Guid, Ship>
         AllComponents: Map<Guid, ShipComponent>
-        CurrentTechnology: Set<Tech>
+        CurrentTechnology: Set<Technology.Tech>
     }
     static member empty =
         {

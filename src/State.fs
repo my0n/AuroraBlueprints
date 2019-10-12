@@ -8,8 +8,6 @@ open App.Model
 open App.Msg
 open Comp.Ship
 
-open Model.Technology
-
 let init result =
     let (model, cmd) =
         PageState.urlUpdate result
@@ -100,7 +98,7 @@ let update msg model =
             | [] -> chk
             | x::xs ->
                 let p =
-                    allTechnologies
+                    Technology.allTechnologies
                     |> List.filter (fun t -> t.Parents |> List.contains x)
                     |> List.map (fun t -> t.Tech)
                     |> List.filter model.CurrentTechnology.Contains

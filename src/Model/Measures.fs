@@ -8,6 +8,7 @@ open System
 [<Measure>] type ton
 [<Measure>] type armorStrength
 [<Measure>] type hs
+[<Measure>] type ammo
 [<Measure>] type hsSA
 [<Measure>] type km
 [<Measure>] type therm

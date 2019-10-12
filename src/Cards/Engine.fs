@@ -8,7 +8,6 @@ open System
 open App.Msg
 open Bulma.Card
 open Cards.Common
-open Model.Technology
 open Comp.Engine
 open Comp.ShipComponent
 open Comp.Ship
@@ -19,7 +18,7 @@ open Nerds.SizeNerd
 open Nerds.EnginePowerNerd
 open Nerds.FuelConsumptionNerd
 
-let render (ship: Ship) (comp: Engine) dispatch =
+let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
@@ -85,7 +84,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
                                     {|
                                         Key = k
                                         Text = String.Format("{0} ({1:0} EP/HS)", v.Name, v.PowerPerHs)
-                                        Disallowed = false
+                                        Disallowed = not <| tech.Contains v.Tech
                                     |}
                                 )
                             Value = comp.EngineTech.Level
@@ -100,7 +99,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
                                     {|
                                         Key = k
                                         Text = sprintf "%.2fx fuel consumption" v.Efficiency
-                                        Disallowed = false
+                                        Disallowed = not <| tech.Contains v.Tech
                                     |}
                                 )
                             Value = comp.EfficiencyTech.Level
@@ -115,7 +114,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
                                     {|
                                         Key = k
                                         Text = sprintf "%.2fx engine power" v.PowerMod
-                                        Disallowed = false
+                                        Disallowed = not <| tech.Contains v.Tech
                                     |}
                                 )
                             Value = comp.PowerModTech.Level
@@ -130,7 +129,7 @@ let render (ship: Ship) (comp: Engine) dispatch =
                                     {|
                                         Key = k
                                         Text = v.Name
-                                        Disallowed = false
+                                        Disallowed = not <| tech.Contains v.Tech
                                     |}
                                 )
                             Value = comp.ThermalEfficiencyTech.Level

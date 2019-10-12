@@ -8,7 +8,6 @@ open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
 open Comp.ShipComponent
-open Model.Technology
 
 type Ship =
     {
@@ -99,8 +98,7 @@ type Ship =
         )
     member private this._Size =
         lazy (
-            this.CrewQuartersSize
-            + this.ComponentSize
+            this.SizeBeforeArmor
             + this.ArmorSize
         )
     //#endregion

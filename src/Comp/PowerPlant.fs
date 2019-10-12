@@ -3,7 +3,6 @@ module Comp.PowerPlant
 open System
 open Model.BuildCost
 open Model.Measures
-open Model.Technology
 open Model.MaintenanceClass
 
 type PowerPlant =
@@ -14,7 +13,7 @@ type PowerPlant =
 
         Count: int<comp>
         Size: float<hs/comp>
-        PowerBoost: PowerBoostTech
+        PowerBoost: Technology.PowerBoostTech
         Technology: Technology.PowerPlantTech
     }
     static member Zero

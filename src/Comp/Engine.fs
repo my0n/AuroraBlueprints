@@ -4,7 +4,6 @@ open System
 open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
-open Model.Technology
 
 type Engine =
     {
@@ -13,10 +12,10 @@ type Engine =
         Name: string
         Manufacturer: string
 
-        EngineTech: EngineTech
-        PowerModTech: PowerModTech
-        EfficiencyTech: EngineEfficiencyTech
-        ThermalEfficiencyTech: ThermalEfficiencyTech
+        EngineTech: Technology.EngineTech
+        PowerModTech: Technology.PowerModTech
+        EfficiencyTech: Technology.EngineEfficiencyTech
+        ThermalEfficiencyTech: Technology.ThermalEfficiencyTech
         Size: int<hs/comp>
         Count: int<comp>
     }
@@ -30,7 +29,7 @@ type Engine =
                     Manufacturer = "Aurora Industries"
 
                     EngineTech = Technology.engine.[0]
-                    PowerModTech = Technology.allPowerMods.[0]
+                    PowerModTech = Technology.noPowerMod
                     EfficiencyTech = Technology.engineEfficiency.[0]
                     ThermalEfficiencyTech = Technology.thermalEfficiency.[0]
                     Size = 1<hs/comp>
