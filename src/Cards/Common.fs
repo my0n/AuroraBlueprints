@@ -32,6 +32,58 @@ let inline private renderHeader header: CardHeaderElement list =
                 |> Info
     )
 
+let inline boundNameField ship dispatch getName getGeneratedName setName =
+    Bulma.FC.WithLabel
+        "Name"
+        [
+            Bulma.FC.AddonGroup
+                [
+                    Bulma.FC.TextInput
+                        getName
+                        (fun n -> App.Msg.ReplaceShipComponent (ship, setName n) |> dispatch)
+                    Bulma.FC.Button
+                        "Generate"
+                        (fun _ -> App.Msg.ReplaceShipComponent (ship, setName getGeneratedName) |> dispatch)
+                ]
+        ]
+
+let inline boundStringField ship dispatch lbl getter setter =
+    Bulma.FC.WithLabel
+        lbl
+        [
+            Bulma.FC.TextInput
+                getter
+                (fun n -> App.Msg.ReplaceShipComponent (ship, setter n) |> dispatch)
+        ]
+
+let inline boundIntField ship dispatch lbl (min, max) getter setter =
+    Bulma.FC.IntInput
+        {
+            Label = Some lbl
+            Value = getter
+            Min = min
+            Max = max
+            Disabled = false
+        }
+        (fun n -> App.Msg.ReplaceShipComponent (ship, setter n) |> dispatch)
+
+let inline boundTechField (tech: Set<Technology.Tech>) ship dispatch lbl options (getter: ^a) setter = 
+    Bulma.FC.Select
+        {
+            Label = Some lbl
+            Options =
+                options
+                |> Map.mapKvp (fun k v ->
+                    {|
+                        Key = k
+                        Text = (^a : (member Name : string) getter)
+                        Disallowed = not <| tech.Contains (^a : (member Tech : Technology.Tech) v)
+                    |}
+                )
+            Value = (^a : (member Level : int) getter)
+        }
+        (fun n -> App.Msg.ReplaceShipComponent (ship, setter options.[n]) |> dispatch)
+
 let shipComponentCard key header contents actions =
     Bulma.Card.render {
         key = key
