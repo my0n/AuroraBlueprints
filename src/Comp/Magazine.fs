@@ -104,6 +104,12 @@ type Magazine =
         lazy (
             String.Format("Capacity {0} Magazine: Exp {1}%  HTK{2}", this.Capacity, int (this.Ejection.EjectionChance * 100.0), this.HTK)
         )
+    member private this._TotalSize =
+        lazy (
+            this.Size
+            * this.Count
+            |> hs2tonint
+        )
     //#endregion
 
     //#region Accessors
@@ -111,5 +117,6 @@ type Magazine =
     member this.Capacity with get() = this._Capacity.Value
     member this.Crew with get() = this._Crew.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
+    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 

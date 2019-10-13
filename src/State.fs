@@ -20,6 +20,7 @@ let init result =
                                 %+ Comp.ShipComponent.CargoHold      Comp.CargoHold.CargoHold.Zero
                                 %+ Comp.ShipComponent.Engine         Comp.Engine.Engine.Zero
                                 %+ Comp.ShipComponent.FuelStorage    Comp.FuelStorage.FuelStorage.Zero
+                                %+ Comp.ShipComponent.Magazine       Comp.Magazine.Magazine.Zero
                                 %+ Comp.ShipComponent.PowerPlant     Comp.PowerPlant.PowerPlant.Zero
                                 %+ Comp.ShipComponent.Sensors        Comp.Sensors.Sensors.Zero
                                 %+ Comp.ShipComponent.TroopTransport Comp.TroopTransport.TroopTransport.Zero

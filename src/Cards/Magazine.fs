@@ -6,12 +6,13 @@ open Bulma.FC
 open Cards.Common
 open Model.Measures
 open Comp.Ship
+open Comp.Magazine
 
 open Nerds.DeployTimeNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (ship: Ship) dispatch =
+let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Magazine) dispatch =
     let header =
         [
             Name "Crew Quarters"

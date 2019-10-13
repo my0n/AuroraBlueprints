@@ -8,11 +8,9 @@ open Global
 open Model.Measures
 open App.Model
 open App.Msg
-open Bulma.Button
 open Bulma.Table
 open Comp.ShipComponent
 open Comp.Ship
-open Fable.Import.React
 
 let actionBar dispatch =
     div []
@@ -33,6 +31,7 @@ let shipInfo dispatch tech ship =
                 | CargoHold comp      -> Cards.CargoHold.render tech ship comp dispatch
                 | Engine comp         -> Cards.Engine.render tech ship comp dispatch
                 | FuelStorage comp    -> Cards.FuelStorage.render ship comp dispatch
+                | Magazine comp       -> Cards.Magazine.render tech ship comp dispatch
                 | PowerPlant comp     -> Cards.PowerPlant.render tech ship comp dispatch
                 | Sensors comp        -> Cards.Sensors.render tech ship comp dispatch
                 | TroopTransport comp -> Cards.TroopTransport.render ship comp dispatch
