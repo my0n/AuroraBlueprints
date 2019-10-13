@@ -39,7 +39,7 @@ type Magazine =
     //#region Calculated Values
     member private this._ArmorCalculation =
         lazy (
-            let (armorSize, buildCost) =
+            let (armorSize, capacitySize, buildCost) =
                 let capacityCost =
                     let costFactor =
                         this.Size * 5</hs>
@@ -52,7 +52,7 @@ type Magazine =
 
                 match this.HTK with
                 | htk when htk <= 1 ->
-                    (0.0<hs>, capacityCost)
+                    (0.0<hs/comp>, int2float this.Size, capacityCost)
                 | htk ->
                     let area =
                         this.Size
@@ -65,7 +65,8 @@ type Magazine =
                         |> rounduom 0.01<armorStrength/comp>
                     let armorCost =
                         let costFactor =
-                            strReq * (int2float (htk - 1))
+                            (int2float (htk - 1))
+                            * strReq
                             |> float
                             |> (*) 1.0</comp>
                         { BuildCost.Zero with
@@ -73,39 +74,24 @@ type Magazine =
                             Duranium = costFactor * this.Armor.DuraniumRatio
                             Neutronium = costFactor * this.Armor.NeutroniumRatio
                         }
-                    (armorSize, armorCost + capacityCost)
+                    let armorSize =
+                        (int2float (htk - 1))
+                        * strReq
+                        / this.Armor.Strength
+                        |> rounduom 0.01<hs/comp>
+                    (armorSize, int2float this.Size - armorSize, armorCost + capacityCost)
 
             {|
                 ArmorSize = armorSize
+                CapacitySize = capacitySize
                 BuildCost = buildCost
             |}
-
-            //   if (!technology) throw 'technology is not defined before calculating armor'
-            //   let strPerHS = technology.strengthPerHS;
-
-            //   if (isNaN(size)) throw 'size is NaN before calculating magazine armor'
-            //   if (isNaN(htk)) throw 'htk is NaN before calculating magazine armor'
-
-            //   let armorSize = 0;
-            //   let area = getArea(size / 50);
-            //   let materials = getMaterials(0, technology);
-            //   if (htk > 1) {
-            //     let strReq = Math.round(area * 10) / 100; // constants intentional
-            //     armorSize = (htk - 1) * strReq / strPerHS;
-            //     let armorCost = cost + strReq * (htk - 1);
-            //     materials = getMaterials(armorCost, technology);
-            //   }
-
-            //   armorSize = Math.round(armorSize * 100) / 2; 
-            //   let capacitySize = Math.max(0, size - armorSize * 50); // size of the actual contents of the magazine
-
-            //   return { capacitySize, armorSize, materials };
         )
     member private this._Capacity =
         lazy (
-            int2float this.Size
+            this._ArmorCalculation.Value.CapacitySize
             * this.FeedSystem.AmmoDensity
-            |> ceiluom
+            |> flooruom
         )
     member private this._Crew =
         lazy (
