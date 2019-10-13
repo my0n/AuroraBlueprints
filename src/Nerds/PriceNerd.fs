@@ -34,6 +34,7 @@ type PriceNerd =
                         bpr this.BuildCost.Gallicite "gallicite"
                         bpr this.BuildCost.Mercassium "mercassium"
                         bpr this.BuildCost.Neutronium "neutronium"
+                        bpr this.BuildCost.Tritanium "tritanium"
                         bpr this.BuildCost.Uridium "uridium"
                     ]
                     |> List.choose id

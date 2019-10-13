@@ -12,6 +12,7 @@ type TotalBuildCost =
         Uridium: float
         Mercassium: float
         Neutronium: float
+        Tritanium: float
     }
     static member (+) (a: TotalBuildCost, b: TotalBuildCost) =
         {
@@ -23,6 +24,7 @@ type TotalBuildCost =
             Uridium = a.Uridium + b.Uridium
             Mercassium = a.Mercassium + b.Mercassium
             Neutronium = a.Neutronium + b.Neutronium
+            Tritanium = a.Tritanium + b.Tritanium
         }
     static member (*) (a: TotalBuildCost, b: float) =
         {
@@ -34,6 +36,7 @@ type TotalBuildCost =
             Uridium = a.Uridium * b
             Mercassium = a.Mercassium * b
             Neutronium = a.Neutronium * b
+            Tritanium = a.Tritanium * b
         }
     static member Zero
         with get() =
@@ -46,6 +49,7 @@ type TotalBuildCost =
                 Uridium = 0.0
                 Mercassium = 0.0
                 Neutronium = 0.0
+                Tritanium = 0.0
             }
 
 type BuildCost =
@@ -58,6 +62,7 @@ type BuildCost =
         Uridium: float</comp>
         Mercassium: float</comp>
         Neutronium: float</comp>
+        Tritanium: float</comp>
     }
     static member Zero
         with get() =
@@ -70,7 +75,20 @@ type BuildCost =
                 Uridium = 0.0</comp>
                 Mercassium = 0.0</comp>
                 Neutronium = 0.0</comp>
+                Tritanium = 0.0</comp>
             }
+    static member (+) (a: BuildCost, b: BuildCost): BuildCost =
+        {
+            BuildPoints = a.BuildPoints + b.BuildPoints
+            Duranium = a.Duranium + b.Duranium
+            Corbomite = a.Corbomite + b.Corbomite
+            Gallicite = a.Gallicite + b.Gallicite
+            Boronide = a.Boronide + b.Boronide
+            Uridium = a.Uridium + b.Uridium
+            Mercassium = a.Mercassium + b.Mercassium
+            Neutronium = a.Neutronium + b.Neutronium
+            Tritanium = a.Tritanium + b.Tritanium
+        }
     static member (*) (a: BuildCost, b: int<comp>): TotalBuildCost =
         {
             BuildPoints = a.BuildPoints * int2float b
@@ -81,5 +99,6 @@ type BuildCost =
             Uridium = a.Uridium * int2float b
             Mercassium = a.Mercassium * int2float b
             Neutronium = a.Neutronium * int2float b
+            Tritanium = a.Tritanium * int2float b
         }
     
