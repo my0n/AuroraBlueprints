@@ -14,8 +14,8 @@ type Magazine =
         HTK: int
         Size: int<hs/comp>
         Armor: Technology.ArmorTech
-        FeedSystem: Technology.MagazineFeedEfficiencyTech
-        Ejection: Technology.MagazineEjectionChanceTech
+        FeedSystem: Technology.MagazineEfficiencyTech
+        Ejection: Technology.MagazineEjectionTech
     }
     static member Zero
         with get() =

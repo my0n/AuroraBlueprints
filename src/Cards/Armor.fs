@@ -13,7 +13,7 @@ open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (tech: Set<Technology.Tech>) (ship: Ship) dispatch =
+let render (tech: Technology.TechBase list) (ship: Ship) dispatch =
     let header =
         [
             Name ship.ArmorTechnology.Name
@@ -40,11 +40,11 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) dispatch =
                         Label = Some "Armor Technology"
                         Options =
                             Technology.armor
-                            |> Map.mapKvp (fun k v ->
+                            |> List.mapi (fun i v ->
                                 {|
-                                    Key = k
+                                    Key = i
                                     Text = String.Format("{0} ({1:0} strength/HS)", v.Name, v.Strength)
-                                    Disallowed = not <| tech.Contains v.Tech
+                                    Disallowed = not <| (List.exists (fun t -> t.Equals(v)) tech)
                                 |}
                             )
                         Value = ship.ArmorTechnology.Level

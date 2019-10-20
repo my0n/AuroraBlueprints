@@ -22,18 +22,18 @@ let changeTech value tech =
     | false ->
         RemoveTechnology tech
 
-let techs (all: Technology.TechNode list) current dispatch =
+let techs (all: Technology.TechBase list) current dispatch =
     all
     |> List.map (fun tech ->
         let researched =
             current
-            |> Set.contains tech.Tech
+            |> List.contains tech
         let available =
             researched 
             || tech.Parents
             |> List.forall (fun parent ->
                 current
-                |> Set.contains parent
+                |> List.contains parent
             )
         let text = tech.Name
 
@@ -44,9 +44,9 @@ let techs (all: Technology.TechNode list) current dispatch =
                 Label = text
             }
 
-        Bulma.FC.Checkbox opts (fun value -> changeTech value tech.Tech |> dispatch)
+        Bulma.FC.Checkbox opts (fun value -> changeTech value tech |> dispatch)
         |> List.wrap
-        |> div [ Key (tech.Tech.ToString()) ]
+        |> div [ Key (tech.Guid.ToString()) ]
     )
     |> ofList
     |> List.wrap

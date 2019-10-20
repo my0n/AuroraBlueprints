@@ -10,7 +10,7 @@ open Nerds.MagazineCapacityNerd
 open Nerds.PriceNerd
 open Nerds.SizeNerd
 
-let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Magazine) dispatch =
+let render (tech: Technology.TechBase list) (ship: Ship) (comp: Magazine) dispatch =
     let header =
         [
             Name comp.Name

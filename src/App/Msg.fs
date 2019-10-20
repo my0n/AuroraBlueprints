@@ -26,5 +26,5 @@ type Msg =
     | ReplaceShipComponent of Ship * ShipComponent
 
     // Technology
-    | AddTechnology of Technology.Tech
-    | RemoveTechnology of Technology.Tech
+    | AddTechnology of Technology.TechBase
+    | RemoveTechnology of Technology.TechBase

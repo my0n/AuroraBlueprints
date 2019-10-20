@@ -24,7 +24,7 @@ let init result =
                                 %+ Comp.ShipComponent.PowerPlant     Comp.PowerPlant.PowerPlant.Zero
                                 %+ Comp.ShipComponent.Sensors        Comp.Sensors.Sensors.Zero
                                 %+ Comp.ShipComponent.TroopTransport Comp.TroopTransport.TroopTransport.Zero
-                CurrentTechnology = Set.empty
+                CurrentTechnology = List.empty
             }
 
     model, Cmd.batch [ cmd ]
@@ -92,16 +92,29 @@ let update msg model =
 
     // Technologies
     | AddTechnology tech ->
-        { model with CurrentTechnology = model.CurrentTechnology |> Set.add tech }, Cmd.none
+        { model with
+            CurrentTechnology =
+                match List.contains tech model.CurrentTechnology with
+                | true ->
+                    model.CurrentTechnology @ [tech]
+                | false -> model.CurrentTechnology
+        }, Cmd.none
     | RemoveTechnology tech ->
-        let rec parents unchk chk =
-            match unchk with
-            | [] -> chk
-            | x::xs ->
-                let p =
-                    Technology.allTechnologies
-                    |> List.filter (fun t -> t.Parents |> List.contains x)
-                    |> List.map (fun t -> t.Tech)
-                    |> List.filter model.CurrentTechnology.Contains
-                parents (xs @ p) (chk @ [x])
-        { model with CurrentTechnology = Set.difference model.CurrentTechnology (Set.ofList <| parents [tech] []) }, Cmd.none
+        let rec parentsToRemove unprocessed processed =
+            match unprocessed with
+            | [] -> processed
+            | (x: Technology.TechBase)::xs ->
+                let researchedParents =
+                    x.Parents
+                    |> List.filter (fun parent ->
+                        Technology.allTechnologies
+                        |> List.contains parent
+                    )
+                parentsToRemove (xs @ researchedParents) (processed @ [x])
+        let toRemove = parentsToRemove [tech] []
+        let removed =
+            model.CurrentTechnology
+            |> List.filter (fun t ->
+                toRemove |> List.contains t
+            )
+        { model with CurrentTechnology = removed }, Cmd.none

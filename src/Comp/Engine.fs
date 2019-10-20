@@ -13,9 +13,9 @@ type Engine =
         Manufacturer: string
 
         EngineTech: Technology.EngineTech
-        PowerModTech: Technology.PowerModTech
-        EfficiencyTech: Technology.EngineEfficiencyTech
-        ThermalEfficiencyTech: Technology.ThermalEfficiencyTech
+        PowerModTech: Technology.EngineBoostTech
+        EfficiencyTech: Technology.EngineEffTech
+        ThermalEfficiencyTech: Technology.EngineThermalTech
         Size: int<hs/comp>
         Count: int<comp>
     }

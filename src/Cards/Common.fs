@@ -67,20 +67,20 @@ let inline boundIntField ship dispatch lbl (min, max) getter setter =
         }
         (fun n -> App.Msg.ReplaceShipComponent (ship, setter n) |> dispatch)
 
-let inline boundTechField (tech: Set<Technology.Tech>) ship dispatch lbl options (getter: ^a) setter = 
+let inline boundTechField<'a when 'a :> Technology.TechBase> (tech: Technology.TechBase list) ship dispatch lbl (options: 'a list) (getter: 'a) (setter: 'a -> Comp.ShipComponent.ShipComponent) = 
     Bulma.FC.Select
         {
             Label = Some lbl
             Options =
                 options
-                |> Map.mapKvp (fun k v ->
+                |> List.mapi (fun i v ->
                     {|
-                        Key = k
-                        Text = (^a : (member Name : string) getter)
-                        Disallowed = not <| tech.Contains (^a : (member Tech : Technology.Tech) v)
+                        Key = i
+                        Text = v.Name
+                        Disallowed = not <| (List.exists (fun t -> t.Equals(getter)) tech)
                     |}
                 )
-            Value = (^a : (member Level : int) getter)
+            Value = getter.Level
         }
         (fun n -> App.Msg.ReplaceShipComponent (ship, setter options.[n]) |> dispatch)
 

@@ -15,7 +15,7 @@ open Nerds.PriceNerd
 open Nerds.SizeNerd
 open Nerds.PowerProductionNerd
 
-let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: PowerPlant) dispatch =
+let render (tech: Technology.TechBase list) (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name
@@ -84,36 +84,16 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: PowerPlant) dispatch
                                 |> Option.defaultValue 1
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[n]}) |> dispatch)
-                    Bulma.FC.Select
-                        {
-                            Label = Some "Power Plant Technology"
-                            Options =
-                                Technology.powerPlant
-                                |> Map.mapKvp (fun k v ->
-                                    {|
-                                        Key = k
-                                        Text = String.Format("{0} ({1} power/HS)", v.Name, v.PowerOutput)
-                                        Disallowed = not <| tech.Contains v.Tech
-                                    |}
-                                )
-                            Value = comp.Technology.Level
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Technology = Technology.powerPlant.[n] }) |> dispatch)
-                    Bulma.FC.Select
-                        {
-                            Label = Some "Power Boost"
-                            Options =
-                                Technology.powerBoost
-                                |> Map.mapKvp (fun k v ->
-                                    {|
-                                        Key = k
-                                        Text = sprintf "Reactor Power Boost %d%%, Explosion %d%%" (int (v.PowerBoost * 100.0)) (int (v.ExplosionChance * 100.0))
-                                        Disallowed = false
-                                    |}
-                                )
-                            Value = comp.PowerBoost.Level
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with PowerBoost = Technology.powerBoost.[n] }) |> dispatch)
+                    boundTechField tech ship dispatch
+                        "Power Plant Technology"
+                        Technology.reactors
+                        comp.Technology
+                        (fun n -> PowerPlant { comp with Technology = n })
+                    boundTechField tech ship dispatch
+                        "Power Boost"
+                        Technology.powerBoost
+                        comp.PowerBoost
+                        (fun n -> PowerPlant { comp with PowerBoost = n })
                 ]
         ]
     let actions =

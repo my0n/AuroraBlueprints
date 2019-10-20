@@ -13,8 +13,8 @@ type PowerPlant =
 
         Count: int<comp>
         Size: float<hs/comp>
-        PowerBoost: Technology.PowerBoostTech
-        Technology: Technology.PowerPlantTech
+        PowerBoost: Technology.ReactorBoostTech
+        Technology: Technology.ReactorTech
     }
     static member Zero
         with get() =
@@ -27,7 +27,7 @@ type PowerPlant =
                     Count = 0<comp>
                     Size = 1.0<hs/comp>
                     PowerBoost = Technology.powerBoost.[0]
-                    Technology = Technology.powerPlant.[0]
+                    Technology = Technology.reactors.[0]
                 }
             { zero with
                 Name = zero.GeneratedName

@@ -17,7 +17,7 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.SensorStrengthNerd
 
-let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
+let render (tech: Technology.TechBase list) (ship: Ship) (comp: Sensors) dispatch =
     let header =
         [
             Name "Sensors"
@@ -37,7 +37,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.StandardGeo
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.GeologicalSurveySensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.geologicalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with StandardGeo = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -46,7 +46,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.ImprovedGeo
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.ImprovedGeologicalSensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.improvedGeologicalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with ImprovedGeo = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -55,7 +55,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.AdvancedGeo
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.AdvancedGeologicalSensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.advancedGeologicalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with AdvancedGeo = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -64,7 +64,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.PhasedGeo
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.PhasedGeologicalSensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.phasedGeologicalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with PhasedGeo = n }) |> dispatch)
                 ]
@@ -77,7 +77,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.StandardGrav
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.GravitationalSurveySensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.gravitationalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with StandardGrav = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -86,7 +86,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.ImprovedGrav
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.ImprovedGravitationalSensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.improvedGravitationalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with ImprovedGrav = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -95,7 +95,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.AdvancedGrav
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.AdvancedGravitationalSensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.advancedGravitationalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with AdvancedGrav = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -104,7 +104,7 @@ let render (tech: Set<Technology.Tech>) (ship: Ship) (comp: Sensors) dispatch =
                             Value = comp.PhasedGrav
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains Technology.PhasedGravitationalSensors
+                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.phasedGravitationalSensors)) tech)
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with PhasedGrav = n }) |> dispatch)
                 ]
