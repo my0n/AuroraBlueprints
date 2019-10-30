@@ -2,8 +2,39 @@ module Technology
 
 open System
 
+open File.CsvReader
 open Model.Measures
 open Global
+open Fable.PowerPack
+
+type ParsedBasics =
+    {
+        Guid: Guid
+        Name: string
+        Cost: int<rp>
+        Level: int
+        Parents: Guid list
+    }
+
+let private parseList (convert: string -> 'a) (cell: string) =
+    match cell with
+    | "" -> []
+    | str ->
+        str.Split ([|';'|])
+        |> Array.map convert
+        |> Array.toList
+
+let private parseBasics (line: string[]) =
+    {
+        Guid = Guid.Parse line.[0]
+        Name = line.[1]
+        Cost = Convert.ToInt32 line.[2] * 1<rp>
+        Level = Convert.ToInt32 line.[3]
+        Parents = parseList Guid.Parse line.[4]
+    }
+
+let private readTechCsv file generateFn =
+    readCsv file (fun line -> generateFn (parseBasics line) line)
 
 type TechCategory =
     | DefensiveSystems
@@ -13,484 +44,282 @@ type TechCategory =
     | SensorsAndFireControl
 
 [<AbstractClass>]
-type TechBase(name: string, cost: int<rp>) =
-    let guid = Guid.NewGuid ()
-    let mutable parents: TechBase list = []
-    let mutable level: int = 0
-    member this.Guid with get() = guid
-    member this.Name with get() = name
-    member this.Cost with get() = cost
-    member this.Parents with get() = parents
-    member this.Level with get() = level
+type TechBase(basics: ParsedBasics) =
+    member this.Guid with get() = basics.Guid
+    member this.Name with get() = basics.Name
+    member this.Cost with get() = basics.Cost
+    member this.Parents with get() = basics.Parents
+    member this.Level with get() = basics.Level
     abstract member Category: TechCategory with get
-    // cannot figure out how to hide this functionality to only the file
-    member this.__SetNewParents value =
-        parents <- value
-        this
-    member this.__SetNewLevel value =
-        level <- value
-        this
-    member this.__SetNewParentsAndLevel p l =
-        parents <- p
-        level <- l
-        this
 
-type ArmorTech(name, cost, strength, duraniumRatio, neutroniumRatio) =
-    inherit TechBase(name, cost)
+type ArmorTech(basics, strength, duraniumRatio, neutroniumRatio) =
+    inherit TechBase(basics)
     override this.Category = DefensiveSystems
     member val Strength: float<armorStrength/hs> = strength with get
     member val DuraniumRatio: float = duraniumRatio with get
     member val NeutroniumRatio: float = neutroniumRatio with get
 
-type CargoHandlingTech(name, cost, tractorStrength) =
-    inherit TechBase(name, cost)
+type CargoHandlingTech(basics, tractorStrength) =
+    inherit TechBase(basics)
     override this.Category = LogisticsAndGroundCombat
     member val TractorStrength: float = tractorStrength with get
 
-type EngineTech(name, cost, powerPerHs) =
-    inherit TechBase(name, cost)
+type EngineTech(basics, powerPerHs) =
+    inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val PowerPerHs: float<ep/hs> = powerPerHs with get
 
-type EngineBoostTech(name, cost, powerMod) =
-    inherit TechBase(name, cost)
+type EngineBoostTech(basics, powerMod) =
+    inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val PowerMod: float = powerMod with get
 
-type EngineBoostUnlockTech(name, cost, unlocked) =
-    inherit TechBase(name, cost)
+type EngineBoostUnlockTech(basics, unlocked) =
+    inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val UnlockedPowerMods: float list = unlocked with get
 
-type EngineEffTech(name, cost, efficiency) =
-    inherit TechBase(name, cost)
+type EngineEfficiencyTech(basics, efficiency) =
+    inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val Efficiency: float<kl/hr/ep> = efficiency with get
 
-type MagazineEfficiencyTech(name, cost, ammoDensity) =
-    inherit TechBase(name, cost)
+type MagazineEfficiencyTech(basics, ammoDensity) =
+    inherit TechBase(basics)
     override this.Category = MissilesAndKineticWeapons
     member val AmmoDensity: float<ammo/hs> = ammoDensity with get
 
-type MagazineEjectionTech(name, cost, ejectionChance) =
-    inherit TechBase(name, cost)
+type MagazineEjectionTech(basics, ejectionChance) =
+    inherit TechBase(basics)
     override this.Category = MissilesAndKineticWeapons
     member val EjectionChance: float = ejectionChance with get
 
-type ReactorTech(name, cost, powerOutput) =
-    inherit TechBase(name, cost)
+type ReactorTech(basics, powerOutput) =
+    inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val PowerOutput: float<power/hs> = powerOutput with get
 
-type EngineThermalTech(name, cost, thermalEfficiency, costMultiplier) =
-    inherit TechBase(name, cost)
+type EngineThermalTech(basics, thermalEfficiency, costMultiplier) =
+    inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val ThermalEfficiency: float<therm/ep> = thermalEfficiency with get
     member val CostMultiplier: float = costMultiplier with get
 
-type ReactorBoostTech(name, cost, powerBoost, explosionChance) =
-    inherit TechBase(name, cost)
+type ReactorBoostTech(basics, powerBoost, explosionChance) =
+    inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val PowerBoost: float = powerBoost with get
     member val ExplosionChance: float = explosionChance with get
 
-type GravSensorTech(name, cost) =
-    inherit TechBase(name, cost)
+type GravSensorTech(basics) =
+    inherit TechBase(basics)
     override this.Category = SensorsAndFireControl
 
-type GeoSensorTech(name, cost) =
-    inherit TechBase(name, cost)
+type GeoSensorTech(basics) =
+    inherit TechBase(basics)
     override this.Category = SensorsAndFireControl
 
-let private applyChainTechnologies techs =
-    techs
-    |> List.scani (fun i prev (current: 'a :> TechBase) ->
-        let parents =
-            match prev with
-            | None -> []
-            | Some a -> [a]
-        Some <| current.__SetNewParentsAndLevel parents i
-    ) None
+let rec private researchedParents (allTechs: Map<Guid, TechBase>) researchedTechs unprocessed processed =
+    match unprocessed with
+    | [] -> processed
+    | x::xs ->
+        let tech = allTechs.[x]
+        match List.contains tech researchedTechs with
+        | false -> researchedParents allTechs researchedTechs xs processed
+        | true -> researchedParents allTechs researchedTechs (xs @ tech.Parents) (x::processed)
 
-let private chainTechnologies techs =
-    applyChainTechnologies techs |> ignore
-    techs
+type AllTechnologies =
+    {
+        Technologies: Map<Guid, TechBase>
+    }
+    member this.Item with get guid = this.Technologies.[guid]
 
-let geologicalSensors = GeoSensorTech ("Geological Survey Sensors", 1000<rp>)
-let improvedGeologicalSensors = GeoSensorTech ("Improved Geological Sensors", 10000<rp>)
-let advancedGeologicalSensors = GeoSensorTech ("Advanced Geological Sensors", 35000<rp>)
-let phasedGeologicalSensors = GeoSensorTech ("Phased Geological Sensors", 100000<rp>)
-let geoSensors =
-    [
-        geologicalSensors; improvedGeologicalSensors; advancedGeologicalSensors; phasedGeologicalSensors
-    ]
-    |> chainTechnologies
-let gravitationalSensors = GravSensorTech ("Gravitational Survey Sensors", 2000<rp>)
-let improvedGravitationalSensors = GravSensorTech ("Improved Gravitational Sensors", 10000<rp>)
-let advancedGravitationalSensors = GravSensorTech ("Advanced Gravitational Sensors", 35000<rp>)
-let phasedGravitationalSensors = GravSensorTech ("Phased Gravitational Sensors", 100000<rp>)
-let gravSensors =
-    [
-        gravitationalSensors; improvedGravitationalSensors; advancedGravitationalSensors; phasedGravitationalSensors
-    ]
-    |> chainTechnologies
-let improvedCargoHandling =
-    CargoHandlingTech ("Improved Cargo Handling System", 10000<rp>,
-        tractorStrength = 10.0
-    )
-let advancedCargoHandling =
-    CargoHandlingTech ("Advanced Cargo Handling System", 40000<rp>,
-        tractorStrength = 20.0
-    )
-let gravAssistedCargoHandling =
-    CargoHandlingTech ("Grav-Assisted Cargo Handling System", 150000<rp>,
-        tractorStrength = 40.0
-    )
-let cargoHandling =
-    [
-        improvedCargoHandling; advancedCargoHandling; gravAssistedCargoHandling 
-    ]
-    |> chainTechnologies
-let armor =
-    [
-        ArmorTech ("Conventional Armor", 250<rp>,
-            strength = 2.0<armorStrength/hs>,
-            duraniumRatio = 1.0,
-            neutroniumRatio = 0.0
-        )
-        ArmorTech ("Duranium Armor", 500<rp>,
-            strength = 5.0<armorStrength/hs>,
-            duraniumRatio = 1.0,
-            neutroniumRatio = 0.0
-        )
-        ArmorTech ("High Density Duranium Armor", 2500<rp>,
-            strength = 6.0<armorStrength/hs>,
-            duraniumRatio = 1.0,
-            neutroniumRatio = 0.0
-        )
-        ArmorTech ("Composite Armor", 5000<rp>,
-            strength = 8.0<armorStrength/hs>,
-            duraniumRatio = 1.0,
-            neutroniumRatio = 0.0
-        )
-        ArmorTech ("Ceramic Composite Armor", 10000<rp>,
-            strength = 10.0<armorStrength/hs>,
-            duraniumRatio = 0.9,
-            neutroniumRatio = 0.1
-        )
-        ArmorTech ("Laminate Composite Armor", 20000<rp>,
-            strength = 12.0<armorStrength/hs>,
-            duraniumRatio = 0.8,
-            neutroniumRatio = 0.2
-        )
-        ArmorTech ("Compressed Carbon Armor", 40000<rp>,
-            strength = 15.0<armorStrength/hs>,
-            duraniumRatio = 0.7,
-            neutroniumRatio = 0.3
-        )
-        ArmorTech ("Biphase Carbide Armor", 80000<rp>,
-            strength = 18.0<armorStrength/hs>,
-            duraniumRatio = 0.6,
-            neutroniumRatio = 0.4
-        )
-        ArmorTech ("Crystalline Composite Armor", 150000<rp>,
-            strength = 21.0<armorStrength/hs>,
-            duraniumRatio = 0.5,
-            neutroniumRatio = 0.5
-        )
-        ArmorTech ("Superdense Armor", 300000<rp>,
-            strength = 25.0<armorStrength/hs>,
-            duraniumRatio = 0.4,
-            neutroniumRatio = 0.6
-        )
-        ArmorTech ("Bonded Superdense Armor", 600000<rp>,
-            strength = 30.0<armorStrength/hs>,
-            duraniumRatio = 0.3,
-            neutroniumRatio = 0.7
-        )
-        ArmorTech ("Coherent Superdense Armor", 1250000<rp>,
-            strength = 36.0<armorStrength/hs>,
-            duraniumRatio = 0.2,
-            neutroniumRatio = 0.8
-        )
-        ArmorTech ("Collapsium Armor", 2500000<rp>,
-            strength = 45.0<armorStrength/hs>,
-            duraniumRatio = 0.1,
-            neutroniumRatio = 0.9
-        )
-    ]
-    |> chainTechnologies
-let reactors =
-    [
-        ReactorTech ("Pressurized Water Reactor", 1500<rp>,
-            powerOutput = 2.0<power/hs>
-        )
-        ReactorTech ("Pebble Bed Reactor", 3000<rp>,
-            powerOutput = 3.0<power/hs>
-        )
-        ReactorTech ("Gas-Cooled Fast Reactor", 6000<rp>,
-            powerOutput = 4.5<power/hs>
-        )
-        ReactorTech ("Stellarator Fusion Reactor", 12000<rp>,
-            powerOutput = 6.0<power/hs>
-        )
-        ReactorTech ("Tokamak Fusion Reactor", 24000<rp>,
-            powerOutput = 8.0<power/hs>
-        )
-        ReactorTech ("Magnetic Confinement Fusion Reactor", 45000<rp>,
-            powerOutput = 10.0<power/hs>
-        )
-        ReactorTech ("Inertial Confinement Fusion Reactor", 90000<rp>,
-            powerOutput = 12.0<power/hs>
-        )
-        ReactorTech ("Solid-core Anti-matter Power Plant", 180000<rp>,
-            powerOutput = 16.0<power/hs>
-        )
-        ReactorTech ("Gas-core Anti-matter Power Plant", 375000<rp>,
-            powerOutput = 20.0<power/hs>
-        )
-        ReactorTech ("Plasma-core Anti-matter Power Plant", 750000<rp>,
-            powerOutput = 24.0<power/hs>
-        )
-        ReactorTech ("Beam Core Anti-matter Power Plant", 1500000<rp>,
-            powerOutput = 32.0<power/hs>
-        )
-        ReactorTech ("Vacuum Energy Power Plant", 3000000<rp>,
-            powerOutput = 40.0<power/hs>
-        )
-    ]
-    |> chainTechnologies
-let engine=
-    [
-        EngineTech ("Conventional Engine", 500<rp>,
-            powerPerHs = 0.2<ep/hs>
-        )
-        EngineTech ("Nuclear Thermal Engine", 2500<rp>,
-            powerPerHs = 5.0<ep/hs>
-        )
-        EngineTech ("Nuclear Pulse Engine", 5000<rp>,
-            powerPerHs = 8.0<ep/hs>
-        )
-        EngineTech ("Ion Engine", 10000<rp>,
-            powerPerHs = 12.0<ep/hs>
-        )
-        EngineTech ("Magneto-Plasma Engine", 20000<rp>,
-            powerPerHs = 16.0<ep/hs>
-        )
-        EngineTech ("Internal Confinement Fusion Engine", 40000<rp>,
-            powerPerHs = 20.0<ep/hs>
-        )
-        EngineTech ("Magnetic Confinement Fusion Engine", 80000<rp>,
-            powerPerHs = 25.0<ep/hs>
-        )
-        EngineTech ("Inertial Confinement Fusion Engine", 150000<rp>,
-            powerPerHs = 32.0<ep/hs>
-        )
-        EngineTech ("Solid-Core Anti-matter Engine", 300000<rp>,
-            powerPerHs = 40.0<ep/hs>
-        )
-        EngineTech ("Gas-Core Anti-matter Engine", 600000<rp>,
-            powerPerHs = 50.0<ep/hs>
-        )
-        EngineTech ("Plasma-Core Anti-matter Engine", 1250000<rp>,
-            powerPerHs = 60.0<ep/hs>
-        )
-        EngineTech ("Beam-Core Anti-matter Engine", 2500000<rp>,
-            powerPerHs = 80.0<ep/hs>
-        )
-        EngineTech ("Photonic Engine", 5000000<rp>,
-            powerPerHs = 100.0<ep/hs>
-        )
-    ]
-    |> chainTechnologies
-    |> List.map2 (fun reactor engine ->
-        let engine' = engine :> TechBase
-        match reactor with
-        | None -> engine'
-        | Some reactor -> engine'.__SetNewParents (engine'.Parents @ [reactor])
-        |> ignore
-        engine
-    ) ([None] @ (List.map Some reactors))
-let engineEfficiency =
-    [
-        1000, 1
-        900, 1000
-        800, 2000
-        700, 4000
-        600, 8000
-        500, 15000
-        400, 30000
-        300, 60000
-        250, 120000
-        200, 250000
-        160, 500000
-        125, 1000000
-        100, 2000000
-    ]
-    |> List.map (fun (eff, cost) ->
-        let eff = float eff / 1000.0
-        EngineEffTech (String.Format("Fuel Consumption: {0}% Litres per Engine Power Hour", eff), cost * 1<rp>,
-            efficiency = eff * 1.0<kl/hr/ep>
-        )
-    )
-    |> chainTechnologies
-let feedEfficiency =
-    [
-        75, 1000
-        80, 2000
-        85, 4000
-        90, 8000
-        92, 15000
-        94, 30000
-        96, 60000
-        98, 125000
-        99, 250000
-    ]
-    |> List.map (fun (eff, cost) ->
-        MagazineEfficiencyTech (sprintf "Magazine Feed System Efficiency - %d%%" eff, cost * 1<rp>,
-            ammoDensity = 20.0<ammo/hs> * float eff / 100.0
-        )
-    )
-    |> chainTechnologies
-let ejectionChance =
-    [
-        70, 500
-        80, 1000
-        85, 2000
-        90, 4000
-        93, 8000
-        95, 15000
-        97, 30000
-        98, 60000
-        99, 120000
-    ]
-    |> List.map (fun (chance, cost) ->
-        MagazineEjectionTech (sprintf "Magazine Ejection System - %d%% Chance" chance, cost * 1<rp>,
-            ejectionChance = float chance / 100.0
-        )
-    )
-    |> chainTechnologies
-let highPowerMod =
-    [
-        "1",    [1.0],                                          1
-        "1.25", [1.05;1.1;1.15;1.2;1.25],                       1000
-        "1.5",  [1.3;1.35;1.4;1.45;1.5],                        2000
-        "1.75", [1.55;1.6;1.65;1.7;1.75],                       4000
-        "2",    [1.8;1.85;1.9;1.95;2.0],                        8000
-        "2.5",  [2.05;2.1;2.25;2.3;2.35;2.4;2.45;2.5],          15000
-        "3",    [2.55;2.6;2.65;2.7;2.75;2.8;2.85;2.9;2.95;3.0], 30000
-    ]
-    |> List.map (fun (id, unlocked, cost) ->
-        EngineBoostUnlockTech (sprintf "Maximum Engine Power Modifier x%s" id, cost * 1<rp>,
-            unlocked = unlocked
-        )
-    )
-    |> chainTechnologies
-let lowPowerMod =
-    [
-        "0.5",  [0.95;0.9;0.85;0.8;0.75;0.7;0.65;0.6;0.55;0.5], 2
-        "0.4",  [0.45;0.4],                                     1000
-        "0.3",  [0.35;0.3],                                     2000
-        "0.25", [0.25],                                         4000
-        "0.2",  [0.2],                                          8000
-        "0.15", [0.15],                                         15000
-        "0.1",  [0.1],                                          30000
-    ]
-    |> List.map (fun (id, unlocked, cost) ->
-        EngineBoostUnlockTech (sprintf "Minimum Engine Power Modifier x%s" id, cost * 1<rp>,
-            unlocked = unlocked
-        )
-    )
-    |> chainTechnologies
-let allPowerMods =
-    highPowerMod @ lowPowerMod
-    |> List.collect (fun tech ->
-        tech.UnlockedPowerMods
-        |> List.map (fun unlocked ->
-            let engineBoostTech =
-                EngineBoostTech (String.Format("Engine Power Modifier x{0}", unlocked), tech.Cost,
-                    powerMod = unlocked
+    member private this._Children =
+        lazy (
+            this.Technologies
+            |> Map.map (fun parentKey _ ->
+                this.Technologies
+                |> Map.filter (fun _ childValue ->
+                    List.contains parentKey childValue.Parents
                 )
-            engineBoostTech.__SetNewParents [tech] |> ignore
-            engineBoostTech
+                |> Map.keys
+            )
         )
-    )
-let noPowerMod =
-    allPowerMods
-    |> List.pick (fun tech ->
-        match tech.PowerMod with
-        | 1.0 -> Some tech
-        | _ -> None
-    )
-let unlockedPowerMods current =
-    allPowerMods
-    |> List.filter (fun value ->
-        current
-        |> List.contains value.Parents.[0]
-    )
-//#region Reactor Power Boost
-let powerBoost =
-    [
-        0, 0, 1000
-        5, 7, 1000
-        10, 10, 2000
-        15, 12, 3000
-        20, 16, 5000
-        25, 20, 7500
-        30, 25, 12500
-        40, 30, 25000
-        50, 35, 50000
-    ]
-    |> List.map (fun (boost, explosionChance, cost) ->
-        let name =
-            match boost with
-            | 0 -> "No Power Boost"
-            | _ -> String.Format("Reactor Power Boost {0}%, Explosion {1}%", boost, explosionChance)
-        ReactorBoostTech (name, cost * 1<rp>,
-            powerBoost = float boost / 100.0,
-            explosionChance = float explosionChance / 100.0
-        )
-    )
-    |> chainTechnologies
-//#endregion
-//#region Thermal Efficiency
-let thermalEfficiency =
-    [
-        100, 1.00, 1
-        75, 1.25, 1500
-        50, 1.50, 3000
-        35, 1.75, 6000
-        25, 2.00, 12000
-        16, 2.25, 25000
-        12, 2.50, 50000
-        8, 2.75, 100000
-        6, 3.00, 200000
-        4, 3.25, 400000
-        3, 3.50, 750000
-        2, 3.75, 1500000
-        1, 4.00, 2500000
-    ]
-    |> List.map (fun (signature, costMultiplier, cost) ->
-        EngineThermalTech (sprintf "Thermal Reduction: Signature %d%% Normal" signature, cost * 1<rp>,
-            thermalEfficiency = 1.0<therm/ep> * float signature / 100.0,
-            costMultiplier = costMultiplier
-        )
-    )
-    |> chainTechnologies
-//#endregion
+    member this.GetParents  guid = this.Technologies.[guid].Parents
+    member this.GetChildren guid = this._Children.Value.[guid]
 
-let allTechnologies =
-    let toTbList l = l |> List.map (fun a -> a :> TechBase)
-    toTbList armor
-    @ toTbList cargoHandling
-    @ toTbList gravSensors
-    @ toTbList geoSensors
-    @ toTbList reactors
-    @ toTbList highPowerMod
-    @ toTbList lowPowerMod
-    @ toTbList powerBoost
-    @ toTbList engine
-    @ toTbList engineEfficiency
-    @ toTbList thermalEfficiency
-    @ toTbList feedEfficiency
-    @ toTbList ejectionChance
+    member private this.TechsOfType<'a> () =
+        this.Technologies
+        |> Map.values
+        |> Seq.ofType<'a>
+        |> Seq.toList
+
+    member this.Armor                    = this.TechsOfType<ArmorTech>()              |> List.sortBy (fun tech -> tech.Level)
+    member this.CargoHandling            = this.TechsOfType<CargoHandlingTech>()      |> List.sortBy (fun tech -> tech.Level)
+    member this.Engines                  = this.TechsOfType<EngineTech>()             |> List.sortBy (fun tech -> tech.Level)
+    member this.EngineEfficiency         = this.TechsOfType<EngineEfficiencyTech>()   |> List.sortBy (fun tech -> tech.Level)
+    member this.EnginePowerMod           = this.TechsOfType<EngineBoostUnlockTech>()  |> List.sortBy (fun tech -> tech.Level)
+    member this.EngineThermalEfficiency  = this.TechsOfType<EngineThermalTech>()      |> List.sortBy (fun tech -> tech.Level)
+    member this.GeoSensors               = this.TechsOfType<GeoSensorTech>()          |> List.sortBy (fun tech -> tech.Level)
+    member this.GravSensors              = this.TechsOfType<GravSensorTech>()         |> List.sortBy (fun tech -> tech.Level)
+    member this.MagazineEfficiency       = this.TechsOfType<MagazineEfficiencyTech>() |> List.sortBy (fun tech -> tech.Level)
+    member this.MagazineEjection         = this.TechsOfType<MagazineEjectionTech>()   |> List.sortBy (fun tech -> tech.Level)
+    member this.Reactors                 = this.TechsOfType<ReactorTech>()            |> List.sortBy (fun tech -> tech.Level)
+    member this.ReactorsPowerBoost       = this.TechsOfType<ReactorBoostTech>()       |> List.sortBy (fun tech -> tech.Level)
+
+    member this.DefaultArmor             = this.Armor.[0]
+    member this.DefaultEngine            = this.Engines.[0]
+    member this.DefaultEngineEfficiency  = this.EngineEfficiency.[0]
+    member this.DefaultThermalEfficiency = this.EngineThermalEfficiency.[0]
+    member this.DefaultFeedEfficiency    = this.MagazineEfficiency.[0]
+    member this.DefaultEjectionChance    = this.MagazineEjection.[0]
+    member this.DefaultReactor           = this.Reactors.[0]
+    member this.DefaultPowerBoost        = this.ReactorsPowerBoost.[0]
+
+    member this.ImprovedCargoHandlingSystem = Guid "D9E7C6FB-D00C-424D-AC8E-EC8FFBCC5FE5"
+    member this.AdvancedCargoHandlingSystem = Guid "D5EAB881-B970-45C9-8518-AB3D0B2FF2A4"
+    member this.GravAssistedCargoHandlingSystem = Guid "D425D3A3-8818-4491-A25B-7C4B108939E9"
+
+    member this.GeologicalSurveySensors = Guid "A2D19D2F-EF64-4DFC-B4B2-8838EEDAAC50"
+    member this.ImprovedGeologicalSurveySensors = Guid "E77F9805-35E0-4E97-B399-32F00BA52563"
+    member this.AdvancedGeologicalSurveySensors = Guid "723ECE17-627E-4CDB-B0B8-D46A60F6FA23"
+    member this.PhasedGeologicalSurveySensors = Guid "8B8001E6-F983-4229-9892-B82363D73C49"
+
+    member this.GravitationalSurveySensors = Guid "558A6A1F-2CEB-41A7-867D-2EA00447B9B7"
+    member this.ImprovedGravitationalSurveySensors = Guid "CB243D80-E18E-4173-B89D-745DE66F7846"
+    member this.AdvancedGravitationalSurveySensors = Guid "E4BB5DD3-5801-4D17-8770-60ABE08A7496"
+    member this.PhasedGravitationalSurveySensors = Guid "8A72916C-3957-4002-98B3-BB3FD04BE35A"
+
+    member this.AllPowerMods =
+        this.EnginePowerMod
+        |> List.collect (fun tech -> tech.UnlockedPowerMods)
+
+    member this.UnlockedPowerMods (researchedTechs: Guid list) =
+        this.EnginePowerMod
+        |> List.filter (fun tech -> List.contains tech.Guid researchedTechs)
+        |> List.collect (fun tech -> tech.UnlockedPowerMods)
+
+    member this.DefaultPowerMod =
+        (
+            this.EnginePowerMod
+            |> List.find (fun tech -> tech.Level = 1)
+        ).UnlockedPowerMods.[0]
+
+let allTechnologies: Fable.Import.JS.Promise<AllTechnologies> =
+    Promise.cache <| fun _ ->
+        promise {
+            let! armor =
+                readTechCsv
+                    "data/tech-armor.csv"
+                    (fun basics line ->
+                        ArmorTech (basics,
+                            strength = Convert.ToDouble line.[5] * 1.0<armorStrength/hs>,
+                            duraniumRatio = Convert.ToDouble line.[6],
+                            neutroniumRatio = Convert.ToDouble line.[7]
+                        )
+                    )
+            let! geoSensors =
+                readTechCsv
+                    "data/tech-geo-sensors.csv"
+                    (fun basics line -> GeoSensorTech basics)
+            let! gravSensors =
+                readTechCsv
+                    "data/tech-grav-sensors.csv"
+                    (fun basics line -> GravSensorTech basics)
+            let! cargoHandling =
+                readTechCsv
+                    "data/tech-cargo-handling.csv"
+                    (fun basics line ->
+                        CargoHandlingTech (basics,
+                            tractorStrength = Convert.ToDouble line.[5]
+                        )
+                    )
+            let! engine =
+                readTechCsv
+                    "data/tech-engines.csv"
+                    (fun basics line ->
+                        EngineTech (basics,
+                            powerPerHs = Convert.ToDouble line.[5] * 1.0<ep/hs>
+                        )
+                    )
+            let! engineEfficiency =
+                readTechCsv
+                    "data/tech-engine-efficiency.csv"
+                    (fun basics line ->
+                        EngineEfficiencyTech (basics,
+                            efficiency = Convert.ToDouble line.[5] * 1000.0<kl/hr/ep>
+                        )
+                    )
+            let! enginePowerMod =
+                readTechCsv
+                    "data/tech-engine-power-mod.csv"
+                    (fun basics line ->
+                        EngineBoostUnlockTech (basics,
+                            unlocked = parseList Convert.ToDouble line.[5]
+                        )
+                    )
+            let! engineThermalEfficiency =
+                readTechCsv
+                    "data/tech-engine-thermal-efficiency.csv"
+                    (fun basics line ->
+                        EngineThermalTech (basics,
+                            thermalEfficiency = Convert.ToDouble line.[5] * 1.0<therm/ep>,
+                            costMultiplier = Convert.ToDouble line.[6]
+                        )
+                    )
+            let! magazineEfficiency =
+                readTechCsv
+                    "data/tech-magazine-efficiency.csv"
+                    (fun basics line ->
+                        MagazineEfficiencyTech (basics,
+                            ammoDensity = Convert.ToDouble line.[5] * 20.0<ammo/hs>
+                        )
+                    )
+            let! magazineEjection =
+                readTechCsv
+                    "data/tech-magazine-ejection.csv"
+                    (fun basics line ->
+                        MagazineEjectionTech (basics,
+                            ejectionChance = Convert.ToDouble line.[5]
+                        )
+                    )
+            let! reactors =
+                readTechCsv
+                    "data/tech-reactors.csv"
+                    (fun basics line ->
+                        ReactorTech (basics,
+                            powerOutput = Convert.ToDouble line.[5] * 1.0<power/hs>
+                        )
+                    )
+            let! reactorsPowerBoost =
+                readTechCsv
+                    "data/tech-reactors-power-boost.csv"
+                    (fun basics line ->
+                        ReactorBoostTech (basics,
+                            powerBoost = Convert.ToDouble line.[5],
+                            explosionChance = Convert.ToDouble line.[6]
+                        )
+                    )
+            return (
+                {
+                    Technologies =
+                        [
+                            Seq.cast<TechBase> armor
+                            Seq.cast<TechBase> cargoHandling
+                            Seq.cast<TechBase> engine
+                            Seq.cast<TechBase> engineEfficiency
+                            Seq.cast<TechBase> enginePowerMod
+                            Seq.cast<TechBase> engineThermalEfficiency
+                            Seq.cast<TechBase> geoSensors
+                            Seq.cast<TechBase> gravSensors
+                            Seq.cast<TechBase> magazineEfficiency
+                            Seq.cast<TechBase> magazineEjection
+                            Seq.cast<TechBase> reactors
+                            Seq.cast<TechBase> reactorsPowerBoost
+                        ]
+                        |> List.collect Seq.toList
+                        |> List.map (fun tech -> (tech.Guid, tech))
+                        |> Map.ofList
+                }
+            )
+        }

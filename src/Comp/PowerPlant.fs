@@ -4,6 +4,7 @@ open System
 open Model.BuildCost
 open Model.Measures
 open Model.MaintenanceClass
+open Technology
 
 type PowerPlant =
     {
@@ -13,25 +14,9 @@ type PowerPlant =
 
         Count: int<comp>
         Size: float<hs/comp>
-        PowerBoost: Technology.ReactorBoostTech
-        Technology: Technology.ReactorTech
+        PowerBoost: ReactorBoostTech
+        Technology: ReactorTech
     }
-    static member Zero
-        with get() =
-            let zero =
-                {
-                    Guid = Guid.NewGuid()
-                    Name = ""
-                    Manufacturer = "Aurora Industries"
-
-                    Count = 0<comp>
-                    Size = 1.0<hs/comp>
-                    PowerBoost = Technology.powerBoost.[0]
-                    Technology = Technology.reactors.[0]
-                }
-            { zero with
-                Name = zero.GeneratedName
-            }
 
     //#region Calculated Values
     member private this._BuildCost =
@@ -81,3 +66,18 @@ type PowerPlant =
     member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 
+let powerPlant (allTechs: AllTechnologies) =
+    let zero =
+        {
+            Guid = Guid.NewGuid()
+            Name = ""
+            Manufacturer = "Aurora Industries"
+
+            Count = 0<comp>
+            Size = 1.0<hs/comp>
+            PowerBoost = allTechs.DefaultPowerBoost
+            Technology = allTechs.DefaultReactor
+        }
+    { zero with
+        Name = zero.GeneratedName
+    }

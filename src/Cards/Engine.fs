@@ -18,7 +18,9 @@ open Nerds.SizeNerd
 open Nerds.EnginePowerNerd
 open Nerds.FuelConsumptionNerd
 
-let render (tech: Technology.TechBase list) (ship: Ship) (comp: Engine) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
@@ -77,22 +79,23 @@ let render (tech: Technology.TechBase list) (ship: Ship) (comp: Engine) dispatch
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Size = n }) |> dispatch)
                     boundTechField tech ship dispatch
                         "Engine Technology"
-                        Technology.engine
+                        allTechs.Engines
                         comp.EngineTech
                         (fun n -> Engine { comp with EngineTech = n })
                     boundTechField tech ship dispatch
                         "Engine Efficiency"
-                        Technology.engineEfficiency
+                        allTechs.EngineEfficiency
                         comp.EfficiencyTech
                         (fun n -> Engine { comp with EfficiencyTech = n })
-                    boundTechField tech ship dispatch
+                    boundFloatChoiceField (allTechs.UnlockedPowerMods tech) ship dispatch
                         "Engine Power"
-                        Technology.allPowerMods
+                        allTechs.AllPowerMods
                         comp.PowerModTech
+                        (fun n -> sprintf "Engine Power x%.2f" n)
                         (fun n -> Engine { comp with PowerModTech = n })
                     boundTechField tech ship dispatch
                         "Thermal Efficiency"
-                        Technology.thermalEfficiency
+                        allTechs.EngineThermalEfficiency
                         comp.ThermalEfficiencyTech
                         (fun n -> Engine { comp with ThermalEfficiencyTech = n })
                 ]

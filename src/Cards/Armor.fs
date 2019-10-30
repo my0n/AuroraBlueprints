@@ -13,7 +13,9 @@ open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (tech: Technology.TechBase list) (ship: Ship) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) dispatch =
     let header =
         [
             Name ship.ArmorTechnology.Name
@@ -26,30 +28,16 @@ let render (tech: Technology.TechBase list) (ship: Ship) dispatch =
         Bulma.FC.HorizontalGroup
             None
             [
-                Bulma.FC.IntInput
-                    {
-                        Label = Some "Armor Depth"
-                        Value = ship.ArmorDepth
-                        Min = Some 1
-                        Max = None
-                        Disabled = false
-                    }
-                    (fun n -> Msg.ReplaceShip { ship with ArmorDepth = n } |> dispatch)
-                Bulma.FC.Select
-                    {
-                        Label = Some "Armor Technology"
-                        Options =
-                            Technology.armor
-                            |> List.mapi (fun i v ->
-                                {|
-                                    Key = i
-                                    Text = String.Format("{0} ({1:0} strength/HS)", v.Name, v.Strength)
-                                    Disallowed = not <| (List.exists (fun t -> t.Equals(v)) tech)
-                                |}
-                            )
-                        Value = ship.ArmorTechnology.Level
-                    }
-                    (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = Technology.armor.[n] } |> dispatch)
+                boundShipIntField dispatch
+                    "Armor Depth"
+                    (Some 1, None)
+                    ship.ArmorDepth
+                    (fun n -> { ship with ArmorDepth = n })
+                boundShipTechField tech dispatch
+                    "Armor Technology"
+                    allTechs.Armor
+                    ship.ArmorTechnology
+                    (fun n -> { ship with ArmorTechnology = n })
             ]
     let actions = []
     shipComponentCard "armor" header [ form ] actions

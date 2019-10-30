@@ -20,7 +20,7 @@ type Model =
         CurrentShip: Ship option
         AllShips: Map<Guid, Ship>
         AllComponents: Map<Guid, ShipComponent>
-        CurrentTechnology: Technology.TechBase list
+        CurrentTechnology: Guid list
     }
     static member empty =
         {

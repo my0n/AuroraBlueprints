@@ -8,6 +8,7 @@
   <ItemGroup>
     <!-- Global to the app -->
     <Compile Include="Global.fs" />
+    <Compile Include="File\CsvReader.fs" />
     <Compile Include="Model\Measures.fs" />
     <Compile Include="Model\BuildCost.fs" />
     <Compile Include="Model\Technology.fs" />

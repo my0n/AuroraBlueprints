@@ -1,5 +1,7 @@
 module App.Msg
 
+open System
+
 open Comp.Ship
 open Comp.ShipComponent
 
@@ -26,5 +28,6 @@ type Msg =
     | ReplaceShipComponent of Ship * ShipComponent
 
     // Technology
-    | AddTechnology of Technology.TechBase
-    | RemoveTechnology of Technology.TechBase
+    | RegisterTechnologies of Technology.TechBase list
+    | AddTechnology of Guid
+    | RemoveTechnology of Guid

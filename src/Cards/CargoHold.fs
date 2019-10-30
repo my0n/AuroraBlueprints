@@ -17,7 +17,9 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.TractorStrengthNerd
 
-let render (tech: Technology.TechBase list) (ship: Ship) (comp: CargoHold) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: CargoHold) dispatch =
     let header =
         [
             Name "Cargo Hold"
@@ -77,7 +79,7 @@ let render (tech: Technology.TechBase list) (ship: Ship) (comp: CargoHold) dispa
                             Value = comp.ImprovedCargoHandlingSystem
                             Min = Some 0
                             Max = None
-                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.improvedCargoHandling)) tech)
+                            Disabled = not <| List.contains allTechs.ImprovedCargoHandlingSystem tech
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with ImprovedCargoHandlingSystem = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -86,7 +88,7 @@ let render (tech: Technology.TechBase list) (ship: Ship) (comp: CargoHold) dispa
                             Value = comp.AdvancedCargoHandlingSystem
                             Min = Some 0
                             Max = None
-                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.advancedCargoHandling)) tech)
+                            Disabled = not <| List.contains allTechs.AdvancedCargoHandlingSystem tech
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with AdvancedCargoHandlingSystem = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -95,7 +97,7 @@ let render (tech: Technology.TechBase list) (ship: Ship) (comp: CargoHold) dispa
                             Value = comp.GravAssistedCargoHandlingSystem
                             Min = Some 0
                             Max = None
-                            Disabled = not <| (List.exists (fun t -> t.Equals(Technology.gravAssistedCargoHandling)) tech)
+                            Disabled = not <| List.contains allTechs.GravAssistedCargoHandlingSystem tech
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with GravAssistedCargoHandlingSystem = n }) |> dispatch)
                 ]

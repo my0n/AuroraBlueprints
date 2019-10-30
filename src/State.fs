@@ -15,19 +15,22 @@ let init result =
                 CurrentPage = Ships
                 CurrentShip = None
                 AllShips = Map.empty
-                AllComponents = Map.empty
-                                %+ Comp.ShipComponent.Bridge         Comp.Bridge.Bridge.Zero
-                                %+ Comp.ShipComponent.CargoHold      Comp.CargoHold.CargoHold.Zero
-                                %+ Comp.ShipComponent.Engine         Comp.Engine.Engine.Zero
-                                %+ Comp.ShipComponent.FuelStorage    Comp.FuelStorage.FuelStorage.Zero
-                                %+ Comp.ShipComponent.Magazine       Comp.Magazine.Magazine.Zero
-                                %+ Comp.ShipComponent.PowerPlant     Comp.PowerPlant.PowerPlant.Zero
-                                %+ Comp.ShipComponent.Sensors        Comp.Sensors.Sensors.Zero
-                                %+ Comp.ShipComponent.TroopTransport Comp.TroopTransport.TroopTransport.Zero
+                AllComponents =
+                    Map.empty
+                    %+ Comp.ShipComponent.Bridge         Comp.Bridge.Bridge.Zero
+                    %+ Comp.ShipComponent.CargoHold      Comp.CargoHold.CargoHold.Zero
+                    %+ Comp.ShipComponent.Engine         Comp.Engine.Engine.Zero
+                    %+ Comp.ShipComponent.FuelStorage    Comp.FuelStorage.FuelStorage.Zero
+                    %+ Comp.ShipComponent.Magazine       Comp.Magazine.Magazine.Zero
+                    %+ Comp.ShipComponent.PowerPlant     Comp.PowerPlant.PowerPlant.Zero
+                    %+ Comp.ShipComponent.Sensors        Comp.Sensors.Sensors.Zero
+                    %+ Comp.ShipComponent.TroopTransport Comp.TroopTransport.TroopTransport.Zero
                 CurrentTechnology = List.empty
             }
 
-    model, Cmd.batch [ cmd ]
+    model, Cmd.batch [
+        cmd
+    ]
     
 let orNoneIf pred inp =
     inp |> Option.bind (fun a -> match pred a with true -> None | false -> inp)
@@ -100,14 +103,15 @@ let update msg model =
                 | false -> model.CurrentTechnology
         }, Cmd.none
     | RemoveTechnology tech ->
-        let rec parentsToRemove unprocessed processed =
+        let getParents guid = model.AllTechnology.[guid].Parents
+        let rec parentsToRemove (unprocessed: Guid list) (processed: Guid list) =
             match unprocessed with
             | [] -> processed
-            | (x: Technology.TechBase)::xs ->
+            | x::xs ->
                 let researchedParents =
-                    x.Parents
+                    getParents x
                     |> List.filter (fun parent ->
-                        Technology.allTechnologies
+                        model.CurrentTechnology
                         |> List.contains parent
                     )
                 parentsToRemove (xs @ researchedParents) (processed @ [x])

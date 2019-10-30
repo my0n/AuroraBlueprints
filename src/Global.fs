@@ -1,6 +1,7 @@
 module Global
 
 open System
+open Fable.PowerPack
 
 module List =
     let inline wrap element = [ element ]
@@ -24,6 +25,13 @@ module List =
             (i + 1, folder i prev current)
         ) (0, state)
         |> List.map (fun (i, c) -> c)
+
+module Seq =
+    let inline ofType<'a> items =
+        items
+        |> Seq.cast<obj>
+        |> Seq.filter (fun x -> x :? 'a)
+        |> Seq.cast<'a>
 
 module Map =
     let inline keys m = m |> Map.toList |> List.map (fun (a, b) -> a)
@@ -52,3 +60,31 @@ let inline (@%%) (a: Map<'a, 'b>) (b: Map<'a, 'b>) =
     Map.toSeq a
     |> Seq.append (Map.toSeq b)
     |> Map.ofSeq
+
+module Promise =
+    let cache (fn: unit -> Fable.Import.JS.Promise<'a>): Fable.Import.JS.Promise<'a> =
+        let cached = ref None
+        match cached.Value with
+        | Some a ->
+            promise {
+                return a
+            }
+        | None ->
+            promise {
+                let! a = fn ()
+                cached := Some a
+                return a
+            }
+    let memoize (fn: 'a -> Fable.Import.JS.Promise<'b>) key: Fable.Import.JS.Promise<'b> =
+        let cached = ref Map.empty
+        match cached.Value.TryFind key with
+        | Some a ->
+            promise {
+                return a
+            }
+        | None ->
+            promise {
+                let! a = fn key
+                cached := cached.Value.Add (key, a)
+                return a
+            }

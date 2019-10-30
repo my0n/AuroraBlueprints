@@ -9,6 +9,8 @@ open Model.MaintenanceClass
 open Model.Measures
 open Comp.ShipComponent
 
+open Technology
+
 type Ship =
     {
         Guid: Guid
@@ -18,28 +20,13 @@ type Ship =
 
         // armor
         ArmorDepth: int
-        ArmorTechnology: Technology.ArmorTech
+        ArmorTechnology: ArmorTech
 
         // crew
         SpareBerths: int<people>
         CryogenicBerths: int<people>
         DeployTime: float<mo>
     }
-    static member Zero
-        with get() =
-            {
-                Guid = Guid.NewGuid()
-                Name = "Tribal"
-                ShipClass = "Cruiser"
-                Components = Map.empty
-
-                ArmorDepth = 1
-                ArmorTechnology = Technology.armor.[0]
-            
-                SpareBerths = 0<people>
-                DeployTime = 3.0<mo>
-                CryogenicBerths = 0<people>
-            }
     //#region Cost
     member private this._Cost =
         lazy (
@@ -353,3 +340,18 @@ type Ship =
     member this.TotalPower with get() = this._TotalPower.Value
     member this.TroopTransportCapability with get() = this._TroopTransportCapability.Value
     //#endregion
+
+let ship (allTechs: AllTechnologies) =
+    {
+        Guid = Guid.NewGuid()
+        Name = "Tribal"
+        ShipClass = "Cruiser"
+        Components = Map.empty
+
+        ArmorDepth = 1
+        ArmorTechnology = allTechs.DefaultArmor
+    
+        SpareBerths = 0<people>
+        DeployTime = 3.0<mo>
+        CryogenicBerths = 0<people>
+    }

@@ -188,8 +188,8 @@ let RadioGroup opts =
 type SelectOptions =
     {
         Label: string option
-        Options: {| Key: int; Text: string; Disallowed: bool |} list
-        Value: int
+        Options: {| Key: string; Text: string; Disallowed: bool |} list
+        Value: string
     }
 
 let Select opts cb =

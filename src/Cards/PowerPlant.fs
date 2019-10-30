@@ -15,7 +15,9 @@ open Nerds.PriceNerd
 open Nerds.SizeNerd
 open Nerds.PowerProductionNerd
 
-let render (tech: Technology.TechBase list) (ship: Ship) (comp: PowerPlant) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name

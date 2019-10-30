@@ -1,5 +1,7 @@
 module Cards.Magazine
 
+open System
+
 open Cards.Common
 open Model.Measures
 open Comp.Ship
@@ -10,7 +12,9 @@ open Nerds.MagazineCapacityNerd
 open Nerds.PriceNerd
 open Nerds.SizeNerd
 
-let render (tech: Technology.TechBase list) (ship: Ship) (comp: Magazine) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Magazine) dispatch =
     let header =
         [
             Name comp.Name
@@ -51,17 +55,17 @@ let render (tech: Technology.TechBase list) (ship: Ship) (comp: Magazine) dispat
                         (fun n -> Magazine { comp with Size = n })
                     boundTechField tech ship dispatch
                         "Armor"
-                        Technology.armor
+                        allTechs.Armor
                         comp.Armor
                         (fun n -> Magazine { comp with Armor = n })
                     boundTechField tech ship dispatch
                         "Feed System"
-                        Technology.feedEfficiency
+                        allTechs.MagazineEfficiency
                         comp.FeedSystem
                         (fun n -> Magazine { comp with FeedSystem = n })
                     boundTechField tech ship dispatch
                         "Ejection"
-                        Technology.ejectionChance
+                        allTechs.MagazineEjection
                         comp.Ejection
                         (fun n -> Magazine { comp with Ejection = n })
                 ]
