@@ -75,25 +75,26 @@ let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Pow
                                 sizeOptions
                                 |> List.mapi (fun i o ->
                                     {|
-                                        Key = i
+                                        Key = i.ToString()
                                         Text = sprintf "%.1f" o
                                         Disallowed = false
                                     |}
                                 )
                             Value =
-                                sizeOptions
-                                |> List.tryFindIndex (fun o -> o = comp.Size)
-                                |> Option.defaultValue 1
+                                (sizeOptions
+                                 |> List.tryFindIndex (fun o -> o = comp.Size)
+                                 |> Option.defaultValue 1
+                                ).ToString()
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[n]}) |> dispatch)
                     boundTechField tech ship dispatch
                         "Power Plant Technology"
-                        Technology.reactors
+                        allTechs.Reactors
                         comp.Technology
                         (fun n -> PowerPlant { comp with Technology = n })
                     boundTechField tech ship dispatch
                         "Power Boost"
-                        Technology.powerBoost
+                        allTechs.ReactorsPowerBoost
                         comp.PowerBoost
                         (fun n -> PowerPlant { comp with PowerBoost = n })
                 ]

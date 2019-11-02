@@ -3,31 +3,20 @@ module TechView
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 
+open System
 open Global
 
-open Model.Measures
 open App.Model
 open App.Msg
-open Bulma.Button
-open Bulma.Table
 open Bulma.FC
-open Comp.ShipComponent
-open Comp.Ship
-open Fable.Import.React
 
-let changeTech value tech =
-    match value with
-    | true ->
-        AddTechnology tech
-    | false ->
-        RemoveTechnology tech
-
-let techs (all: Technology.TechBase list) current dispatch =
-    all
+let techs (allTechs: Technology.AllTechnologies) (current: Guid list) dispatch =
+    allTechs.Technologies
+    |> Map.values
     |> List.map (fun tech ->
         let researched =
             current
-            |> List.contains tech
+            |> List.contains tech.Guid
         let available =
             researched 
             || tech.Parents
@@ -44,7 +33,12 @@ let techs (all: Technology.TechBase list) current dispatch =
                 Label = text
             }
 
-        Bulma.FC.Checkbox opts (fun value -> changeTech value tech |> dispatch)
+        Bulma.FC.Checkbox opts (fun value ->
+            match value with
+            | true ->  AddTechnology tech.Guid
+            | false -> RemoveTechnology tech.Guid
+            |> dispatch
+        )
         |> List.wrap
         |> div [ Key (tech.Guid.ToString()) ]
     )
@@ -56,6 +50,6 @@ let root model dispatch =
     div [ ClassName "columns" ]
         [
             div [ ClassName "column is-2" ] [ ]
-            div [ ClassName "column is-8" ] [ techs Technology.allTechnologies model.CurrentTechnology dispatch ]
+            div [ ClassName "column is-8" ] [ techs model.AllTechnologies model.CurrentTechnology dispatch ]
             div [ ClassName "column" ] [ ]
         ]

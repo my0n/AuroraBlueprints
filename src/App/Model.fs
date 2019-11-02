@@ -21,6 +21,7 @@ type Model =
         AllShips: Map<Guid, Ship>
         AllComponents: Map<Guid, ShipComponent>
         CurrentTechnology: Guid list
+        AllTechnologies: Technology.AllTechnologies
     }
     static member empty =
         {
@@ -29,4 +30,5 @@ type Model =
             AllShips = Map.empty
             AllComponents = Map.empty
             CurrentTechnology = List.empty
+            AllTechnologies = { Technologies = Map.empty }
         }

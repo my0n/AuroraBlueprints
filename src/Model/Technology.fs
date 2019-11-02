@@ -128,6 +128,14 @@ let rec private researchedParents (allTechs: Map<Guid, TechBase>) researchedTech
         | false -> researchedParents allTechs researchedTechs xs processed
         | true -> researchedParents allTechs researchedTechs (xs @ tech.Parents) (x::processed)
 
+let inline private techsOfType<'a> techs =
+    techs
+    |> Map.values
+    |> Seq.cast<obj>
+    |> Seq.filter (fun x -> x :? 'a)
+    |> Seq.cast<'a>
+    |> Seq.toList
+
 type AllTechnologies =
     {
         Technologies: Map<Guid, TechBase>
@@ -148,24 +156,18 @@ type AllTechnologies =
     member this.GetParents  guid = this.Technologies.[guid].Parents
     member this.GetChildren guid = this._Children.Value.[guid]
 
-    member private this.TechsOfType<'a> () =
-        this.Technologies
-        |> Map.values
-        |> Seq.ofType<'a>
-        |> Seq.toList
-
-    member this.Armor                    = this.TechsOfType<ArmorTech>()              |> List.sortBy (fun tech -> tech.Level)
-    member this.CargoHandling            = this.TechsOfType<CargoHandlingTech>()      |> List.sortBy (fun tech -> tech.Level)
-    member this.Engines                  = this.TechsOfType<EngineTech>()             |> List.sortBy (fun tech -> tech.Level)
-    member this.EngineEfficiency         = this.TechsOfType<EngineEfficiencyTech>()   |> List.sortBy (fun tech -> tech.Level)
-    member this.EnginePowerMod           = this.TechsOfType<EngineBoostUnlockTech>()  |> List.sortBy (fun tech -> tech.Level)
-    member this.EngineThermalEfficiency  = this.TechsOfType<EngineThermalTech>()      |> List.sortBy (fun tech -> tech.Level)
-    member this.GeoSensors               = this.TechsOfType<GeoSensorTech>()          |> List.sortBy (fun tech -> tech.Level)
-    member this.GravSensors              = this.TechsOfType<GravSensorTech>()         |> List.sortBy (fun tech -> tech.Level)
-    member this.MagazineEfficiency       = this.TechsOfType<MagazineEfficiencyTech>() |> List.sortBy (fun tech -> tech.Level)
-    member this.MagazineEjection         = this.TechsOfType<MagazineEjectionTech>()   |> List.sortBy (fun tech -> tech.Level)
-    member this.Reactors                 = this.TechsOfType<ReactorTech>()            |> List.sortBy (fun tech -> tech.Level)
-    member this.ReactorsPowerBoost       = this.TechsOfType<ReactorBoostTech>()       |> List.sortBy (fun tech -> tech.Level)
+    member this.Armor                   = this.Technologies |> techsOfType<ArmorTech>              |> List.sortBy (fun tech -> tech.Level)
+    member this.CargoHandling           = this.Technologies |> techsOfType<CargoHandlingTech>      |> List.sortBy (fun tech -> tech.Level)
+    member this.Engines                 = this.Technologies |> techsOfType<EngineTech>             |> List.sortBy (fun tech -> tech.Level)
+    member this.EngineEfficiency        = this.Technologies |> techsOfType<EngineEfficiencyTech>   |> List.sortBy (fun tech -> tech.Level)
+    member this.EnginePowerMod          = this.Technologies |> techsOfType<EngineBoostUnlockTech>  |> List.sortBy (fun tech -> tech.Level)
+    member this.EngineThermalEfficiency = this.Technologies |> techsOfType<EngineThermalTech>      |> List.sortBy (fun tech -> tech.Level)
+    member this.GeoSensors              = this.Technologies |> techsOfType<GeoSensorTech>          |> List.sortBy (fun tech -> tech.Level)
+    member this.GravSensors             = this.Technologies |> techsOfType<GravSensorTech>         |> List.sortBy (fun tech -> tech.Level)
+    member this.MagazineEfficiency      = this.Technologies |> techsOfType<MagazineEfficiencyTech> |> List.sortBy (fun tech -> tech.Level)
+    member this.MagazineEjection        = this.Technologies |> techsOfType<MagazineEjectionTech>   |> List.sortBy (fun tech -> tech.Level)
+    member this.Reactors                = this.Technologies |> techsOfType<ReactorTech>            |> List.sortBy (fun tech -> tech.Level)
+    member this.ReactorsPowerBoost      = this.Technologies |> techsOfType<ReactorBoostTech>       |> List.sortBy (fun tech -> tech.Level)
 
     member this.DefaultArmor             = this.Armor.[0]
     member this.DefaultEngine            = this.Engines.[0]

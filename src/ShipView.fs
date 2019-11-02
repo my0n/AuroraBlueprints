@@ -17,7 +17,7 @@ let actionBar dispatch =
         [ Bulma.Button.render "New Ship" (fun _ -> Msg.NewShip |> dispatch)
         ]
 
-let shipInfo dispatch tech ship =
+let shipInfo dispatch allTechs tech ship =
     match ship with
     | None ->
         div [ ClassName "title is-4" ] [ str "No ship selected." ]
@@ -28,17 +28,17 @@ let shipInfo dispatch tech ship =
             |> List.map (fun comp ->
                 match comp with
                 | Bridge comp         -> Cards.Bridge.render ship comp dispatch
-                | CargoHold comp      -> Cards.CargoHold.render tech ship comp dispatch
-                | Engine comp         -> Cards.Engine.render tech ship comp dispatch
+                | CargoHold comp      -> Cards.CargoHold.render allTechs tech ship comp dispatch
+                | Engine comp         -> Cards.Engine.render allTechs tech ship comp dispatch
                 | FuelStorage comp    -> Cards.FuelStorage.render ship comp dispatch
-                | Magazine comp       -> Cards.Magazine.render tech ship comp dispatch
-                | PowerPlant comp     -> Cards.PowerPlant.render tech ship comp dispatch
-                | Sensors comp        -> Cards.Sensors.render tech ship comp dispatch
+                | Magazine comp       -> Cards.Magazine.render allTechs tech ship comp dispatch
+                | PowerPlant comp     -> Cards.PowerPlant.render allTechs tech ship comp dispatch
+                | Sensors comp        -> Cards.Sensors.render allTechs tech ship comp dispatch
                 | TroopTransport comp -> Cards.TroopTransport.render ship comp dispatch
             )
 
         [ Cards.Classification.render ship dispatch
-          Cards.Armor.render tech ship dispatch
+          Cards.Armor.render allTechs tech ship dispatch
           Cards.CrewQuarters.render ship dispatch
         ]
         @ shipComponents
@@ -92,7 +92,7 @@ let root model dispatch =
             div [ ClassName "column is-8" ]
                 (
                   [ actionBar dispatch ]
-                  @+ div [ ClassName "content" ] [ shipInfo dispatch model.CurrentTechnology model.CurrentShip ]
+                  @+ div [ ClassName "content" ] [ shipInfo dispatch model.AllTechnologies model.CurrentTechnology model.CurrentShip ]
                 )
             div [ ClassName "column" ]
                 [ Bulma.Table.render componentListOptions comps None ignore ]

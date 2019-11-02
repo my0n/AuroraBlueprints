@@ -8,6 +8,9 @@ open Comp.ShipComponent
 type Msg =
     | Noop
 
+    // Initialization
+    | InitializeTechnologies of Technology.AllTechnologies
+
     // Ships
     | NewShip
     | RemoveShip of Ship
@@ -28,6 +31,5 @@ type Msg =
     | ReplaceShipComponent of Ship * ShipComponent
 
     // Technology
-    | RegisterTechnologies of Technology.TechBase list
     | AddTechnology of Guid
     | RemoveTechnology of Guid

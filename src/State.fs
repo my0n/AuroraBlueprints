@@ -9,27 +9,13 @@ open App.Msg
 open Comp.Ship
 
 let init result =
-    let (model, cmd) =
-        PageState.urlUpdate result
-            {
-                CurrentPage = Ships
-                CurrentShip = None
-                AllShips = Map.empty
-                AllComponents =
-                    Map.empty
-                    %+ Comp.ShipComponent.Bridge         Comp.Bridge.Bridge.Zero
-                    %+ Comp.ShipComponent.CargoHold      Comp.CargoHold.CargoHold.Zero
-                    %+ Comp.ShipComponent.Engine         Comp.Engine.Engine.Zero
-                    %+ Comp.ShipComponent.FuelStorage    Comp.FuelStorage.FuelStorage.Zero
-                    %+ Comp.ShipComponent.Magazine       Comp.Magazine.Magazine.Zero
-                    %+ Comp.ShipComponent.PowerPlant     Comp.PowerPlant.PowerPlant.Zero
-                    %+ Comp.ShipComponent.Sensors        Comp.Sensors.Sensors.Zero
-                    %+ Comp.ShipComponent.TroopTransport Comp.TroopTransport.TroopTransport.Zero
-                CurrentTechnology = List.empty
-            }
-
+    let (model, cmd) = PageState.urlUpdate result Model.empty
     model, Cmd.batch [
         cmd
+        Cmd.ofPromise
+            (fun _ -> Technology.allTechnologies) ()
+            InitializeTechnologies
+            (fun _ -> Noop)
     ]
     
 let orNoneIf pred inp =
@@ -42,10 +28,26 @@ let update msg model =
     match msg with
     | Noop ->
         model, Cmd.none
-        
+    
+    // Initialization
+    | InitializeTechnologies techs ->
+        { model with
+            AllTechnologies = techs
+            AllComponents =
+                Map.empty
+                %+ Comp.ShipComponent.Bridge         (Comp.Bridge.Bridge.Zero)
+                %+ Comp.ShipComponent.CargoHold      (Comp.CargoHold.CargoHold.Zero)
+                %+ Comp.ShipComponent.Engine         (Comp.Engine.engine model.AllTechnologies)
+                %+ Comp.ShipComponent.FuelStorage    (Comp.FuelStorage.FuelStorage.Zero)
+                %+ Comp.ShipComponent.Magazine       (Comp.Magazine.magazine model.AllTechnologies)
+                %+ Comp.ShipComponent.PowerPlant     (Comp.PowerPlant.powerPlant model.AllTechnologies)
+                %+ Comp.ShipComponent.Sensors        (Comp.Sensors.Sensors.Zero)
+                %+ Comp.ShipComponent.TroopTransport (Comp.TroopTransport.TroopTransport.Zero)
+        }, Cmd.none
+
     // Ships
     | NewShip ->
-        let ship = Ship.Zero
+        let ship = Comp.Ship.ship model.AllTechnologies
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = Some ship
@@ -103,7 +105,7 @@ let update msg model =
                 | false -> model.CurrentTechnology
         }, Cmd.none
     | RemoveTechnology tech ->
-        let getParents guid = model.AllTechnology.[guid].Parents
+        let getParents guid = model.AllTechnologies.[guid].Parents
         let rec parentsToRemove (unprocessed: Guid list) (processed: Guid list) =
             match unprocessed with
             | [] -> processed

@@ -26,13 +26,6 @@ module List =
         ) (0, state)
         |> List.map (fun (i, c) -> c)
 
-module Seq =
-    let inline ofType<'a> items =
-        items
-        |> Seq.cast<obj>
-        |> Seq.filter (fun x -> x :? 'a)
-        |> Seq.cast<'a>
-
 module Map =
     let inline keys m = m |> Map.toList |> List.map (fun (a, b) -> a)
     let inline values m = m |> Map.toList |> List.map (fun (a, b) -> b)

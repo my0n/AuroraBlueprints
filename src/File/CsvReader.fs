@@ -4,7 +4,7 @@ open Fable.PowerPack.Fetch
 open Fable.PowerPack
 
 let readCsv file consumeFn =
-    fetch file []
+    fetch file [ Cache RequestCache.Nostore ]
     |> Promise.bind (fun res ->
         res.text ()
     )
