@@ -159,10 +159,11 @@ type CheckboxOptions =
         Disabled: bool
         Checked: bool
         Label: string
+        Unselectable: bool
     }
 
 let Checkbox opts cb =
-    label [ ClassName "checkbox"; Disabled opts.Disabled ]
+    label [ classList [ "checkbox", true; "is-unselectable", opts.Unselectable ]; Disabled opts.Disabled ]
           [ input [ Type "checkbox"
                     OnChange (fun event -> cb event.Checked)
                     Disabled opts.Disabled

@@ -108,22 +108,7 @@ let update msg model =
                 | true ->  model.CurrentTechnology
         }, Cmd.none
     | RemoveTechnology tech ->
-        let getParents identifier = model.AllTechnologies.[identifier].Parents
-        let rec parentsToRemove (unprocessed: GameObjectId list) (processed: GameObjectId list) =
-            match unprocessed with
-            | [] -> processed
-            | x::xs ->
-                let researchedParents =
-                    getParents x
-                    |> List.filter (fun parent ->
-                        model.CurrentTechnology
-                        |> List.contains parent
-                    )
-                parentsToRemove (xs @ researchedParents) (processed @ [x])
-        let toRemove = parentsToRemove [tech] []
         let removed =
             model.CurrentTechnology
-            |> List.filter (fun t ->
-                toRemove |> List.contains t
-            )
+            |> List.except ((model.AllTechnologies.GetAllChildren model.CurrentTechnology tech) @ [tech])
         { model with CurrentTechnology = removed }, Cmd.none

@@ -92,7 +92,7 @@ let inline boundFloatChoiceField (availableOptions: float list) ship dispatch lb
                     {|
                         Key = v.ToString()
                         Text = nameFn v
-                        Disallowed = not <| (List.exists (fun t -> t = getter) availableOptions)
+                        Disallowed = not <| (List.contains v availableOptions)
                     |}
                 )
             Value = getter.ToString()
@@ -109,7 +109,7 @@ let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId lis
                     {|
                         Key = v.Id.ToString()
                         Text = v.Name
-                        Disallowed = not <| (List.exists (fun t -> t = getter.Id) currentTech)
+                        Disallowed = not <| (List.contains v.Id currentTech)
                     |}
                 )
             Value = getter.Id.ToString()
@@ -126,7 +126,7 @@ let inline boundShipTechField<'a when 'a :> TechBase> (currentTech: GameObjectId
                     {|
                         Key = v.Id.ToString()
                         Text = v.Name
-                        Disallowed = not <| (List.exists (fun t -> t = getter.Id) currentTech)
+                        Disallowed = not <| (List.contains v.Id currentTech)
                     |}
                 )
             Value = getter.Id.ToString()

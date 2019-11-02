@@ -154,8 +154,20 @@ type AllTechnologies =
                 |> Map.keys
             )
         )
-    member this.GetParents  identifier = this.Technologies.[identifier].Parents
-    member this.GetChildren identifier = this._Children.Value.[identifier]
+    member this.GetParents identifier    = this.Technologies.[identifier].Parents
+    member this.GetChildren identifier   = this._Children.Value.[identifier]
+    member this.GetAllChildren onlyCheck identifier =
+        let rec parents unprocessed processed =
+            match unprocessed with
+            | [] -> processed
+            | x::xs ->
+                let moreChildren = 
+                    Set.intersect
+                        (Set.ofList <| this.GetChildren x)
+                        (Set.ofList onlyCheck)
+                    |> Set.toList
+                parents (xs @ moreChildren) (x::processed)
+        parents (this.GetChildren identifier) []
 
     member this.Armor                   = this.Technologies |> techsOfType<ArmorTech>              |> List.sortBy (fun tech -> tech.Level)
     member this.CargoHandling           = this.Technologies |> techsOfType<CargoHandlingTech>      |> List.sortBy (fun tech -> tech.Level)
