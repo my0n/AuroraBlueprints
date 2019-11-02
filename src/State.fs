@@ -104,9 +104,8 @@ let update msg model =
         { model with
             CurrentTechnology =
                 match List.contains tech model.CurrentTechnology with
-                | true ->
-                    model.CurrentTechnology @ [tech]
-                | false -> model.CurrentTechnology
+                | false -> model.CurrentTechnology @ [tech]
+                | true ->  model.CurrentTechnology
         }, Cmd.none
     | RemoveTechnology tech ->
         let getParents identifier = model.AllTechnologies.[identifier].Parents
