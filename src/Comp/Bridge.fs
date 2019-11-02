@@ -1,19 +1,20 @@
 module Comp.Bridge
 
+open Global
 open System
 open Model.Measures
 open Model.BuildCost
 
 type Bridge =
     {
-        Guid: Guid
+        Id: GameObjectId
 
         Count: int<comp>
     }
     static member Zero
         with get() =
             {
-                Guid = Guid.NewGuid()
+                Id = GameObjectId.generate()
                 Count = 1<comp>
             }
     member this.Size = 1<hs/comp>

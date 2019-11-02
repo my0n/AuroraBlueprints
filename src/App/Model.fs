@@ -1,6 +1,6 @@
 module App.Model
 
-open System
+open Global
 
 open Comp.Ship
 open Comp.ShipComponent
@@ -18,10 +18,11 @@ type Model =
     {
         CurrentPage: Page
         CurrentShip: Ship option
-        AllShips: Map<Guid, Ship>
-        AllComponents: Map<Guid, ShipComponent>
-        CurrentTechnology: Guid list
+        AllShips: Map<GameObjectId, Ship>
+        AllComponents: Map<GameObjectId, ShipComponent>
+        CurrentTechnology: GameObjectId list
         AllTechnologies: Technology.AllTechnologies
+        FullyInitialized: bool
     }
     static member empty =
         {
@@ -31,4 +32,5 @@ type Model =
             AllComponents = Map.empty
             CurrentTechnology = List.empty
             AllTechnologies = { Technologies = Map.empty }
+            FullyInitialized = false
         }

@@ -1,6 +1,6 @@
 module App.Msg
 
-open System
+open Global
 
 open Comp.Ship
 open Comp.ShipComponent
@@ -31,5 +31,5 @@ type Msg =
     | ReplaceShipComponent of Ship * ShipComponent
 
     // Technology
-    | AddTechnology of Guid
-    | RemoveTechnology of Guid
+    | AddTechnology of GameObjectId
+    | RemoveTechnology of GameObjectId

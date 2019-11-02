@@ -1,6 +1,6 @@
 module Comp.ShipComponent
 
-open System
+open Global
 open Comp.Bridge
 open Comp.CargoHold
 open Comp.Engine
@@ -21,17 +21,17 @@ type ShipComponent =
     | PowerPlant of PowerPlant
     | Sensors of Sensors
     | TroopTransport of TroopTransport
-    member this.Guid
+    member this.Id
         with get() =
             match this with
-            | Bridge c         -> c.Guid
-            | CargoHold c      -> c.Guid
-            | Engine c         -> c.Guid
-            | FuelStorage c    -> c.Guid
-            | Magazine c       -> c.Guid
-            | PowerPlant c     -> c.Guid
-            | Sensors c        -> c.Guid
-            | TroopTransport c -> c.Guid
+            | Bridge c         -> c.Id
+            | CargoHold c      -> c.Id
+            | Engine c         -> c.Id
+            | FuelStorage c    -> c.Id
+            | Magazine c       -> c.Id
+            | PowerPlant c     -> c.Id
+            | Sensors c        -> c.Id
+            | TroopTransport c -> c.Id
     member this.Name
         with get() =
             match this with
@@ -86,12 +86,12 @@ type ShipComponent =
             | TroopTransport c -> c.TotalSize
     member this.duplicate =
         match this with
-        | Bridge c             -> Bridge { c with Guid = Guid.NewGuid() }
-        | CargoHold c          -> CargoHold { c with Guid = Guid.NewGuid() }
-        | Engine c             -> Engine { c with Guid = Guid.NewGuid() }
-        | FuelStorage c        -> FuelStorage { c with Guid = Guid.NewGuid() }
-        | Magazine c           -> Magazine { c with Guid = Guid.NewGuid() }
-        | PowerPlant c         -> PowerPlant { c with Guid = Guid.NewGuid() }
-        | Sensors c            -> Sensors { c with Guid = Guid.NewGuid() }
-        | TroopTransport c     -> TroopTransport { c with Guid = Guid.NewGuid() }
+        | Bridge c             -> Bridge { c with Id = GameObjectId.generate() }
+        | CargoHold c          -> CargoHold { c with Id = GameObjectId.generate() }
+        | Engine c             -> Engine { c with Id = GameObjectId.generate() }
+        | FuelStorage c        -> FuelStorage { c with Id = GameObjectId.generate() }
+        | Magazine c           -> Magazine { c with Id = GameObjectId.generate() }
+        | PowerPlant c         -> PowerPlant { c with Id = GameObjectId.generate() }
+        | Sensors c            -> Sensors { c with Id = GameObjectId.generate() }
+        | TroopTransport c     -> TroopTransport { c with Id = GameObjectId.generate() }
         

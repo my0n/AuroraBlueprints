@@ -15,5 +15,4 @@ let readCsv file consumeFn =
         )
         |> Array.skip 1
         |> Seq.map consumeFn
-        |> Seq.toList
     )

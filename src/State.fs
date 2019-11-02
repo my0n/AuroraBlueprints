@@ -15,7 +15,10 @@ let init result =
         Cmd.ofPromise
             (fun _ -> Technology.allTechnologies) ()
             InitializeTechnologies
-            (fun _ -> Noop)
+            (fun err -> 
+                Fable.Import.Browser.console.log (err) |> ignore
+                Noop
+            )
     ]
     
 let orNoneIf pred inp =
@@ -37,12 +40,13 @@ let update msg model =
                 Map.empty
                 %+ Comp.ShipComponent.Bridge         (Comp.Bridge.Bridge.Zero)
                 %+ Comp.ShipComponent.CargoHold      (Comp.CargoHold.CargoHold.Zero)
-                %+ Comp.ShipComponent.Engine         (Comp.Engine.engine model.AllTechnologies)
+                %+ Comp.ShipComponent.Engine         (Comp.Engine.engine techs)
                 %+ Comp.ShipComponent.FuelStorage    (Comp.FuelStorage.FuelStorage.Zero)
-                %+ Comp.ShipComponent.Magazine       (Comp.Magazine.magazine model.AllTechnologies)
-                %+ Comp.ShipComponent.PowerPlant     (Comp.PowerPlant.powerPlant model.AllTechnologies)
+                %+ Comp.ShipComponent.Magazine       (Comp.Magazine.magazine techs)
+                %+ Comp.ShipComponent.PowerPlant     (Comp.PowerPlant.powerPlant techs)
                 %+ Comp.ShipComponent.Sensors        (Comp.Sensors.Sensors.Zero)
                 %+ Comp.ShipComponent.TroopTransport (Comp.TroopTransport.TroopTransport.Zero)
+            FullyInitialized = true
         }, Cmd.none
 
     // Ships
@@ -55,12 +59,12 @@ let update msg model =
     | RemoveShip ship ->
         { model with
             AllShips = model.AllShips %- ship
-            CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Guid = ship.Guid)
+            CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Id = ship.Id)
         }, Cmd.none
     | ReplaceShip ship ->
         { model with
             AllShips = model.AllShips %+ ship
-            CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Guid = ship.Guid) ship
+            CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Id = ship.Id) ship
         }, Cmd.none
     | ShipUpdateName (ship, newName) ->
         model, Cmd.ofMsg (ReplaceShip { ship with Name = newName })
@@ -105,8 +109,8 @@ let update msg model =
                 | false -> model.CurrentTechnology
         }, Cmd.none
     | RemoveTechnology tech ->
-        let getParents guid = model.AllTechnologies.[guid].Parents
-        let rec parentsToRemove (unprocessed: Guid list) (processed: Guid list) =
+        let getParents identifier = model.AllTechnologies.[identifier].Parents
+        let rec parentsToRemove (unprocessed: GameObjectId list) (processed: GameObjectId list) =
             match unprocessed with
             | [] -> processed
             | x::xs ->

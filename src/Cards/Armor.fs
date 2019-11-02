@@ -4,7 +4,6 @@ open Global
 open App.Msg
 open Cards.Common
 open Comp.Ship
-open System
 
 open Model.Measures
 
@@ -15,7 +14,7 @@ open Nerds.SizeNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) dispatch =
     let header =
         [
             Name ship.ArmorTechnology.Name

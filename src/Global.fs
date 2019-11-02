@@ -1,7 +1,10 @@
 module Global
 
 open System
-open Fable.PowerPack
+
+type GameObjectId = string
+module GameObjectId =
+    let generate () = Guid.NewGuid().ToString()
 
 module List =
     let inline wrap element = [ element ]
@@ -43,41 +46,13 @@ let inline (@+) (l: 'a list) (a: 'a) = l @ [a]
 let inline (@+?) (l: 'a list) (a: 'a option) = l @ (match a with Some a -> [a] | None -> [])
 let inline (@-) (l: 'a list) (a: 'a) = l |> List.except [a]
 
-let inline (%+) (m: Map<Guid, 'b>) (v: ^b) =
-    m |> Map.add ((^b) : (member Guid : Guid) (v)) v
+let inline (%+) (m: Map<GameObjectId, 'b>) (v: ^b) =
+    m |> Map.add ((^b) : (member Id : GameObjectId) (v)) v
     
-let inline (%-) (m: Map<Guid, 'b>) (v: ^b) =
-    m |> Map.remove ((^b) : (member Guid : Guid) (v))
+let inline (%-) (m: Map<GameObjectId, 'b>) (v: ^b) =
+    m |> Map.remove ((^b) : (member Id : GameObjectId) (v))
 
 let inline (@%%) (a: Map<'a, 'b>) (b: Map<'a, 'b>) =
     Map.toSeq a
     |> Seq.append (Map.toSeq b)
     |> Map.ofSeq
-
-module Promise =
-    let cache (fn: unit -> Fable.Import.JS.Promise<'a>): Fable.Import.JS.Promise<'a> =
-        let cached = ref None
-        match cached.Value with
-        | Some a ->
-            promise {
-                return a
-            }
-        | None ->
-            promise {
-                let! a = fn ()
-                cached := Some a
-                return a
-            }
-    let memoize (fn: 'a -> Fable.Import.JS.Promise<'b>) key: Fable.Import.JS.Promise<'b> =
-        let cached = ref Map.empty
-        match cached.Value.TryFind key with
-        | Some a ->
-            promise {
-                return a
-            }
-        | None ->
-            promise {
-                let! a = fn key
-                cached := cached.Value.Add (key, a)
-                return a
-            }

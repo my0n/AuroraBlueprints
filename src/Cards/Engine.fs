@@ -20,7 +20,7 @@ open Nerds.FuelConsumptionNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Engine) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
@@ -104,4 +104,4 @@ let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Eng
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Engine comp) |> dispatch)
         ]
-    shipComponentCard (comp.Guid.ToString ()) header form actions
+    shipComponentCard (comp.Id.ToString ()) header form actions

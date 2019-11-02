@@ -1,12 +1,12 @@
 module Comp.CargoHold
 
-open System
+open Global
 open Model.BuildCost
 open Model.Measures
 
 type CargoHold =
     {
-        Guid: Guid
+        Id: GameObjectId
 
         Tiny: int<comp>
         Small: int<comp>
@@ -20,7 +20,7 @@ type CargoHold =
     static member Zero
         with get() =
             {
-                Guid = Guid.NewGuid()
+                Id = GameObjectId.generate()
 
                 Tiny = 0<comp>
                 Small = 0<comp>

@@ -1,13 +1,14 @@
 module Comp.Magazine
 
 open System
+open Global
 open Model.BuildCost
 open Model.Measures
 open Technology
 
 type Magazine =
     {
-        Guid: Guid
+        Id: GameObjectId
         Name: string
         Manufacturer: string
 
@@ -106,7 +107,7 @@ type Magazine =
 let magazine (allTechs: AllTechnologies) =
     let zero =
         {
-            Guid = Guid.NewGuid()
+            Id = GameObjectId.generate()
             Name = ""
             Manufacturer = "Aurora Industries"
 

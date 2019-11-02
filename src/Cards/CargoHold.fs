@@ -19,7 +19,7 @@ open Nerds.TractorStrengthNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: CargoHold) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: CargoHold) dispatch =
     let header =
         [
             Name "Cargo Hold"
@@ -106,4 +106,4 @@ let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Car
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, CargoHold comp) |> dispatch)
         ]
-    shipComponentCard (comp.Guid.ToString ()) header form actions
+    shipComponentCard (comp.Id.ToString ()) header form actions

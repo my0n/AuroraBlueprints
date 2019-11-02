@@ -17,7 +17,7 @@ open Nerds.PowerProductionNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: PowerPlant) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name
@@ -103,4 +103,4 @@ let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Pow
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, PowerPlant comp) |> dispatch)
         ]
-    shipComponentCard (comp.Guid.ToString ()) header form actions
+    shipComponentCard (comp.Id.ToString ()) header form actions

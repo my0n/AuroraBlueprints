@@ -99,7 +99,7 @@ let inline boundFloatChoiceField (availableOptions: float list) ship dispatch lb
         }
         (fun n -> App.Msg.ReplaceShipComponent (ship, setter options.[n]) |> dispatch)
 
-let inline boundTechField<'a when 'a :> TechBase> (currentTech: Guid list) ship dispatch lbl (options: 'a list) (getter: 'a) (setter: 'a -> Comp.ShipComponent.ShipComponent) = 
+let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) ship dispatch lbl (options: 'a list) (getter: 'a) (setter: 'a -> Comp.ShipComponent.ShipComponent) = 
     Bulma.FC.Select
         {
             Label = Some lbl
@@ -107,16 +107,16 @@ let inline boundTechField<'a when 'a :> TechBase> (currentTech: Guid list) ship 
                 options
                 |> List.map (fun v ->
                     {|
-                        Key = v.Guid.ToString()
+                        Key = v.Id.ToString()
                         Text = v.Name
-                        Disallowed = not <| (List.exists (fun t -> t = getter.Guid) currentTech)
+                        Disallowed = not <| (List.exists (fun t -> t = getter.Id) currentTech)
                     |}
                 )
-            Value = getter.Guid.ToString()
+            Value = getter.Id.ToString()
         }
         (fun n -> App.Msg.ReplaceShipComponent (ship, setter options.[n]) |> dispatch)
 
-let inline boundShipTechField<'a when 'a :> TechBase> (currentTech: Guid list) dispatch lbl (options: 'a list) (getter: 'a) (setter: 'a -> Comp.Ship.Ship) = 
+let inline boundShipTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) dispatch lbl (options: 'a list) (getter: 'a) (setter: 'a -> Comp.Ship.Ship) = 
     Bulma.FC.Select
         {
             Label = Some lbl
@@ -124,12 +124,12 @@ let inline boundShipTechField<'a when 'a :> TechBase> (currentTech: Guid list) d
                 options
                 |> List.map (fun v ->
                     {|
-                        Key = v.Guid.ToString()
+                        Key = v.Id.ToString()
                         Text = v.Name
-                        Disallowed = not <| (List.exists (fun t -> t = getter.Guid) currentTech)
+                        Disallowed = not <| (List.exists (fun t -> t = getter.Id) currentTech)
                     |}
                 )
-            Value = getter.Guid.ToString()
+            Value = getter.Id.ToString()
         }
         (fun n -> App.Msg.ReplaceShip (setter options.[n]) |> dispatch)
 

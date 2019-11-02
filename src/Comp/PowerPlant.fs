@@ -1,5 +1,6 @@
 module Comp.PowerPlant
 
+open Global
 open System
 open Model.BuildCost
 open Model.Measures
@@ -8,7 +9,7 @@ open Technology
 
 type PowerPlant =
     {
-        Guid: Guid
+        Id: GameObjectId
         Name: string
         Manufacturer: string
 
@@ -69,7 +70,7 @@ type PowerPlant =
 let powerPlant (allTechs: AllTechnologies) =
     let zero =
         {
-            Guid = Guid.NewGuid()
+            Id = GameObjectId.generate()
             Name = ""
             Manufacturer = "Aurora Industries"
 

@@ -1,4 +1,4 @@
-GUID,Name,Cost,Level,Parents,Efficiency
+ID,Name,Cost,Level,Parents,Efficiency
 063649E1-1C8D-4F46-9EF2-6C83D7A28FC7,Fuel Consumption: 100% Litres per Engine Power Hour,1,1,,1.0
 B07C93E5-DFA0-4182-B249-2B25406E0F2A,Fuel Consumption: 90% Litres per Engine Power Hour,1000,2,063649E1-1C8D-4F46-9EF2-6C83D7A28FC7,0.9
 D6B5C7F6-BD58-4B29-BFA0-E1573D121D12,Fuel Consumption: 80% Litres per Engine Power Hour,2000,3,B07C93E5-DFA0-4182-B249-2B25406E0F2A,0.8

@@ -1,6 +1,7 @@
 module Comp.Engine
 
 open System
+open Global
 open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
@@ -8,7 +9,7 @@ open Technology
 
 type Engine =
     {
-        Guid: Guid
+        Id: GameObjectId
 
         Name: string
         Manufacturer: string
@@ -91,7 +92,7 @@ type Engine =
 let engine (allTech: AllTechnologies) =
     let zero =
         {
-            Guid = Guid.NewGuid()
+            Id = GameObjectId.generate()
 
             Name = ""
             Manufacturer = "Aurora Industries"

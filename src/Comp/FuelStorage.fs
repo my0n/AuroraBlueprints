@@ -1,12 +1,12 @@
 module Comp.FuelStorage
 
-open System
+open Global
 open Model.BuildCost
 open Model.Measures
 
 type FuelStorage =
     {
-        Guid: Guid
+        Id: GameObjectId
 
         Tiny: int<comp>
         Small: int<comp>
@@ -18,7 +18,7 @@ type FuelStorage =
     static member Zero
         with get() =
             {
-                Guid = Guid.NewGuid()
+                Id = GameObjectId.generate()
 
                 Tiny = 0<comp>
                 Small = 0<comp>

@@ -1,4 +1,4 @@
-GUID,Name,Cost,Level,Parents,ThermalEfficiency,CostMultiplier
+ID,Name,Cost,Level,Parents,ThermalEfficiency,CostMultiplier
 9666D746-AF47-4F99-9DDB-C812878B6140,Thermal Reduction: Signature 100% Normal,1,1,,1,1.00
 65377E78-4154-4849-A419-D57A2F6E531C,Thermal Reduction: Signature 75% Normal,1500,2,9666D746-AF47-4F99-9DDB-C812878B6140,0.75,1.25
 95332213-4AD5-44A5-96E8-41631083D350,Thermal Reduction: Signature 50% Normal,3000,3,65377E78-4154-4849-A419-D57A2F6E531C,0.50,1.50

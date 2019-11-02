@@ -13,10 +13,10 @@ open Technology
 
 type Ship =
     {
-        Guid: Guid
+        Id: GameObjectId
         Name: string
         ShipClass: string
-        Components: Map<Guid, ShipComponent>
+        Components: Map<GameObjectId, ShipComponent>
 
         // armor
         ArmorDepth: int
@@ -343,7 +343,7 @@ type Ship =
 
 let ship (allTechs: AllTechnologies) =
     {
-        Guid = Guid.NewGuid()
+        Id = GameObjectId.generate()
         Name = "Tribal"
         ShipClass = "Cruiser"
         Components = Map.empty

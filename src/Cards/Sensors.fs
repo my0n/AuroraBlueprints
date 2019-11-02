@@ -1,7 +1,6 @@
 module Cards.Sensors
 
 open Global
-open System
 
 open App.Msg
 open Bulma.Card
@@ -19,7 +18,7 @@ open Nerds.SensorStrengthNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Sensors) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: Sensors) dispatch =
     let header =
         [
             Name "Sensors"
@@ -115,4 +114,4 @@ let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Sen
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Sensors comp) |> dispatch)
         ]
-    shipComponentCard (comp.Guid.ToString ()) header form actions
+    shipComponentCard (comp.Id.ToString ()) header form actions

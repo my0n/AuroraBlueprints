@@ -1,13 +1,13 @@
 module Comp.Sensors
 
-open System
+open Global
 open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
 
 type Sensors =
     {
-        Guid: Guid
+        Id: GameObjectId
         
         StandardGeo: int<comp>
         ImprovedGeo: int<comp>
@@ -22,7 +22,7 @@ type Sensors =
     static member Zero
         with get() =
             {
-                Guid = Guid.NewGuid()
+                Id = GameObjectId.generate()
                 StandardGeo = 0<comp>
                 ImprovedGeo = 0<comp>
                 AdvancedGeo = 0<comp>

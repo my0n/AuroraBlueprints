@@ -1,6 +1,6 @@
 module Cards.Magazine
 
-open System
+open Global
 
 open Cards.Common
 open Model.Measures
@@ -14,7 +14,7 @@ open Nerds.SizeNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Magazine) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: Magazine) dispatch =
     let header =
         [
             Name comp.Name
@@ -71,4 +71,4 @@ let render (allTechs: AllTechnologies) (tech: Guid list) (ship: Ship) (comp: Mag
                 ]
         ]
     let actions = []
-    shipComponentCard (comp.Guid.ToString ()) header form actions
+    shipComponentCard (comp.Id.ToString ()) header form actions

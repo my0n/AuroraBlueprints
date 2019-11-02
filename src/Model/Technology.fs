@@ -9,11 +9,11 @@ open Fable.PowerPack
 
 type ParsedBasics =
     {
-        Guid: Guid
+        Id: GameObjectId
         Name: string
         Cost: int<rp>
         Level: int
-        Parents: Guid list
+        Parents: GameObjectId list
     }
 
 let private parseList (convert: string -> 'a) (cell: string) =
@@ -26,15 +26,12 @@ let private parseList (convert: string -> 'a) (cell: string) =
 
 let private parseBasics (line: string[]) =
     {
-        Guid = Guid.Parse line.[0]
+        Id = line.[0]
         Name = line.[1]
         Cost = Convert.ToInt32 line.[2] * 1<rp>
         Level = Convert.ToInt32 line.[3]
-        Parents = parseList Guid.Parse line.[4]
+        Parents = parseList id line.[4]
     }
-
-let private readTechCsv file generateFn =
-    readCsv file (fun line -> generateFn (parseBasics line) line)
 
 type TechCategory =
     | DefensiveSystems
@@ -45,7 +42,7 @@ type TechCategory =
 
 [<AbstractClass>]
 type TechBase(basics: ParsedBasics) =
-    member this.Guid with get() = basics.Guid
+    member this.Id with get() = basics.Id
     member this.Name with get() = basics.Name
     member this.Cost with get() = basics.Cost
     member this.Parents with get() = basics.Parents
@@ -119,7 +116,11 @@ type GeoSensorTech(basics) =
     inherit TechBase(basics)
     override this.Category = SensorsAndFireControl
 
-let rec private researchedParents (allTechs: Map<Guid, TechBase>) researchedTechs unprocessed processed =
+let private readTechCsv file generateFn =
+    readCsv file (fun line -> generateFn (parseBasics line) line)
+    |> Promise.map Seq.cast<TechBase>
+
+let rec private researchedParents (allTechs: Map<GameObjectId, TechBase>) researchedTechs unprocessed processed =
     match unprocessed with
     | [] -> processed
     | x::xs ->
@@ -138,9 +139,9 @@ let inline private techsOfType<'a> techs =
 
 type AllTechnologies =
     {
-        Technologies: Map<Guid, TechBase>
+        Technologies: Map<GameObjectId, TechBase>
     }
-    member this.Item with get guid = this.Technologies.[guid]
+    member this.Item with get identifier = this.Technologies.[identifier]
 
     member private this._Children =
         lazy (
@@ -153,8 +154,8 @@ type AllTechnologies =
                 |> Map.keys
             )
         )
-    member this.GetParents  guid = this.Technologies.[guid].Parents
-    member this.GetChildren guid = this._Children.Value.[guid]
+    member this.GetParents  identifier = this.Technologies.[identifier].Parents
+    member this.GetChildren identifier = this._Children.Value.[identifier]
 
     member this.Armor                   = this.Technologies |> techsOfType<ArmorTech>              |> List.sortBy (fun tech -> tech.Level)
     member this.CargoHandling           = this.Technologies |> techsOfType<CargoHandlingTech>      |> List.sortBy (fun tech -> tech.Level)
@@ -178,27 +179,27 @@ type AllTechnologies =
     member this.DefaultReactor           = this.Reactors.[0]
     member this.DefaultPowerBoost        = this.ReactorsPowerBoost.[0]
 
-    member this.ImprovedCargoHandlingSystem = Guid "D9E7C6FB-D00C-424D-AC8E-EC8FFBCC5FE5"
-    member this.AdvancedCargoHandlingSystem = Guid "D5EAB881-B970-45C9-8518-AB3D0B2FF2A4"
-    member this.GravAssistedCargoHandlingSystem = Guid "D425D3A3-8818-4491-A25B-7C4B108939E9"
+    member this.ImprovedCargoHandlingSystem = "D9E7C6FB-D00C-424D-AC8E-EC8FFBCC5FE5"
+    member this.AdvancedCargoHandlingSystem = "D5EAB881-B970-45C9-8518-AB3D0B2FF2A4"
+    member this.GravAssistedCargoHandlingSystem = "D425D3A3-8818-4491-A25B-7C4B108939E9"
 
-    member this.GeologicalSurveySensors = Guid "A2D19D2F-EF64-4DFC-B4B2-8838EEDAAC50"
-    member this.ImprovedGeologicalSurveySensors = Guid "E77F9805-35E0-4E97-B399-32F00BA52563"
-    member this.AdvancedGeologicalSurveySensors = Guid "723ECE17-627E-4CDB-B0B8-D46A60F6FA23"
-    member this.PhasedGeologicalSurveySensors = Guid "8B8001E6-F983-4229-9892-B82363D73C49"
+    member this.GeologicalSurveySensors = "A2D19D2F-EF64-4DFC-B4B2-8838EEDAAC50"
+    member this.ImprovedGeologicalSurveySensors = "E77F9805-35E0-4E97-B399-32F00BA52563"
+    member this.AdvancedGeologicalSurveySensors = "723ECE17-627E-4CDB-B0B8-D46A60F6FA23"
+    member this.PhasedGeologicalSurveySensors = "8B8001E6-F983-4229-9892-B82363D73C49"
 
-    member this.GravitationalSurveySensors = Guid "558A6A1F-2CEB-41A7-867D-2EA00447B9B7"
-    member this.ImprovedGravitationalSurveySensors = Guid "CB243D80-E18E-4173-B89D-745DE66F7846"
-    member this.AdvancedGravitationalSurveySensors = Guid "E4BB5DD3-5801-4D17-8770-60ABE08A7496"
-    member this.PhasedGravitationalSurveySensors = Guid "8A72916C-3957-4002-98B3-BB3FD04BE35A"
+    member this.GravitationalSurveySensors = "558A6A1F-2CEB-41A7-867D-2EA00447B9B7"
+    member this.ImprovedGravitationalSurveySensors = "CB243D80-E18E-4173-B89D-745DE66F7846"
+    member this.AdvancedGravitationalSurveySensors = "E4BB5DD3-5801-4D17-8770-60ABE08A7496"
+    member this.PhasedGravitationalSurveySensors = "8A72916C-3957-4002-98B3-BB3FD04BE35A"
 
     member this.AllPowerMods =
         this.EnginePowerMod
         |> List.collect (fun tech -> tech.UnlockedPowerMods)
 
-    member this.UnlockedPowerMods (researchedTechs: Guid list) =
+    member this.UnlockedPowerMods (researchedTechs: GameObjectId list) =
         this.EnginePowerMod
-        |> List.filter (fun tech -> List.contains tech.Guid researchedTechs)
+        |> List.filter (fun tech -> List.contains tech.Id researchedTechs)
         |> List.collect (fun tech -> tech.UnlockedPowerMods)
 
     member this.DefaultPowerMod =
@@ -208,120 +209,95 @@ type AllTechnologies =
         ).UnlockedPowerMods.[0]
 
 let allTechnologies: Fable.Import.JS.Promise<AllTechnologies> =
-    Promise.cache <| fun _ ->
-        promise {
-            let! armor =
-                readTechCsv
-                    "data/tech-armor.csv"
-                    (fun basics line ->
-                        ArmorTech (basics,
-                            strength = Convert.ToDouble line.[5] * 1.0<armorStrength/hs>,
-                            duraniumRatio = Convert.ToDouble line.[6],
-                            neutroniumRatio = Convert.ToDouble line.[7]
-                        )
-                    )
-            let! geoSensors =
-                readTechCsv
-                    "data/tech-geo-sensors.csv"
-                    (fun basics line -> GeoSensorTech basics)
-            let! gravSensors =
-                readTechCsv
-                    "data/tech-grav-sensors.csv"
-                    (fun basics line -> GravSensorTech basics)
-            let! cargoHandling =
-                readTechCsv
-                    "data/tech-cargo-handling.csv"
-                    (fun basics line ->
-                        CargoHandlingTech (basics,
-                            tractorStrength = Convert.ToDouble line.[5]
-                        )
-                    )
-            let! engine =
-                readTechCsv
-                    "data/tech-engines.csv"
-                    (fun basics line ->
-                        EngineTech (basics,
-                            powerPerHs = Convert.ToDouble line.[5] * 1.0<ep/hs>
-                        )
-                    )
-            let! engineEfficiency =
-                readTechCsv
-                    "data/tech-engine-efficiency.csv"
-                    (fun basics line ->
-                        EngineEfficiencyTech (basics,
-                            efficiency = Convert.ToDouble line.[5] * 1000.0<kl/hr/ep>
-                        )
-                    )
-            let! enginePowerMod =
-                readTechCsv
-                    "data/tech-engine-power-mod.csv"
-                    (fun basics line ->
-                        EngineBoostUnlockTech (basics,
-                            unlocked = parseList Convert.ToDouble line.[5]
-                        )
-                    )
-            let! engineThermalEfficiency =
-                readTechCsv
-                    "data/tech-engine-thermal-efficiency.csv"
-                    (fun basics line ->
-                        EngineThermalTech (basics,
-                            thermalEfficiency = Convert.ToDouble line.[5] * 1.0<therm/ep>,
-                            costMultiplier = Convert.ToDouble line.[6]
-                        )
-                    )
-            let! magazineEfficiency =
-                readTechCsv
-                    "data/tech-magazine-efficiency.csv"
-                    (fun basics line ->
-                        MagazineEfficiencyTech (basics,
-                            ammoDensity = Convert.ToDouble line.[5] * 20.0<ammo/hs>
-                        )
-                    )
-            let! magazineEjection =
-                readTechCsv
-                    "data/tech-magazine-ejection.csv"
-                    (fun basics line ->
-                        MagazineEjectionTech (basics,
-                            ejectionChance = Convert.ToDouble line.[5]
-                        )
-                    )
-            let! reactors =
-                readTechCsv
-                    "data/tech-reactors.csv"
-                    (fun basics line ->
-                        ReactorTech (basics,
-                            powerOutput = Convert.ToDouble line.[5] * 1.0<power/hs>
-                        )
-                    )
-            let! reactorsPowerBoost =
-                readTechCsv
-                    "data/tech-reactors-power-boost.csv"
-                    (fun basics line ->
-                        ReactorBoostTech (basics,
-                            powerBoost = Convert.ToDouble line.[5],
-                            explosionChance = Convert.ToDouble line.[6]
-                        )
-                    )
-            return (
-                {
-                    Technologies =
-                        [
-                            Seq.cast<TechBase> armor
-                            Seq.cast<TechBase> cargoHandling
-                            Seq.cast<TechBase> engine
-                            Seq.cast<TechBase> engineEfficiency
-                            Seq.cast<TechBase> enginePowerMod
-                            Seq.cast<TechBase> engineThermalEfficiency
-                            Seq.cast<TechBase> geoSensors
-                            Seq.cast<TechBase> gravSensors
-                            Seq.cast<TechBase> magazineEfficiency
-                            Seq.cast<TechBase> magazineEjection
-                            Seq.cast<TechBase> reactors
-                            Seq.cast<TechBase> reactorsPowerBoost
-                        ]
-                        |> List.collect Seq.toList
-                        |> List.map (fun tech -> (tech.Guid, tech))
-                        |> Map.ofList
-                }
+    [
+        readTechCsv
+            "data/tech-armor.csv"
+            (fun basics line ->
+                ArmorTech (basics,
+                    strength = Convert.ToDouble line.[5] * 1.0<armorStrength/hs>,
+                    duraniumRatio = Convert.ToDouble line.[6],
+                    neutroniumRatio = Convert.ToDouble line.[7]
+                )
             )
+        readTechCsv
+            "data/tech-geo-sensors.csv"
+            (fun basics line -> GeoSensorTech basics)
+        readTechCsv
+            "data/tech-grav-sensors.csv"
+            (fun basics line -> GravSensorTech basics)
+        readTechCsv
+            "data/tech-cargo-handling.csv"
+            (fun basics line ->
+                CargoHandlingTech (basics,
+                    tractorStrength = Convert.ToDouble line.[5]
+                )
+            )
+        readTechCsv
+            "data/tech-engines.csv"
+            (fun basics line ->
+                EngineTech (basics,
+                    powerPerHs = Convert.ToDouble line.[5] * 1.0<ep/hs>
+                )
+            )
+        readTechCsv
+            "data/tech-engine-efficiency.csv"
+            (fun basics line ->
+                EngineEfficiencyTech (basics,
+                    efficiency = Convert.ToDouble line.[5] * 1000.0<kl/hr/ep>
+                )
+            )
+        readTechCsv
+            "data/tech-engine-power-mod.csv"
+            (fun basics line ->
+                EngineBoostUnlockTech (basics,
+                    unlocked = parseList Convert.ToDouble line.[5]
+                )
+            )
+        readTechCsv
+            "data/tech-engine-thermal-efficiency.csv"
+            (fun basics line ->
+                EngineThermalTech (basics,
+                    thermalEfficiency = Convert.ToDouble line.[5] * 1.0<therm/ep>,
+                    costMultiplier = Convert.ToDouble line.[6]
+                )
+            )
+        readTechCsv
+            "data/tech-magazine-efficiency.csv"
+            (fun basics line ->
+                MagazineEfficiencyTech (basics,
+                    ammoDensity = Convert.ToDouble line.[5] * 20.0<ammo/hs>
+                )
+            )
+        readTechCsv
+            "data/tech-magazine-ejection.csv"
+            (fun basics line ->
+                MagazineEjectionTech (basics,
+                    ejectionChance = Convert.ToDouble line.[5]
+                )
+            )
+        readTechCsv
+            "data/tech-reactors.csv"
+            (fun basics line ->
+                ReactorTech (basics,
+                    powerOutput = Convert.ToDouble line.[5] * 1.0<power/hs>
+                )
+            )
+        readTechCsv
+            "data/tech-reactors-power-boost.csv"
+            (fun basics line ->
+                ReactorBoostTech (basics,
+                    powerBoost = Convert.ToDouble line.[5],
+                    explosionChance = Convert.ToDouble line.[6]
+                )
+            )
+    ]
+    |> Promise.Parallel
+    |> Promise.map (fun techs ->
+        {
+            Technologies =
+                techs
+                |> Seq.collect Seq.toList
+                |> Seq.map (fun tech -> (tech.Id, tech))
+                |> Map.ofSeq
         }
+    )

@@ -1,4 +1,4 @@
-GUID,Name,Cost,Level,Parents,ArmorStrength,DuraniumRatio,NeutroniumRatio
+ID,Name,Cost,Level,Parents,ArmorStrength,DuraniumRatio,NeutroniumRatio
 BE676B15-EEE6-48E4-8739-36E8388D2C4C,Conventional Armor,250,1,,2.0,1.0,0.0
 3DD5E68C-0ED5-4A48-A87D-6C153DB9A4A7,Duranium Armor,500,2,BE676B15-EEE6-48E4-8739-36E8388D2C4C,5.0,1.0,0.0
 71C01F26-A59B-4015-896B-2B7184F804D5,High Density Duranium Armor,2500,3,3DD5E68C-0ED5-4A48-A87D-6C153DB9A4A7,6.0,1.0,0.0

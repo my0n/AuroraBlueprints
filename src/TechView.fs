@@ -10,13 +10,13 @@ open App.Model
 open App.Msg
 open Bulma.FC
 
-let techs (allTechs: Technology.AllTechnologies) (current: Guid list) dispatch =
+let techs (allTechs: Technology.AllTechnologies) (current: GameObjectId list) dispatch =
     allTechs.Technologies
     |> Map.values
     |> List.map (fun tech ->
         let researched =
             current
-            |> List.contains tech.Guid
+            |> List.contains tech.Id
         let available =
             researched 
             || tech.Parents
@@ -35,12 +35,12 @@ let techs (allTechs: Technology.AllTechnologies) (current: Guid list) dispatch =
 
         Bulma.FC.Checkbox opts (fun value ->
             match value with
-            | true ->  AddTechnology tech.Guid
-            | false -> RemoveTechnology tech.Guid
+            | true ->  AddTechnology tech.Id
+            | false -> RemoveTechnology tech.Id
             |> dispatch
         )
         |> List.wrap
-        |> div [ Key (tech.Guid.ToString()) ]
+        |> div [ Key (tech.Id.ToString()) ]
     )
     |> ofList
     |> List.wrap
