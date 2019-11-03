@@ -48,6 +48,17 @@ type TechBase(basics: ParsedBasics) =
     member this.Parents with get() = basics.Parents
     member this.Level with get() = basics.Level
     abstract member Category: TechCategory with get
+    interface IComparable with
+        member this.CompareTo obj =
+            match obj with
+            | :? TechBase as other -> compare this.Id other.Id
+            | _ -> invalidArg "other" "not a TechBase"
+    override this.Equals obj =
+        match obj with
+        | :? TechBase as other -> this.Id = other.Id
+        | _ -> false
+    override this.GetHashCode() =
+        hash this.Id
 
 type ArmorTech(basics, strength, duraniumRatio, neutroniumRatio) =
     inherit TechBase(basics)
@@ -56,10 +67,14 @@ type ArmorTech(basics, strength, duraniumRatio, neutroniumRatio) =
     member val DuraniumRatio: float = duraniumRatio with get
     member val NeutroniumRatio: float = neutroniumRatio with get
 
-type CargoHandlingTech(basics, tractorStrength) =
+type CargoHandlingTech(basics, tractorStrength, crewPerComp, hsPerComp, duraniumCost, mercassiumCost) =
     inherit TechBase(basics)
     override this.Category = LogisticsAndGroundCombat
-    member val TractorStrength: float = tractorStrength with get
+    member val TractorStrength: int<tractorStrength/comp> = tractorStrength with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val HsPerComp: int<hs/comp> = hsPerComp with get
+    member val DuraniumCost: float</comp> = duraniumCost with get
+    member val MercassiumCost: float</comp> = mercassiumCost with get
 
 type EngineTech(basics, powerPerHs) =
     inherit TechBase(basics)
@@ -191,10 +206,6 @@ type AllTechnologies =
     member this.DefaultReactor           = this.Reactors.[0]
     member this.DefaultPowerBoost        = this.ReactorsPowerBoost.[0]
 
-    member this.ImprovedCargoHandlingSystem = "D9E7C6FB-D00C-424D-AC8E-EC8FFBCC5FE5"
-    member this.AdvancedCargoHandlingSystem = "D5EAB881-B970-45C9-8518-AB3D0B2FF2A4"
-    member this.GravAssistedCargoHandlingSystem = "D425D3A3-8818-4491-A25B-7C4B108939E9"
-
     member this.GeologicalSurveySensors = "A2D19D2F-EF64-4DFC-B4B2-8838EEDAAC50"
     member this.ImprovedGeologicalSurveySensors = "E77F9805-35E0-4E97-B399-32F00BA52563"
     member this.AdvancedGeologicalSurveySensors = "723ECE17-627E-4CDB-B0B8-D46A60F6FA23"
@@ -241,7 +252,11 @@ let allTechnologies: Fable.Import.JS.Promise<AllTechnologies> =
             "data/tech-cargo-handling.csv"
             (fun basics line ->
                 CargoHandlingTech (basics,
-                    tractorStrength = Convert.ToDouble line.[5]
+                    tractorStrength = Convert.ToInt32 line.[5] * 1<tractorStrength/comp>,
+                    crewPerComp = Convert.ToInt32 line.[6] * 1<people/comp>,
+                    hsPerComp = Convert.ToInt32 line.[7] * 1<hs/comp>,
+                    duraniumCost = Convert.ToDouble line.[8] * 1.0</comp>,
+                    mercassiumCost = Convert.ToDouble line.[9] * 1.0</comp>
                 )
             )
         readTechCsv

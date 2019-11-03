@@ -63,44 +63,33 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                 ]
             Bulma.FC.HorizontalGroup
                 None
-                [
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Cargo Handling System"
-                            Value = comp.CargoHandlingSystem
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with CargoHandlingSystem = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Improved Cargo Handling System"
-                            Value = comp.ImprovedCargoHandlingSystem
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.ImprovedCargoHandlingSystem tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with ImprovedCargoHandlingSystem = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Advanced Cargo Handling System"
-                            Value = comp.AdvancedCargoHandlingSystem
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.AdvancedCargoHandlingSystem tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with AdvancedCargoHandlingSystem = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Grav-Assisted Cargo Handling System"
-                            Value = comp.GravAssistedCargoHandlingSystem
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.GravAssistedCargoHandlingSystem tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with GravAssistedCargoHandlingSystem = n }) |> dispatch)
-                ]
+                (
+                    allTechs.CargoHandling
+                    |> List.map (fun tech ->
+                        Bulma.FC.IntInput
+                            {
+                                Label = Some tech.Name
+                                Value =
+                                    comp.CargoHandlingSystems
+                                    |> Map.tryFind tech
+                                    |> Option.defaultValue 0<comp>
+                                Min = Some 0
+                                Max = None
+                                Disabled = false
+                            }
+                            (fun n ->
+                                Msg.ReplaceShipComponent
+                                    (
+                                        ship,
+                                        CargoHold
+                                            { comp with
+                                                CargoHandlingSystems = comp.CargoHandlingSystems.Add (tech, n)
+                                            }
+                                    )
+                                |> dispatch
+                            )
+                        )
+                )
         ]
     let actions =
         [
