@@ -15,8 +15,9 @@ steps:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
 
-- script: mono .paket/paket.bootstrapper.exe
-  displayName: 'run the paket bootstrapper'
+- task: PaketRestore@0
+  inputs:
+    PaketPath: '.paket'
 
 - script: npm install
   displayName: 'install stuff'
