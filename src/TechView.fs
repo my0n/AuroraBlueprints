@@ -3,7 +3,6 @@ module TechView
 open Fable.React
 open Fable.React.Props
 
-open System
 open Global
 
 open App.Model
@@ -70,7 +69,6 @@ let defensiveSystemsCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let powerAndPropulsionCard model dispatch =
     {
         key = "PowerAndPropulsion"
@@ -99,7 +97,6 @@ let powerAndPropulsionCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let logisticsAndGroundCombatCard model dispatch =
     {
         key = "LogisticsAndGroundCombat"
@@ -121,7 +118,6 @@ let logisticsAndGroundCombatCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let missilesAndKineticWeaponsCard model dispatch =
     {
         key = "MissilesAndKineticWeapons"
@@ -143,7 +139,6 @@ let missilesAndKineticWeaponsCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let sensorsAndFireControlCard model dispatch =
     {
         key = "SensorsAndFireControl"
@@ -175,8 +170,8 @@ let root model dispatch =
                     [
                         defensiveSystemsCard
                         logisticsAndGroundCombatCard
-                        powerAndPropulsionCard
                         missilesAndKineticWeaponsCard
+                        powerAndPropulsionCard
                         sensorsAndFireControlCard
                     ]
                     |> List.map (fun propsFn -> Bulma.Card.render <| propsFn model dispatch)
