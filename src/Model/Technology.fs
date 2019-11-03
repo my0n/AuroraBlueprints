@@ -51,7 +51,7 @@ type TechBase(basics: ParsedBasics) =
         member this.CompareTo obj =
             match obj with
             | :? TechBase as other -> compare this.Id other.Id
-            | _ -> invalidArg "other" "not a TechBase"
+            | _ -> invalidArg "obj" "not a TechBase"
     override this.Equals obj =
         match obj with
         | :? TechBase as other -> this.Id = other.Id
@@ -102,6 +102,14 @@ type EngineEfficiencyTech(basics, efficiency) =
     inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
     member val Efficiency: float<kl/hr/ep> = efficiency with get
+
+type FuelStorageTech(basics, fuelCapacity, hsPerComp, duraniumCost, boronideCost) =
+    inherit TechBase(basics)
+    override this.Category = LogisticsAndGroundCombat
+    member val FuelCapacity: int<kl/comp> = fuelCapacity with get
+    member val HsPerComp: float<hs/comp> = hsPerComp with get
+    member val DuraniumCost: float</comp> = duraniumCost with get
+    member val BoronideCost: float</comp> = boronideCost with get
 
 type MagazineEfficiencyTech(basics, ammoDensity) =
     inherit TechBase(basics)
@@ -206,6 +214,7 @@ type AllTechnologies =
     member this.EngineEfficiency        = this.Technologies |> techsOfType<EngineEfficiencyTech>   |> List.sortBy (fun tech -> tech.Level)
     member this.EnginePowerMod          = this.Technologies |> techsOfType<EngineBoostUnlockTech>  |> List.sortBy (fun tech -> tech.Level)
     member this.EngineThermalEfficiency = this.Technologies |> techsOfType<EngineThermalTech>      |> List.sortBy (fun tech -> tech.Level)
+    member this.FuelStorages            = this.Technologies |> techsOfType<FuelStorageTech>        |> List.sortBy (fun tech -> tech.Level)
     member this.GeoSensors              = this.Technologies |> techsOfType<GeoSensorTech>          |> List.sortBy (fun tech -> tech.Level)
     member this.GravSensors             = this.Technologies |> techsOfType<GravSensorTech>         |> List.sortBy (fun tech -> tech.Level)
     member this.MagazineEfficiency      = this.Technologies |> techsOfType<MagazineEfficiencyTech> |> List.sortBy (fun tech -> tech.Level)
@@ -225,6 +234,7 @@ type AllTechnologies =
     member this.AllPowerMods =
         this.EnginePowerMod
         |> List.collect (fun tech -> tech.UnlockedPowerMods)
+        |> List.sort
 
     member this.UnlockedPowerMods (researchedTechs: GameObjectId list) =
         this.EnginePowerMod
@@ -316,6 +326,16 @@ let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
                 EngineThermalTech (basics,
                     thermalEfficiency = Convert.ToDouble line.[5] * 1.0<therm/ep>,
                     costMultiplier = Convert.ToDouble line.[6]
+                )
+            )
+        readTechCsv
+            "data/tech-fuel-storage.csv"
+            (fun basics line ->
+                FuelStorageTech (basics,
+                    fuelCapacity = Convert.ToInt32 line.[5] * 1<kl/comp>,
+                    hsPerComp = Convert.ToDouble line.[6] * 1.0<hs/comp>,
+                    duraniumCost = Convert.ToDouble line.[7] * 1.0</comp>,
+                    boronideCost = Convert.ToDouble line.[8] * 1.0</comp>
                 )
             )
         readTechCsv

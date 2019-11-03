@@ -19,6 +19,7 @@ Project("{9330E333-8FDC-43B3-9474-1A39A6E36DE8}") = "data", "data", "{BB3464AE-9
 		public\data\tech-engine-efficiency.csv = data\tech-engine-efficiency.csv
 		public\data\tech-engine-power-mod.csv = data\tech-engine-power-mod.csv
 		public\data\tech-engine-thermal-efficiency.csv = data\tech-engine-thermal-efficiency.csv
+		public\data\tech-fuel-storage.csv = data\tech-fuel-storage.csv
 		public\data\tech-geo-sensors.csv = data\tech-geo-sensor.csv
 		public\data\tech-grav-sensors.csv = data\tech-grav-sensor.csv
 		public\data\tech-magazine-efficiency.csv = data\tech-magazine-efficiency.csv

@@ -8,65 +8,40 @@ type FuelStorage =
     {
         Id: GameObjectId
 
-        Tiny: int<comp>
-        Small: int<comp>
-        Standard: int<comp>
-        Large: int<comp>
-        VeryLarge: int<comp>
-        UltraLarge: int<comp>
+        FuelStorages: Map<Technology.FuelStorageTech, int<comp>>
     }
     static member Zero
         with get() =
             {
                 Id = GameObjectId.generate()
 
-                Tiny = 0<comp>
-                Small = 0<comp>
-                Standard = 0<comp>
-                Large = 0<comp>
-                VeryLarge = 0<comp>
-                UltraLarge = 0<comp>
+                FuelStorages = Map.empty
             }
 
     //#region Calculated Values
     member private this._TotalSize =
         lazy (
-            (
-                this.Tiny * 5
-                + this.Small * 10
-                + this.Standard * 50
-                + this.Large * 250
-                + this.VeryLarge * 1000
-                + this.UltraLarge * 5000
-            ) * 1<ton/comp>
+            this.FuelStorages
+            |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * int2float kvp.Value)
+            |> hs2ton
+            |> float2int
         )
     member private this._FuelCapacity =
         lazy (
-            (
-                int2float this.Tiny * 1.0
-                + int2float this.Small * 2.0
-                + int2float this.Standard * 10.0
-                + int2float this.Large * 50.0
-                + int2float this.VeryLarge * 200.0
-                + int2float this.UltraLarge * 1000.0
-            ) * 5.0<kl/comp>
+            this.FuelStorages
+            |> Seq.sumBy (fun kvp -> kvp.Key.FuelCapacity * kvp.Value)
+            |> int2float
         )
     member private this._BuildCost =
         lazy (
-            let cost =
-                (
-                    int2float this.Tiny * 1.0
-                    + int2float this.Small * 1.5
-                    + int2float this.Standard * 5.0
-                    + int2float this.Large * 15.0
-                    + int2float this.VeryLarge * 35.0
-                    + int2float this.UltraLarge * 100.0
-                ) * 1.0</comp>
-            { TotalBuildCost.Zero with
-                BuildPoints = cost * 2.0
-                Duranium = cost
-                Boronide = cost
-            }
+            this.FuelStorages
+            |> Seq.sumBy (fun kvp ->
+                { TotalBuildCost.Zero with
+                    BuildPoints = (kvp.Key.DuraniumCost + kvp.Key.BoronideCost) * int2float kvp.Value
+                    Duranium = kvp.Key.DuraniumCost * int2float kvp.Value
+                    Boronide = kvp.Key.BoronideCost * int2float kvp.Value
+                }
+            )
         )
     //#endregion
 

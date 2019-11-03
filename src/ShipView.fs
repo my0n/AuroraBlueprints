@@ -30,7 +30,7 @@ let shipInfo dispatch allTechs tech ship =
                 | Bridge comp         -> Cards.Bridge.render ship comp dispatch
                 | CargoHold comp      -> Cards.CargoHold.render allTechs tech ship comp dispatch
                 | Engine comp         -> Cards.Engine.render allTechs tech ship comp dispatch
-                | FuelStorage comp    -> Cards.FuelStorage.render ship comp dispatch
+                | FuelStorage comp    -> Cards.FuelStorage.render allTechs tech ship comp dispatch
                 | Magazine comp       -> Cards.Magazine.render allTechs tech ship comp dispatch
                 | PowerPlant comp     -> Cards.PowerPlant.render allTechs tech ship comp dispatch
                 | Sensors comp        -> Cards.Sensors.render allTechs tech ship comp dispatch

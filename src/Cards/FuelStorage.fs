@@ -1,5 +1,7 @@
 module Cards.FuelStorage
 
+open Global
+
 open App.Msg
 open Bulma.Card
 open Cards.Common
@@ -12,7 +14,9 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.FuelCapacityNerd
 
-let render (ship: Ship) (comp: FuelStorage) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: Ship) (comp: FuelStorage) dispatch =
     let header =
         [
             Name "Fuel Storage"
@@ -24,62 +28,33 @@ let render (ship: Ship) (comp: FuelStorage) dispatch =
         [
             Bulma.FC.HorizontalGroup
                 None
-                [
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Tiny"
-                            Value = comp.Tiny
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Tiny = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Small"
-                            Value = comp.Small
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Small = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Standard"
-                            Value = comp.Standard
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Standard = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Large"
-                            Value = comp.Large
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with Large = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Very Large"
-                            Value = comp.VeryLarge
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with VeryLarge = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Ultra Large"
-                            Value = comp.UltraLarge
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, FuelStorage { comp with UltraLarge = n }) |> dispatch)
-                ]
+                (
+                    allTechs.FuelStorages
+                    |> List.map (fun tech ->
+                        Bulma.FC.IntInput
+                            {
+                                Label = Some tech.Name
+                                Value =
+                                    comp.FuelStorages
+                                    |> Map.tryFind tech
+                                    |> Option.defaultValue 0<comp>
+                                Min = Some 0
+                                Max = None
+                                Disabled = not <| List.contains tech.Id currentTech
+                            }
+                            (fun n ->
+                                Msg.ReplaceShipComponent
+                                    (
+                                        ship,
+                                        FuelStorage
+                                            { comp with
+                                                FuelStorages = comp.FuelStorages.Add (tech, n)
+                                            }
+                                    )
+                                |> dispatch
+                            )
+                    )
+                )
         ]
     let actions =
         [
