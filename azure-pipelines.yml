@@ -10,14 +10,12 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+- script: .paket/paket.bootstrapper.exe
+  displayName: 'run paket bootstrapper'
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'
   displayName: 'Install Node.js'
-
-- task: PaketRestore@0
-  inputs:
-    PaketPath: '.paket'
 
 - script: npm install
   displayName: 'install stuff'
