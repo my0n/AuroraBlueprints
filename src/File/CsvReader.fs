@@ -3,7 +3,7 @@ module File.CsvReader
 open Fetch
 
 let readCsv file consumeFn =
-    fetch file [ Cache RequestCache.Nostore ]
+    fetch file []
     |> Promise.bind (fun res ->
         res.text ()
     )
