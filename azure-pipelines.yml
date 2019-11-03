@@ -10,7 +10,7 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- script: .paket/paket.bootstrapper.exe
+- script: .paket\paket.bootstrapper.exe
   displayName: 'run paket bootstrapper'
 - task: NodeTool@0
   inputs:
