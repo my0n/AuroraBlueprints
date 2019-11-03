@@ -138,6 +138,19 @@ type ReactorBoostTech(basics, powerBoost, explosionChance) =
     member val PowerBoost: float = powerBoost with get
     member val ExplosionChance: float = explosionChance with get
 
+type TroopTransportTech(basics, isMilitary, troopTransportCapacity, combatDropCapacity, cryoDropCapacity, crewPerComp, hsPerComp, duraniumCost, mercassiumCost, neutroniumCost) =
+    inherit TechBase(basics)
+    override this.Category = LogisticsAndGroundCombat
+    member val IsMilitary: bool = isMilitary with get
+    member val TroopTransportCapacity: int<company/comp> = troopTransportCapacity with get
+    member val CombatDropCapacity: int<company/comp> = combatDropCapacity with get
+    member val CryoDropCapacity: int<company/comp> = cryoDropCapacity with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val HsPerComp: float<hs/comp> = hsPerComp with get
+    member val DuraniumCost: float</comp> = duraniumCost with get
+    member val MercassiumCost: float</comp> = mercassiumCost with get
+    member val NeutroniumCost: float</comp> = neutroniumCost with get
+
 type GravSensorTech(basics, sensorRating, hsPerComp, crewPerComp, uridiumCost) =
     inherit TechBase(basics)
     override this.Category = SensorsAndFireControl
@@ -221,6 +234,7 @@ type AllTechnologies =
     member this.MagazineEjection        = this.Technologies |> techsOfType<MagazineEjectionTech>   |> List.sortBy (fun tech -> tech.Level)
     member this.Reactors                = this.Technologies |> techsOfType<ReactorTech>            |> List.sortBy (fun tech -> tech.Level)
     member this.ReactorsPowerBoost      = this.Technologies |> techsOfType<ReactorBoostTech>       |> List.sortBy (fun tech -> tech.Level)
+    member this.TroopTransports         = this.Technologies |> techsOfType<TroopTransportTech>     |> List.sortBy (fun tech -> tech.Level)
 
     member this.DefaultArmor             = this.Armor.[0]
     member this.DefaultEngine            = this.Engines.[0]
@@ -365,6 +379,21 @@ let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
                 ReactorBoostTech (basics,
                     powerBoost = Convert.ToDouble line.[5],
                     explosionChance = Convert.ToDouble line.[6]
+                )
+            )
+        readTechCsv
+            "data/tech-troop-transports.csv"
+            (fun basics line ->
+                TroopTransportTech (basics,
+                    isMilitary = (line.[5].ToLower() = "true"),
+                    troopTransportCapacity = Convert.ToInt32 line.[6] * 1<company/comp>,
+                    combatDropCapacity = Convert.ToInt32 line.[7] * 1<company/comp>,
+                    cryoDropCapacity = Convert.ToInt32 line.[8] * 1<company/comp>,
+                    crewPerComp = Convert.ToInt32 line.[9] * 1<people/comp>,
+                    hsPerComp = Convert.ToDouble line.[10] * 1.0<hs/comp>,
+                    duraniumCost = Convert.ToDouble line.[11] * 1.0</comp>,
+                    mercassiumCost = Convert.ToDouble line.[12] * 1.0</comp>,
+                    neutroniumCost = Convert.ToDouble line.[13] * 1.0</comp>
                 )
             )
     ]

@@ -34,7 +34,7 @@ let shipInfo dispatch allTechs tech ship =
                 | Magazine comp       -> Cards.Magazine.render allTechs tech ship comp dispatch
                 | PowerPlant comp     -> Cards.PowerPlant.render allTechs tech ship comp dispatch
                 | Sensors comp        -> Cards.Sensors.render allTechs tech ship comp dispatch
-                | TroopTransport comp -> Cards.TroopTransport.render ship comp dispatch
+                | TroopTransport comp -> Cards.TroopTransport.render allTechs tech  ship comp dispatch
             )
 
         [ Cards.Classification.render ship dispatch
