@@ -1,11 +1,15 @@
 module Cards.Common
 
+open System
+
 open Global
 
 open Fable.Helpers.React
 open Fable.Helpers.React.Props
 open Bulma.Card
 open Nerds.Common
+
+open Technology
 
 type ShipComponentCardHeaderItem =
     | Name of string
@@ -31,6 +35,86 @@ let inline private renderHeader header: CardHeaderElement list =
                 |> renderNerd
                 |> Info
     )
+
+let inline boundNameField ship dispatch getName getGeneratedName setName =
+    Bulma.FC.WithLabel
+        "Name"
+        [
+            Bulma.FC.AddonGroup
+                [
+                    Bulma.FC.TextInput
+                        getName
+                        (fun n -> App.Msg.ReplaceShipComponent (ship, setName n) |> dispatch)
+                    Bulma.FC.Button
+                        "Generate"
+                        (fun _ -> App.Msg.ReplaceShipComponent (ship, setName getGeneratedName) |> dispatch)
+                ]
+        ]
+
+let inline boundStringField ship dispatch lbl getter setter =
+    Bulma.FC.WithLabel
+        lbl
+        [
+            Bulma.FC.TextInput
+                getter
+                (fun n -> App.Msg.ReplaceShipComponent (ship, setter n) |> dispatch)
+        ]
+
+let inline boundShipIntField dispatch lbl (min, max) getter setter =
+    Bulma.FC.IntInput
+        {
+            Label = Some lbl
+            Value = getter
+            Min = min
+            Max = max
+            Disabled = false
+        }
+        (fun n -> App.Msg.ReplaceShip (setter n) |> dispatch)
+
+let inline boundIntField ship dispatch lbl (min, max) getter setter =
+    Bulma.FC.IntInput
+        {
+            Label = Some lbl
+            Value = getter
+            Min = min
+            Max = max
+            Disabled = false
+        }
+        (fun n -> App.Msg.ReplaceShipComponent (ship, setter n) |> dispatch)
+
+let inline boundFloatChoiceField (availableOptions: float list) ship dispatch lbl (options: float list) (getter: float) (nameFn: float -> string) (setter: float -> Comp.ShipComponent.ShipComponent) = 
+    Bulma.FC.Select
+        {
+            Label = Some lbl
+            Options =
+                options
+                |> List.map (fun v ->
+                    {|
+                        Key = v.ToString()
+                        Text = nameFn v
+                        Disallowed = not <| (List.contains v availableOptions)
+                    |}
+                )
+            Value = getter.ToString()
+        }
+        (fun n -> App.Msg.ReplaceShipComponent (ship, setter <| Double.Parse(n)) |> dispatch)
+
+let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) lbl (options: 'a list) (getter: 'a) (cb: 'a -> unit) = 
+    Bulma.FC.Select
+        {
+            Label = Some lbl
+            Options =
+                options
+                |> List.map (fun v ->
+                    {|
+                        Key = v.Id.ToString()
+                        Text = v.Name
+                        Disallowed = not <| (List.contains v.Id currentTech)
+                    |}
+                )
+            Value = getter.Id.ToString()
+        }
+        (fun n -> cb (List.find (fun t -> t.Id = n) options))
 
 let shipComponentCard key header contents actions =
     Bulma.Card.render {

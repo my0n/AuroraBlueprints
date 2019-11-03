@@ -8,6 +8,7 @@
   <ItemGroup>
     <!-- Global to the app -->
     <Compile Include="Global.fs" />
+    <Compile Include="File\CsvReader.fs" />
     <Compile Include="Model\Measures.fs" />
     <Compile Include="Model\BuildCost.fs" />
     <Compile Include="Model\Technology.fs" />
@@ -18,6 +19,7 @@
     <Compile Include="Comp\Sensors.fs" />
     <Compile Include="Comp\Engine.fs" />
     <Compile Include="Comp\FuelStorage.fs" />
+    <Compile Include="Comp\Magazine.fs" />
     <Compile Include="Comp\PowerPlant.fs" />
     <Compile Include="Comp\TroopTransport.fs" />
     <Compile Include="Comp\ShipComponent.fs" />
@@ -36,6 +38,7 @@
     <Compile Include="Nerds\ExplosionChanceNerd.fs" />
     <Compile Include="Nerds\FuelCapacityNerd.fs" />
     <Compile Include="Nerds\FuelConsumptionNerd.fs" />
+    <Compile Include="Nerds\MagazineCapacityNerd.fs" />
     <Compile Include="Nerds\MaintenanceClassNerd.fs" />
     <Compile Include="Nerds\PowerProductionNerd.fs" />
     <Compile Include="Nerds\PriceNerd.fs" />
@@ -63,6 +66,7 @@
     <Compile Include="Cards\CrewQuarters.fs" />
     <Compile Include="Cards\Engine.fs" />
     <Compile Include="Cards\FuelStorage.fs" />
+    <Compile Include="Cards\Magazine.fs" />
     <Compile Include="Cards\PowerPlant.fs" />
     <Compile Include="Cards\Sensors.fs" />
     <Compile Include="Cards\TroopTransport.fs" />

@@ -23,13 +23,18 @@ let navButtons currentPage =
             ]
          ]
 
-let root currentPage =
+let private pageTitle model =
+    match model.FullyInitialized with
+    | true -> "Aurora4x Blueprints"
+    | false -> "Aurora4x Blueprints (loading)"
+
+let root model =
     nav [ ClassName "navbar is-dark" ]
         [ div [ ClassName "container" ]
               [ div [ ClassName "navbar-brand" ]
                     [ h1 [ ClassName "navbar-item title is-4" ]
-                         [ str "Aurora4x Blueprints" ] ]
+                         [ str <| pageTitle model ] ]
                 div [ ClassName "navbar-end" ]
-                    [ navButtons currentPage ]
+                    [ navButtons model.CurrentPage ]
               ]
         ]

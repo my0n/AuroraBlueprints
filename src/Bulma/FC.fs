@@ -159,10 +159,11 @@ type CheckboxOptions =
         Disabled: bool
         Checked: bool
         Label: string
+        Unselectable: bool
     }
 
 let Checkbox opts cb =
-    label [ ClassName "checkbox"; Disabled opts.Disabled ]
+    label [ classList [ "checkbox", true; "is-unselectable", opts.Unselectable ]; Disabled opts.Disabled ]
           [ input [ Type "checkbox"
                     OnChange (fun event -> cb event.Checked)
                     Disabled opts.Disabled
@@ -188,18 +189,13 @@ let RadioGroup opts =
 type SelectOptions =
     {
         Label: string option
-        Options: {| Key: int; Text: string; Disallowed: bool |} list
-        Value: int
+        Options: {| Key: string; Text: string; Disallowed: bool |} list
+        Value: string
     }
 
 let Select opts cb =
     div [ ClassName "select is-fullwidth" ]
-        [ select [ OnChange (fun event ->
-                               match System.Int32.TryParse event.Value with
-                               | true, num -> cb num
-                               | _ -> cb 0
-                            )
-                 ]
+        [ select [ OnChange (fun event -> cb event.Value) ]
                  (opts.Options
                   |> List.map (fun o ->
                     option [ classList [ "pseudodisabled", o.Disallowed ]; Value o.Key; Selected (o.Key = opts.Value) ] [ str o.Text ]

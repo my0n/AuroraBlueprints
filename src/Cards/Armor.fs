@@ -4,17 +4,17 @@ open Global
 open App.Msg
 open Cards.Common
 open Comp.Ship
-open System
 
 open Model.Measures
-open Model.Technology
 
 open Nerds.ArmorSizeNerd
 open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (tech: Set<Tech>) (ship: Ship) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) dispatch =
     let header =
         [
             Name ship.ArmorTechnology.Name
@@ -27,30 +27,18 @@ let render (tech: Set<Tech>) (ship: Ship) dispatch =
         Bulma.FC.HorizontalGroup
             None
             [
-                Bulma.FC.IntInput
-                    {
-                        Label = Some "Armor Depth"
-                        Value = ship.ArmorDepth
-                        Min = Some 1
-                        Max = None
-                        Disabled = false
-                    }
-                    (fun n -> Msg.ReplaceShip { ship with ArmorDepth = n } |> dispatch)
-                Bulma.FC.Select
-                    {
-                        Label = Some "Armor Technology"
-                        Options =
-                            Technology.armor
-                            |> Map.mapKvp (fun k v ->
-                                {|
-                                    Key = k
-                                    Text = String.Format("{0} ({1:0} strength/HS)", v.Name, v.Strength)
-                                    Disallowed = not <| tech.Contains v.Tech
-                                |}
-                            )
-                        Value = ship.ArmorTechnology.Level
-                    }
-                    (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = Technology.armor.[n] } |> dispatch)
+                boundShipIntField dispatch
+                    "Armor Depth"
+                    (Some 1, None)
+                    ship.ArmorDepth
+                    (fun n -> { ship with ArmorDepth = n })
+                boundTechField tech
+                    "Armor Technology"
+                    allTechs.Armor
+                    ship.ArmorTechnology
+                    (fun n ->
+                        Fable.Import.Browser.console.log (n)
+                        Msg.ReplaceShip { ship with ArmorTechnology = n } |> dispatch)
             ]
     let actions = []
     shipComponentCard "armor" header [ form ] actions

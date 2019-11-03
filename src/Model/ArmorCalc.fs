@@ -3,7 +3,6 @@ module Model.ArmorCalc
 open System
 open Model.BuildCost
 open Model.Measures
-open Model.Technology
 
 type ArmorCalculation =
     {

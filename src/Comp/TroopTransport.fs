@@ -1,5 +1,6 @@
 module Comp.TroopTransport
 
+open Global
 open System
 open Model.BuildCost
 open Model.MaintenanceClass
@@ -7,7 +8,7 @@ open Model.Measures
 
 type TroopTransport =
     {
-        Guid: Guid
+        Id: GameObjectId
         
         CompanyTransport: int<comp>
         BattalionTransport: int<comp>
@@ -19,7 +20,7 @@ type TroopTransport =
     static member Zero
         with get() =
             {
-                Guid = Guid.NewGuid()
+                Id = GameObjectId.generate()
                 CompanyTransport = 0<comp>
                 BattalionTransport = 0<comp>
                 CompanyDropModule = 0<comp>

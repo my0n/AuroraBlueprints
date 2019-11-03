@@ -8,7 +8,6 @@ open System
 open App.Msg
 open Bulma.Card
 open Cards.Common
-open Model.Technology
 open Comp.Engine
 open Comp.ShipComponent
 open Comp.Ship
@@ -19,7 +18,9 @@ open Nerds.SizeNerd
 open Nerds.EnginePowerNerd
 open Nerds.FuelConsumptionNerd
 
-let render (ship: Ship) (comp: Engine) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
@@ -76,70 +77,31 @@ let render (ship: Ship) (comp: Engine) dispatch =
                             Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Size = n }) |> dispatch)
-                    Bulma.FC.Select
-                        {
-                            Label = Some "Engine Technology"
-                            Options =
-                                Technology.engine
-                                |> Map.mapKvp (fun k v ->
-                                    {|
-                                        Key = k
-                                        Text = String.Format("{0} ({1:0} EP/HS)", v.Name, v.PowerPerHs)
-                                        Disallowed = false
-                                    |}
-                                )
-                            Value = comp.EngineTech.Level
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EngineTech = Technology.engine.[n] }) |> dispatch)
-                    Bulma.FC.Select
-                        {
-                            Label = Some "Engine Efficiency"
-                            Options =
-                                Technology.engineEfficiency
-                                |> Map.mapKvp (fun k v ->
-                                    {|
-                                        Key = k
-                                        Text = sprintf "%.2fx fuel consumption" v.Efficiency
-                                        Disallowed = false
-                                    |}
-                                )
-                            Value = comp.EfficiencyTech.Level
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EfficiencyTech = Technology.engineEfficiency.[n] }) |> dispatch)
-                    Bulma.FC.Select
-                        {
-                            Label = Some "Engine Power"
-                            Options =
-                                Technology.allPowerMods
-                                |> Map.mapKvp (fun k v ->
-                                    {|
-                                        Key = k
-                                        Text = sprintf "%.2fx engine power" v.PowerMod
-                                        Disallowed = false
-                                    |}
-                                )
-                            Value = comp.PowerModTech.Level
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with PowerModTech = Technology.allPowerMods.[n] }) |> dispatch)
-                    Bulma.FC.Select
-                        {
-                            Label = Some "Thermal Efficiency"
-                            Options =
-                                Technology.thermalEfficiency
-                                |> Map.mapKvp (fun k v ->
-                                    {|
-                                        Key = k
-                                        Text = v.Name
-                                        Disallowed = false
-                                    |}
-                                )
-                            Value = comp.ThermalEfficiencyTech.Level
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with ThermalEfficiencyTech = Technology.thermalEfficiency.[n] }) |> dispatch)
+                    boundTechField tech
+                        "Engine Technology"
+                        allTechs.Engines
+                        comp.EngineTech
+                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EngineTech = n }) |> dispatch)
+                    boundTechField tech
+                        "Engine Efficiency"
+                        allTechs.EngineEfficiency
+                        comp.EfficiencyTech
+                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EfficiencyTech = n }) |> dispatch)
+                    boundFloatChoiceField (allTechs.UnlockedPowerMods tech) ship dispatch
+                        "Engine Power"
+                        allTechs.AllPowerMods
+                        comp.PowerModTech
+                        (fun n -> sprintf "Engine Power x%.2f" n)
+                        (fun n -> Engine { comp with PowerModTech = n })
+                    boundTechField tech
+                        "Thermal Efficiency"
+                        allTechs.EngineThermalEfficiency
+                        comp.ThermalEfficiencyTech
+                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with ThermalEfficiencyTech = n }) |> dispatch)
                 ]
         ]
     let actions =
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Engine comp) |> dispatch)
         ]
-    shipComponentCard (comp.Guid.ToString ()) header form actions
+    shipComponentCard (comp.Id.ToString ()) header form actions

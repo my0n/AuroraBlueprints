@@ -21,7 +21,7 @@ let root model dispatch =
 
   div
     []
-    [ Navbar.View.root model.CurrentPage
+    [ Navbar.View.root model
       div
         [ ClassName "section" ]
         [ div

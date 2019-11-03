@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -7,6 +7,22 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{FA339438-85B8-43B0-BE8A-6505A79A01AF}"
 	ProjectSection(SolutionItems) = preProject
 		sass\main.sass = sass\main.sass
+	EndProjectSection
+EndProject
+Project("{9330E333-8FDC-43B3-9474-1A39A6E36DE8}") = "data", "data", "{BB3464AE-9922-43B0-BE8A-6505A79A019E}"
+	ProjectSection(SolutionItems) = preProject
+		public\data\tech-armor.csv = data\tech-armor.csv
+		public\data\tech-cargo-handling.csv = data\tech-cargo-handling.csv
+		public\data\tech-engines.csv = data\tech-engines.csv
+		public\data\tech-engine-efficiency.csv = data\tech-engine-efficiency.csv
+		public\data\tech-engine-power-mod.csv = data\tech-engine-power-mod.csv
+		public\data\tech-engine-thermal-efficiency.csv = data\tech-engine-thermal-efficiency.csv
+		public\data\tech-geo-sensors.csv = data\tech-geo-sensor.csv
+		public\data\tech-grav-sensors.csv = data\tech-grav-sensor.csv
+		public\data\tech-magazine-efficiency.csv = data\tech-magazine-efficiency.csv
+		public\data\tech-magazine-ejection.csv = data\tech-magazine-ejection.csv
+		public\data\tech-reactors-power-boost.csv = data\tech-reactors-power-boost.csv
+		public\data\tech-reactors.csv = data\tech-reactors.csv
 	EndProjectSection
 EndProject
 Global
@@ -19,6 +35,10 @@ Global
 		{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8D8437B-FDDA-400E-8E98-F8E858572599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D8437B-FDDA-400E-8E98-F8E858572599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D8437B-FDDA-400E-8E98-F8E858572599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D8437B-FDDA-400E-8E98-F8E858572599}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

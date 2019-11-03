@@ -11,14 +11,15 @@ open Comp.ShipComponent
 open Comp.Ship
 
 open Model.Measures
-open Model.Technology
 
 open Nerds.CargoCapacityNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.TractorStrengthNerd
 
-let render (tech: Set<Tech>) (ship: Ship) (comp: CargoHold) dispatch =
+open Technology
+
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: CargoHold) dispatch =
     let header =
         [
             Name "Cargo Hold"
@@ -78,7 +79,7 @@ let render (tech: Set<Tech>) (ship: Ship) (comp: CargoHold) dispatch =
                             Value = comp.ImprovedCargoHandlingSystem
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains ImprovedCargoHandlingSystem
+                            Disabled = not <| List.contains allTechs.ImprovedCargoHandlingSystem tech
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with ImprovedCargoHandlingSystem = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -87,7 +88,7 @@ let render (tech: Set<Tech>) (ship: Ship) (comp: CargoHold) dispatch =
                             Value = comp.AdvancedCargoHandlingSystem
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains AdvancedCargoHandlingSystem
+                            Disabled = not <| List.contains allTechs.AdvancedCargoHandlingSystem tech
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with AdvancedCargoHandlingSystem = n }) |> dispatch)
                     Bulma.FC.IntInput
@@ -96,7 +97,7 @@ let render (tech: Set<Tech>) (ship: Ship) (comp: CargoHold) dispatch =
                             Value = comp.GravAssistedCargoHandlingSystem
                             Min = Some 0
                             Max = None
-                            Disabled = not <| tech.Contains GravAssistedCargoHandlingSystem
+                            Disabled = not <| List.contains allTechs.GravAssistedCargoHandlingSystem tech
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with GravAssistedCargoHandlingSystem = n }) |> dispatch)
                 ]
@@ -105,4 +106,4 @@ let render (tech: Set<Tech>) (ship: Ship) (comp: CargoHold) dispatch =
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, CargoHold comp) |> dispatch)
         ]
-    shipComponentCard (comp.Guid.ToString ()) header form actions
+    shipComponentCard (comp.Id.ToString ()) header form actions

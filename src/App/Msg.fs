@@ -1,11 +1,15 @@
 module App.Msg
 
-open Model.Technology
+open Global
+
 open Comp.Ship
 open Comp.ShipComponent
 
 type Msg =
     | Noop
+
+    // Initialization
+    | InitializeTechnologies of Technology.AllTechnologies
 
     // Ships
     | NewShip
@@ -27,5 +31,5 @@ type Msg =
     | ReplaceShipComponent of Ship * ShipComponent
 
     // Technology
-    | AddTechnology of Tech
-    | RemoveTechnology of Tech
+    | AddTechnology of GameObjectId
+    | RemoveTechnology of GameObjectId

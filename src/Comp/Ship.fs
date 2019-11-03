@@ -8,39 +8,25 @@ open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
 open Comp.ShipComponent
-open Model.Technology
+
+open Technology
 
 type Ship =
     {
-        Guid: Guid
+        Id: GameObjectId
         Name: string
         ShipClass: string
-        Components: Map<Guid, ShipComponent>
+        Components: Map<GameObjectId, ShipComponent>
 
         // armor
         ArmorDepth: int
-        ArmorTechnology: Technology.ArmorTech
+        ArmorTechnology: ArmorTech
 
         // crew
         SpareBerths: int<people>
         CryogenicBerths: int<people>
         DeployTime: float<mo>
     }
-    static member Zero
-        with get() =
-            {
-                Guid = Guid.NewGuid()
-                Name = "Tribal"
-                ShipClass = "Cruiser"
-                Components = Map.empty
-
-                ArmorDepth = 1
-                ArmorTechnology = Technology.armor.[0]
-            
-                SpareBerths = 0<people>
-                DeployTime = 3.0<mo>
-                CryogenicBerths = 0<people>
-            }
     //#region Cost
     member private this._Cost =
         lazy (
@@ -99,8 +85,7 @@ type Ship =
         )
     member private this._Size =
         lazy (
-            this.CrewQuartersSize
-            + this.ComponentSize
+            this.SizeBeforeArmor
             + this.ArmorSize
         )
     //#endregion
@@ -157,6 +142,19 @@ type Ship =
             / 100.0<cargoCapacity/hr>
             / int2float this.CargoHandlingMultiplier
             * 1.0<tractorStrength>
+        )
+    //#endregion
+
+    //#region Magazines
+    member private this._TotalAmmoCapacity =
+        lazy (
+            this.Components
+            |> Map.values
+            |> List.sumBy (fun c ->
+                match c with
+                | Magazine c -> c.Capacity * c.Count
+                | _ -> 0<ammo>
+            )
         )
     //#endregion
 
@@ -350,8 +348,24 @@ type Ship =
     member this.Speed with get() = this._Speed.Value
     member this.ThermalSignature with get() = this._ThermalSignature.Value
     member this.TonsPerPerson with get() = this._TonsPerPerson.Value
+    member this.TotalAmmoCapacity with get() = this._TotalAmmoCapacity.Value
     member this.TotalBerths with get() = this._TotalBerths.Value
     member this.TotalEnginePower with get(): float<ep> = this._TotalEnginePower.Value
     member this.TotalPower with get() = this._TotalPower.Value
     member this.TroopTransportCapability with get() = this._TroopTransportCapability.Value
     //#endregion
+
+let ship (allTechs: AllTechnologies) =
+    {
+        Id = GameObjectId.generate()
+        Name = "Tribal"
+        ShipClass = "Cruiser"
+        Components = Map.empty
+
+        ArmorDepth = 1
+        ArmorTechnology = allTechs.DefaultArmor
+    
+        SpareBerths = 0<people>
+        DeployTime = 3.0<mo>
+        CryogenicBerths = 0<people>
+    }

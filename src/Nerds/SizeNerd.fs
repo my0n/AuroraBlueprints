@@ -22,7 +22,7 @@ type SizeNerd =
             with get() =
                 match this.Count with
                 | 1<comp> | 0<comp> -> sprintf "%.1f HS" << ton2hs <| int2float (this.Size * this.Count)
-                | _ -> sprintf "%.1f (%.1f) HS" (ton2hs <| int2float (this.Size * this.Count)) (int2float this.Size / 50.0<ton/hs>)
+                | _ -> sprintf "%.1f (%.1f) HS" (ton2hs <| int2float (this.Size * this.Count)) (ton2hs <| (int2float this.Size * 1.0<comp>))
         member this.Icon
             with get() =
                 Weight

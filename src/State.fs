@@ -8,27 +8,18 @@ open App.Model
 open App.Msg
 open Comp.Ship
 
-open Model.Technology
-
 let init result =
-    let (model, cmd) =
-        PageState.urlUpdate result
-            {
-                CurrentPage = Ships
-                CurrentShip = None
-                AllShips = Map.empty
-                AllComponents = Map.empty
-                                %+ Comp.ShipComponent.Bridge         Comp.Bridge.Bridge.Zero
-                                %+ Comp.ShipComponent.CargoHold      Comp.CargoHold.CargoHold.Zero
-                                %+ Comp.ShipComponent.Engine         Comp.Engine.Engine.Zero
-                                %+ Comp.ShipComponent.FuelStorage    Comp.FuelStorage.FuelStorage.Zero
-                                %+ Comp.ShipComponent.PowerPlant     Comp.PowerPlant.PowerPlant.Zero
-                                %+ Comp.ShipComponent.Sensors        Comp.Sensors.Sensors.Zero
-                                %+ Comp.ShipComponent.TroopTransport Comp.TroopTransport.TroopTransport.Zero
-                CurrentTechnology = Set.empty
-            }
-
-    model, Cmd.batch [ cmd ]
+    let (model, cmd) = PageState.urlUpdate result Model.empty
+    model, Cmd.batch [
+        cmd
+        Cmd.ofPromise
+            (fun _ -> Technology.allTechnologies) ()
+            InitializeTechnologies
+            (fun err -> 
+                Fable.Import.Browser.console.log (err) |> ignore
+                Noop
+            )
+    ]
     
 let orNoneIf pred inp =
     inp |> Option.bind (fun a -> match pred a with true -> None | false -> inp)
@@ -40,10 +31,27 @@ let update msg model =
     match msg with
     | Noop ->
         model, Cmd.none
-        
+    
+    // Initialization
+    | InitializeTechnologies techs ->
+        { model with
+            AllTechnologies = techs
+            AllComponents =
+                Map.empty
+                %+ Comp.ShipComponent.Bridge         (Comp.Bridge.Bridge.Zero)
+                %+ Comp.ShipComponent.CargoHold      (Comp.CargoHold.CargoHold.Zero)
+                %+ Comp.ShipComponent.Engine         (Comp.Engine.engine techs)
+                %+ Comp.ShipComponent.FuelStorage    (Comp.FuelStorage.FuelStorage.Zero)
+                %+ Comp.ShipComponent.Magazine       (Comp.Magazine.magazine techs)
+                %+ Comp.ShipComponent.PowerPlant     (Comp.PowerPlant.powerPlant techs)
+                %+ Comp.ShipComponent.Sensors        (Comp.Sensors.Sensors.Zero)
+                %+ Comp.ShipComponent.TroopTransport (Comp.TroopTransport.TroopTransport.Zero)
+            FullyInitialized = true
+        }, Cmd.none
+
     // Ships
     | NewShip ->
-        let ship = Ship.Zero
+        let ship = Comp.Ship.ship model.AllTechnologies
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = Some ship
@@ -51,12 +59,12 @@ let update msg model =
     | RemoveShip ship ->
         { model with
             AllShips = model.AllShips %- ship
-            CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Guid = ship.Guid)
+            CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Id = ship.Id)
         }, Cmd.none
     | ReplaceShip ship ->
         { model with
             AllShips = model.AllShips %+ ship
-            CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Guid = ship.Guid) ship
+            CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Id = ship.Id) ship
         }, Cmd.none
     | ShipUpdateName (ship, newName) ->
         model, Cmd.ofMsg (ReplaceShip { ship with Name = newName })
@@ -93,16 +101,14 @@ let update msg model =
 
     // Technologies
     | AddTechnology tech ->
-        { model with CurrentTechnology = model.CurrentTechnology |> Set.add tech }, Cmd.none
+        { model with
+            CurrentTechnology =
+                match List.contains tech model.CurrentTechnology with
+                | false -> model.CurrentTechnology @ [tech]
+                | true ->  model.CurrentTechnology
+        }, Cmd.none
     | RemoveTechnology tech ->
-        let rec parents unchk chk =
-            match unchk with
-            | [] -> chk
-            | x::xs ->
-                let p =
-                    allTechnologies
-                    |> List.filter (fun t -> t.Parents |> List.contains x)
-                    |> List.map (fun t -> t.Tech)
-                    |> List.filter model.CurrentTechnology.Contains
-                parents (xs @ p) (chk @ [x])
-        { model with CurrentTechnology = Set.difference model.CurrentTechnology (Set.ofList <| parents [tech] []) }, Cmd.none
+        let removed =
+            model.CurrentTechnology
+            |> List.except ((model.AllTechnologies.GetAllChildren model.CurrentTechnology tech) @ [tech])
+        { model with CurrentTechnology = removed }, Cmd.none
