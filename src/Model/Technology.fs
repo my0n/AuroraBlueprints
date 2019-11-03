@@ -51,7 +51,7 @@ type TechBase(basics: ParsedBasics) =
         member this.CompareTo obj =
             match obj with
             | :? TechBase as other -> compare this.Id other.Id
-            | _ -> invalidArg "other" "not a TechBase"
+            | _ -> invalidArg "obj" "not a TechBase"
     override this.Equals obj =
         match obj with
         | :? TechBase as other -> this.Id = other.Id
@@ -103,6 +103,14 @@ type EngineEfficiencyTech(basics, efficiency) =
     override this.Category = PowerAndPropulsion
     member val Efficiency: float<kl/hr/ep> = efficiency with get
 
+type FuelStorageTech(basics, fuelCapacity, hsPerComp, duraniumCost, boronideCost) =
+    inherit TechBase(basics)
+    override this.Category = LogisticsAndGroundCombat
+    member val FuelCapacity: int<kl/comp> = fuelCapacity with get
+    member val HsPerComp: float<hs/comp> = hsPerComp with get
+    member val DuraniumCost: float</comp> = duraniumCost with get
+    member val BoronideCost: float</comp> = boronideCost with get
+
 type MagazineEfficiencyTech(basics, ammoDensity) =
     inherit TechBase(basics)
     override this.Category = MissilesAndKineticWeapons
@@ -130,13 +138,34 @@ type ReactorBoostTech(basics, powerBoost, explosionChance) =
     member val PowerBoost: float = powerBoost with get
     member val ExplosionChance: float = explosionChance with get
 
-type GravSensorTech(basics) =
+type TroopTransportTech(basics, isMilitary, troopTransportCapacity, combatDropCapacity, cryoDropCapacity, crewPerComp, hsPerComp, duraniumCost, mercassiumCost, neutroniumCost) =
     inherit TechBase(basics)
-    override this.Category = SensorsAndFireControl
+    override this.Category = LogisticsAndGroundCombat
+    member val IsMilitary: bool = isMilitary with get
+    member val TroopTransportCapacity: int<company/comp> = troopTransportCapacity with get
+    member val CombatDropCapacity: int<company/comp> = combatDropCapacity with get
+    member val CryoDropCapacity: int<company/comp> = cryoDropCapacity with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val HsPerComp: float<hs/comp> = hsPerComp with get
+    member val DuraniumCost: float</comp> = duraniumCost with get
+    member val MercassiumCost: float</comp> = mercassiumCost with get
+    member val NeutroniumCost: float</comp> = neutroniumCost with get
 
-type GeoSensorTech(basics) =
+type GravSensorTech(basics, sensorRating, hsPerComp, crewPerComp, uridiumCost) =
     inherit TechBase(basics)
     override this.Category = SensorsAndFireControl
+    member val SensorRating: int</comp> = sensorRating with get
+    member val HsPerComp: int<hs/comp> = hsPerComp with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val UridiumCost: float</comp> = uridiumCost with get
+
+type GeoSensorTech(basics, sensorRating, hsPerComp, crewPerComp, uridiumCost) =
+    inherit TechBase(basics)
+    override this.Category = SensorsAndFireControl
+    member val SensorRating: int</comp> = sensorRating with get
+    member val HsPerComp: int<hs/comp> = hsPerComp with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val UridiumCost: float</comp> = uridiumCost with get
 
 let private readTechCsv file generateFn =
     readCsv file (fun line -> generateFn (parseBasics line) line)
@@ -198,12 +227,14 @@ type AllTechnologies =
     member this.EngineEfficiency        = this.Technologies |> techsOfType<EngineEfficiencyTech>   |> List.sortBy (fun tech -> tech.Level)
     member this.EnginePowerMod          = this.Technologies |> techsOfType<EngineBoostUnlockTech>  |> List.sortBy (fun tech -> tech.Level)
     member this.EngineThermalEfficiency = this.Technologies |> techsOfType<EngineThermalTech>      |> List.sortBy (fun tech -> tech.Level)
+    member this.FuelStorages            = this.Technologies |> techsOfType<FuelStorageTech>        |> List.sortBy (fun tech -> tech.Level)
     member this.GeoSensors              = this.Technologies |> techsOfType<GeoSensorTech>          |> List.sortBy (fun tech -> tech.Level)
     member this.GravSensors             = this.Technologies |> techsOfType<GravSensorTech>         |> List.sortBy (fun tech -> tech.Level)
     member this.MagazineEfficiency      = this.Technologies |> techsOfType<MagazineEfficiencyTech> |> List.sortBy (fun tech -> tech.Level)
     member this.MagazineEjection        = this.Technologies |> techsOfType<MagazineEjectionTech>   |> List.sortBy (fun tech -> tech.Level)
     member this.Reactors                = this.Technologies |> techsOfType<ReactorTech>            |> List.sortBy (fun tech -> tech.Level)
     member this.ReactorsPowerBoost      = this.Technologies |> techsOfType<ReactorBoostTech>       |> List.sortBy (fun tech -> tech.Level)
+    member this.TroopTransports         = this.Technologies |> techsOfType<TroopTransportTech>     |> List.sortBy (fun tech -> tech.Level)
 
     member this.DefaultArmor             = this.Armor.[0]
     member this.DefaultEngine            = this.Engines.[0]
@@ -214,19 +245,10 @@ type AllTechnologies =
     member this.DefaultReactor           = this.Reactors.[0]
     member this.DefaultPowerBoost        = this.ReactorsPowerBoost.[0]
 
-    member this.GeologicalSurveySensors = "A2D19D2F-EF64-4DFC-B4B2-8838EEDAAC50"
-    member this.ImprovedGeologicalSurveySensors = "E77F9805-35E0-4E97-B399-32F00BA52563"
-    member this.AdvancedGeologicalSurveySensors = "723ECE17-627E-4CDB-B0B8-D46A60F6FA23"
-    member this.PhasedGeologicalSurveySensors = "8B8001E6-F983-4229-9892-B82363D73C49"
-
-    member this.GravitationalSurveySensors = "558A6A1F-2CEB-41A7-867D-2EA00447B9B7"
-    member this.ImprovedGravitationalSurveySensors = "CB243D80-E18E-4173-B89D-745DE66F7846"
-    member this.AdvancedGravitationalSurveySensors = "E4BB5DD3-5801-4D17-8770-60ABE08A7496"
-    member this.PhasedGravitationalSurveySensors = "8A72916C-3957-4002-98B3-BB3FD04BE35A"
-
     member this.AllPowerMods =
         this.EnginePowerMod
         |> List.collect (fun tech -> tech.UnlockedPowerMods)
+        |> List.sort
 
     member this.UnlockedPowerMods (researchedTechs: GameObjectId list) =
         this.EnginePowerMod
@@ -252,10 +274,24 @@ let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
             )
         readTechCsv
             "data/tech-geo-sensors.csv"
-            (fun basics line -> GeoSensorTech basics)
+            (fun basics line ->
+                GeoSensorTech (basics,
+                    sensorRating = Convert.ToInt32 line.[5] * 1</comp>,
+                    crewPerComp = Convert.ToInt32 line.[6] * 1<people/comp>,
+                    hsPerComp = Convert.ToInt32 line.[7] * 1<hs/comp>,
+                    uridiumCost = Convert.ToDouble line.[8] * 1.0</comp>
+                )
+            )
         readTechCsv
             "data/tech-grav-sensors.csv"
-            (fun basics line -> GravSensorTech basics)
+            (fun basics line ->
+                GravSensorTech (basics,
+                    sensorRating = Convert.ToInt32 line.[5] * 1</comp>,
+                    crewPerComp = Convert.ToInt32 line.[6] * 1<people/comp>,
+                    hsPerComp = Convert.ToInt32 line.[7] * 1<hs/comp>,
+                    uridiumCost = Convert.ToDouble line.[8] * 1.0</comp>
+                )
+            )
         readTechCsv
             "data/tech-cargo-handling.csv"
             (fun basics line ->
@@ -307,6 +343,16 @@ let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
                 )
             )
         readTechCsv
+            "data/tech-fuel-storage.csv"
+            (fun basics line ->
+                FuelStorageTech (basics,
+                    fuelCapacity = Convert.ToInt32 line.[5] * 1<kl/comp>,
+                    hsPerComp = Convert.ToDouble line.[6] * 1.0<hs/comp>,
+                    duraniumCost = Convert.ToDouble line.[7] * 1.0</comp>,
+                    boronideCost = Convert.ToDouble line.[8] * 1.0</comp>
+                )
+            )
+        readTechCsv
             "data/tech-magazine-efficiency.csv"
             (fun basics line ->
                 MagazineEfficiencyTech (basics,
@@ -333,6 +379,21 @@ let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
                 ReactorBoostTech (basics,
                     powerBoost = Convert.ToDouble line.[5],
                     explosionChance = Convert.ToDouble line.[6]
+                )
+            )
+        readTechCsv
+            "data/tech-troop-transports.csv"
+            (fun basics line ->
+                TroopTransportTech (basics,
+                    isMilitary = (line.[5].ToLower() = "true"),
+                    troopTransportCapacity = Convert.ToInt32 line.[6] * 1<company/comp>,
+                    combatDropCapacity = Convert.ToInt32 line.[7] * 1<company/comp>,
+                    cryoDropCapacity = Convert.ToInt32 line.[8] * 1<company/comp>,
+                    crewPerComp = Convert.ToInt32 line.[9] * 1<people/comp>,
+                    hsPerComp = Convert.ToDouble line.[10] * 1.0<hs/comp>,
+                    duraniumCost = Convert.ToDouble line.[11] * 1.0</comp>,
+                    mercassiumCost = Convert.ToDouble line.[12] * 1.0</comp>,
+                    neutroniumCost = Convert.ToDouble line.[13] * 1.0</comp>
                 )
             )
     ]

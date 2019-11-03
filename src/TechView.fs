@@ -108,10 +108,15 @@ let logisticsAndGroundCombatCard model dispatch =
                         div [ ClassName "column is-4" ]
                             [
                                 techList "Cargo Holds" model.AllTechnologies.CargoHolds model.CurrentTechnology dispatch
+                                techList "Cargo Handling" model.AllTechnologies.CargoHandling model.CurrentTechnology dispatch
                             ]
                         div [ ClassName "column is-4" ]
                             [
-                                techList "Cargo Handling" model.AllTechnologies.CargoHandling model.CurrentTechnology dispatch
+                                techList "Fuel Storage" model.AllTechnologies.FuelStorages model.CurrentTechnology dispatch
+                            ]
+                        div [ ClassName "column is-4" ]
+                            [
+                                techList "Troop Transports" model.AllTechnologies.TroopTransports model.CurrentTechnology dispatch
                             ]
                     ]
             ]

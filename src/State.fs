@@ -35,10 +35,10 @@ let update msg model =
                 Map.empty
                 %+ Comp.ShipComponent.Bridge         (Comp.Bridge.Bridge.Zero)
                 %+ Comp.ShipComponent.CargoHold      (Comp.CargoHold.CargoHold.Zero)
-                %+ Comp.ShipComponent.Engine         (Comp.Engine.engine techs)
+                %+ Comp.ShipComponent.Engine         ({ Comp.Engine.engine techs with Name = "Engine" })
                 %+ Comp.ShipComponent.FuelStorage    (Comp.FuelStorage.FuelStorage.Zero)
-                %+ Comp.ShipComponent.Magazine       (Comp.Magazine.magazine techs)
-                %+ Comp.ShipComponent.PowerPlant     (Comp.PowerPlant.powerPlant techs)
+                %+ Comp.ShipComponent.Magazine       ({ Comp.Magazine.magazine techs with Name = "Magazine" })
+                %+ Comp.ShipComponent.PowerPlant     ({ Comp.PowerPlant.powerPlant techs with Name = "Power Plant" })
                 %+ Comp.ShipComponent.Sensors        (Comp.Sensors.Sensors.Zero)
                 %+ Comp.ShipComponent.TroopTransport (Comp.TroopTransport.TroopTransport.Zero)
         }, Cmd.OfPromise.perform

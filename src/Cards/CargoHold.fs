@@ -19,7 +19,7 @@ open Nerds.TractorStrengthNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: CargoHold) dispatch =
+let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: Ship) (comp: CargoHold) dispatch =
     let header =
         [
             Name "Cargo Hold"
@@ -44,7 +44,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                     |> Option.defaultValue 0<comp>
                                 Min = Some 0
                                 Max = None
-                                Disabled = false
+                                Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
                                 Msg.ReplaceShipComponent
@@ -73,7 +73,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                     |> Option.defaultValue 0<comp>
                                 Min = Some 0
                                 Max = None
-                                Disabled = false
+                                Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
                                 Msg.ReplaceShipComponent

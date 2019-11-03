@@ -18,7 +18,7 @@ open Nerds.SensorStrengthNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: Sensors) dispatch =
+let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: Ship) (comp: Sensors) dispatch =
     let header =
         [
             Name "Sensors"
@@ -31,84 +31,62 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
         [
             Bulma.FC.HorizontalGroup
                 None
-                [
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Standard Geo"
-                            Value = comp.StandardGeo
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.GeologicalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with StandardGeo = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Improved Geo"
-                            Value = comp.ImprovedGeo
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.ImprovedGeologicalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with ImprovedGeo = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Advanced Geo"
-                            Value = comp.AdvancedGeo
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.AdvancedGeologicalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with AdvancedGeo = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Phased Geo"
-                            Value = comp.PhasedGeo
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.PhasedGeologicalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with PhasedGeo = n }) |> dispatch)
-                ]
+                (
+                    allTechs.GeoSensors
+                    |> List.map (fun tech ->
+                        Bulma.FC.IntInput
+                            {
+                                Label = Some tech.Name
+                                Value =
+                                    comp.GeoSensors
+                                    |> Map.tryFind tech
+                                    |> Option.defaultValue 0<comp>
+                                Min = Some 0
+                                Max = None
+                                Disabled = not <| List.contains tech.Id currentTech
+                            }
+                            (fun n ->
+                                Msg.ReplaceShipComponent
+                                    (
+                                        ship,
+                                        Sensors
+                                            { comp with
+                                                GeoSensors = comp.GeoSensors.Add (tech, n)
+                                            }
+                                    )
+                                |> dispatch
+                            )
+                    )
+                )
             Bulma.FC.HorizontalGroup
                 None
-                [
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Standard Grav"
-                            Value = comp.StandardGrav
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.GravitationalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with StandardGrav = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Improved Grav"
-                            Value = comp.ImprovedGrav
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.ImprovedGravitationalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with ImprovedGrav = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Advanced Grav"
-                            Value = comp.AdvancedGrav
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.AdvancedGravitationalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with AdvancedGrav = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Phased Grav"
-                            Value = comp.PhasedGrav
-                            Min = Some 0
-                            Max = None
-                            Disabled = not <| List.contains allTechs.PhasedGravitationalSurveySensors tech
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Sensors { comp with PhasedGrav = n }) |> dispatch)
-                ]
+                (
+                    allTechs.GravSensors
+                    |> List.map (fun tech ->
+                        Bulma.FC.IntInput
+                            {
+                                Label = Some tech.Name
+                                Value =
+                                    comp.GravSensors
+                                    |> Map.tryFind tech
+                                    |> Option.defaultValue 0<comp>
+                                Min = Some 0
+                                Max = None
+                                Disabled = not <| List.contains tech.Id currentTech
+                            }
+                            (fun n ->
+                                Msg.ReplaceShipComponent
+                                    (
+                                        ship,
+                                        Sensors
+                                            { comp with
+                                                GravSensors = comp.GravSensors.Add (tech, n)
+                                            }
+                                    )
+                                |> dispatch
+                            )
+                    )
+                )
         ]
     let actions =
         [

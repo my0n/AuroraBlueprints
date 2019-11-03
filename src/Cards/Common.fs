@@ -69,7 +69,7 @@ let inline boundShipIntField dispatch lbl (min, max) getter setter =
             Max = max
             Disabled = false
         }
-        (fun n -> App.Msg.ReplaceShip (setter n) |> dispatch)
+        (setter >> App.Msg.ReplaceShip >> dispatch)
 
 let inline boundIntField ship dispatch lbl (min, max) getter setter =
     Bulma.FC.IntInput
