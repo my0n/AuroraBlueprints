@@ -32,11 +32,13 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) di
                     (Some 1, None)
                     ship.ArmorDepth
                     (fun n -> { ship with ArmorDepth = n })
-                boundShipTechField tech dispatch
+                boundTechField tech
                     "Armor Technology"
                     allTechs.Armor
                     ship.ArmorTechnology
-                    (fun n -> { ship with ArmorTechnology = n })
+                    (fun n ->
+                        Fable.Import.Browser.console.log (n)
+                        Msg.ReplaceShip { ship with ArmorTechnology = n } |> dispatch)
             ]
     let actions = []
     shipComponentCard "armor" header [ form ] actions

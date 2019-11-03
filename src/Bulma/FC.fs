@@ -195,12 +195,7 @@ type SelectOptions =
 
 let Select opts cb =
     div [ ClassName "select is-fullwidth" ]
-        [ select [ OnChange (fun event ->
-                               match System.Int32.TryParse event.Value with
-                               | true, num -> cb num
-                               | _ -> cb 0
-                            )
-                 ]
+        [ select [ OnChange (fun event -> cb event.Value) ]
                  (opts.Options
                   |> List.map (fun o ->
                     option [ classList [ "pseudodisabled", o.Disallowed ]; Value o.Key; Selected (o.Key = opts.Value) ] [ str o.Text ]

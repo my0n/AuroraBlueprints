@@ -97,9 +97,9 @@ let inline boundFloatChoiceField (availableOptions: float list) ship dispatch lb
                 )
             Value = getter.ToString()
         }
-        (fun n -> App.Msg.ReplaceShipComponent (ship, setter options.[n]) |> dispatch)
+        (fun n -> App.Msg.ReplaceShipComponent (ship, setter <| Double.Parse(n)) |> dispatch)
 
-let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) ship dispatch lbl (options: 'a list) (getter: 'a) (setter: 'a -> Comp.ShipComponent.ShipComponent) = 
+let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) lbl (options: 'a list) (getter: 'a) (cb: 'a -> unit) = 
     Bulma.FC.Select
         {
             Label = Some lbl
@@ -114,24 +114,7 @@ let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId lis
                 )
             Value = getter.Id.ToString()
         }
-        (fun n -> App.Msg.ReplaceShipComponent (ship, setter options.[n]) |> dispatch)
-
-let inline boundShipTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) dispatch lbl (options: 'a list) (getter: 'a) (setter: 'a -> Comp.Ship.Ship) = 
-    Bulma.FC.Select
-        {
-            Label = Some lbl
-            Options =
-                options
-                |> List.map (fun v ->
-                    {|
-                        Key = v.Id.ToString()
-                        Text = v.Name
-                        Disallowed = not <| (List.contains v.Id currentTech)
-                    |}
-                )
-            Value = getter.Id.ToString()
-        }
-        (fun n -> App.Msg.ReplaceShip (setter options.[n]) |> dispatch)
+        (fun n -> cb (List.find (fun t -> t.Id = n) options))
 
 let shipComponentCard key header contents actions =
     Bulma.Card.render {

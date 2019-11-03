@@ -77,27 +77,27 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                             Disabled = false
                         }
                         (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Size = n }) |> dispatch)
-                    boundTechField tech ship dispatch
+                    boundTechField tech
                         "Engine Technology"
                         allTechs.Engines
                         comp.EngineTech
-                        (fun n -> Engine { comp with EngineTech = n })
-                    boundTechField tech ship dispatch
+                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EngineTech = n }) |> dispatch)
+                    boundTechField tech
                         "Engine Efficiency"
                         allTechs.EngineEfficiency
                         comp.EfficiencyTech
-                        (fun n -> Engine { comp with EfficiencyTech = n })
+                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EfficiencyTech = n }) |> dispatch)
                     boundFloatChoiceField (allTechs.UnlockedPowerMods tech) ship dispatch
                         "Engine Power"
                         allTechs.AllPowerMods
                         comp.PowerModTech
                         (fun n -> sprintf "Engine Power x%.2f" n)
                         (fun n -> Engine { comp with PowerModTech = n })
-                    boundTechField tech ship dispatch
+                    boundTechField tech
                         "Thermal Efficiency"
                         allTechs.EngineThermalEfficiency
                         comp.ThermalEfficiencyTech
-                        (fun n -> Engine { comp with ThermalEfficiencyTech = n })
+                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with ThermalEfficiencyTech = n }) |> dispatch)
                 ]
         ]
     let actions =

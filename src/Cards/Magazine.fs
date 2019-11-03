@@ -53,21 +53,21 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                         (Some 1, Some 30)
                         comp.Size
                         (fun n -> Magazine { comp with Size = n })
-                    boundTechField tech ship dispatch
+                    boundTechField tech
                         "Armor"
                         allTechs.Armor
                         comp.Armor
-                        (fun n -> Magazine { comp with Armor = n })
-                    boundTechField tech ship dispatch
+                        (fun n -> App.Msg.ReplaceShipComponent (ship, Magazine { comp with Armor = n }) |> dispatch)
+                    boundTechField tech
                         "Feed System"
                         allTechs.MagazineEfficiency
                         comp.FeedSystem
-                        (fun n -> Magazine { comp with FeedSystem = n })
-                    boundTechField tech ship dispatch
+                        (fun n -> App.Msg.ReplaceShipComponent (ship, Magazine { comp with FeedSystem = n }) |> dispatch)
+                    boundTechField tech
                         "Ejection"
                         allTechs.MagazineEjection
                         comp.Ejection
-                        (fun n -> Magazine { comp with Ejection = n })
+                        (fun n -> App.Msg.ReplaceShipComponent (ship, Magazine { comp with Ejection = n }) |> dispatch)
                 ]
         ]
     let actions = []

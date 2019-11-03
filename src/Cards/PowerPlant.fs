@@ -86,17 +86,17 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                  |> Option.defaultValue 1
                                 ).ToString()
                         }
-                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[n]}) |> dispatch)
-                    boundTechField tech ship dispatch
+                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[Int32.Parse(n)]}) |> dispatch)
+                    boundTechField tech
                         "Power Plant Technology"
                         allTechs.Reactors
                         comp.Technology
-                        (fun n -> PowerPlant { comp with Technology = n })
-                    boundTechField tech ship dispatch
+                        (fun n -> App.Msg.ReplaceShipComponent (ship, PowerPlant { comp with Technology = n }) |> dispatch)
+                    boundTechField tech
                         "Power Boost"
                         allTechs.ReactorsPowerBoost
                         comp.PowerBoost
-                        (fun n -> PowerPlant { comp with PowerBoost = n })
+                        (fun n -> App.Msg.ReplaceShipComponent (ship, PowerPlant { comp with PowerBoost = n }) |> dispatch)
                 ]
         ]
     let actions =
