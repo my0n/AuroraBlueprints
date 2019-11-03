@@ -1,0 +1,7 @@
+ID,Name,Cost,Level,Parents,IsMilitary,TroopTransportCapacity,CombatDropCapacity,CryoDropCapacity,CrewPerComp,HsPerComp,DuraniumCost,MercassiumCost,NeutroniumCost
+5DDF21EE-149F-4658-A159-94FB0A5936B0,Small Troop Transport Bay,2000,1,,false,1,0,0,3,10,5,5,0
+9F24F281-A2C6-43B9-8738-EE9B51C52FAB,Troop Transport Bay - Company,2000,2,,false,5,0,0,10,50,10,20,10
+6E320F2C-0D62-47CC-B9DC-B095431AC664,Combat Drop Module - Batallion,3000,3,,true,0,1,0,1,2,5,5,5
+1B5712C0-5E30-4248-9F14-560AC1294258,Combat Drop Module - Company,6000,4,,true,0,5,0,2,10,20,20,20
+33810D2E-FCFB-4F98-AF08-A56C5BCC4466,Combat Drop Module (Cryo) - Batallion,10000,5,6E320F2C-0D62-47CC-B9DC-B095431AC664,true,0,0,1,2,4,10,10,10
+D140478B-A7EF-4917-A8C9-71AE097E5D86,Combat Drop Module (Cryo) - Company,20000,6,1B5712C0-5E30-4248-9F14-560AC1294258,true,0,0,5,4,20,40,40,40
