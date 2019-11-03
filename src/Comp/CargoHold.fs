@@ -12,10 +12,7 @@ type CargoHold =
         Small: int<comp>
         Standard: int<comp>
 
-        CargoHandlingSystem: int<comp>
-        ImprovedCargoHandlingSystem: int<comp>
-        AdvancedCargoHandlingSystem: int<comp>
-        GravAssistedCargoHandlingSystem: int<comp>
+        CargoHandlingSystems: Map<Technology.CargoHandlingTech, int<comp>>
     }
     static member Zero
         with get() =
@@ -25,10 +22,7 @@ type CargoHold =
                 Tiny = 0<comp>
                 Small = 0<comp>
                 Standard = 0<comp>
-                CargoHandlingSystem = 0<comp>
-                ImprovedCargoHandlingSystem = 0<comp>
-                AdvancedCargoHandlingSystem = 0<comp>
-                GravAssistedCargoHandlingSystem = 0<comp>
+                CargoHandlingSystems = Map.empty
             }
 
     //#region Calculated Values
@@ -41,11 +35,10 @@ type CargoHold =
             ) * 50<ton/comp>
             +
             (
-                this.CargoHandlingSystem
-                + this.ImprovedCargoHandlingSystem
-                + this.AdvancedCargoHandlingSystem
-                + this.GravAssistedCargoHandlingSystem
-            ) * 100<ton/comp>
+                this.CargoHandlingSystems
+                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+                |> hs2tonint
+            )
         )
     member private this._BuildCost =
         lazy (
@@ -60,29 +53,16 @@ type CargoHold =
                 + this.Standard * 50</comp>
             )
             +
-            { TotalBuildCost.Zero with
-                BuildPoints = float this.CargoHandlingSystem * 10.0
-                Duranium = float this.CargoHandlingSystem * 5.0
-                Mercassium = float this.CargoHandlingSystem * 5.0
-            }
-            +
-            { TotalBuildCost.Zero with
-                BuildPoints = float this.ImprovedCargoHandlingSystem * 25.0
-                Duranium = float this.ImprovedCargoHandlingSystem * 10.0
-                Mercassium = float this.ImprovedCargoHandlingSystem * 15.0
-            }
-            +
-            { TotalBuildCost.Zero with
-                BuildPoints = float this.AdvancedCargoHandlingSystem * 50.0
-                Duranium = float this.AdvancedCargoHandlingSystem * 20.0
-                Mercassium = float this.AdvancedCargoHandlingSystem * 30.0
-            }
-            +
-            { TotalBuildCost.Zero with
-                BuildPoints = float this.GravAssistedCargoHandlingSystem * 100.0
-                Duranium = float this.GravAssistedCargoHandlingSystem * 25.0
-                Mercassium = float this.GravAssistedCargoHandlingSystem * 75.0
-            }
+            (
+                this.CargoHandlingSystems
+                |> Seq.sumBy (fun kvp ->
+                    { TotalBuildCost.Zero with
+                        BuildPoints = (kvp.Key.DuraniumCost + kvp.Key.MercassiumCost) * int2float kvp.Value
+                        Duranium = kvp.Key.DuraniumCost * int2float kvp.Value
+                        Mercassium = kvp.Key.MercassiumCost * int2float kvp.Value
+                    }
+                )
+            )
         )
     member private this._CargoCapacity =
         lazy (
@@ -95,17 +75,16 @@ type CargoHold =
             this.Tiny * 1<people/comp>
             + this.Small * 2<people/comp>
             + this.Standard * 5<people/comp>
-            + this.CargoHandlingSystem * 10<people/comp>
-            + this.ImprovedCargoHandlingSystem * 10<people/comp>
-            + this.AdvancedCargoHandlingSystem * 10<people/comp>
-            + this.GravAssistedCargoHandlingSystem * 10<people/comp>
+            +
+            (
+                this.CargoHandlingSystems
+                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+            )
         )
     member private this._TractorStrength =
         lazy (
-            this.CargoHandlingSystem * 5<tractorStrength/comp>
-            + this.ImprovedCargoHandlingSystem * 10<tractorStrength/comp>
-            + this.AdvancedCargoHandlingSystem * 20<tractorStrength/comp>
-            + this.GravAssistedCargoHandlingSystem * 40<tractorStrength/comp>
+            this.CargoHandlingSystems
+            |> Seq.sumBy (fun kvp -> kvp.Key.TractorStrength * kvp.Value)
         )
     //#endregion
 
