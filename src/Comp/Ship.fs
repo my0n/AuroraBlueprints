@@ -145,6 +145,19 @@ type Ship =
         )
     //#endregion
 
+    //#region Magazines
+    member private this._TotalAmmoCapacity =
+        lazy (
+            this.Components
+            |> Map.values
+            |> List.sumBy (fun c ->
+                match c with
+                | Magazine c -> c.Capacity * c.Count
+                | _ -> 0<ammo>
+            )
+        )
+    //#endregion
+
     //#region Troop Transport
     member private this._CryoDropCapability =
         lazy (
@@ -335,6 +348,7 @@ type Ship =
     member this.Speed with get() = this._Speed.Value
     member this.ThermalSignature with get() = this._ThermalSignature.Value
     member this.TonsPerPerson with get() = this._TonsPerPerson.Value
+    member this.TotalAmmoCapacity with get() = this._TotalAmmoCapacity.Value
     member this.TotalBerths with get() = this._TotalBerths.Value
     member this.TotalEnginePower with get(): float<ep> = this._TotalEnginePower.Value
     member this.TotalPower with get() = this._TotalPower.Value

@@ -86,7 +86,7 @@ type Magazine =
         )
     member private this._GeneratedName =
         lazy (
-            String.Format("Capacity {0} Magazine: Exp {1}%  HTK{2}", this.Capacity, int (this.Ejection.EjectionChance * 100.0), this.HTK)
+            String.Format("Capacity {0} Magazine: Exp {1}%  HTK{2}", this.Capacity, int (100.0 - this.Ejection.EjectionChance * 100.0), this.HTK)
         )
     member private this._TotalSize =
         lazy (

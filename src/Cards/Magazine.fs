@@ -18,6 +18,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
     let header =
         [
             Name comp.Name
+            Nerd { Ammo = comp.Capacity; Count = comp.Count }
             Nerd { BuildCost = comp.BuildCost; Count = comp.Count }
             Nerd { RenderMode = HS; Count = comp.Count; Size = float2int <| int2float comp.Size * 50.0<ton/hs> }
         ]

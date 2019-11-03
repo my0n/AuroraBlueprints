@@ -7,23 +7,26 @@ open Nerds.Common
 type MagazineCapacityNerd =
     {
         Count: int<comp>
-        PowerOutput: float<power/comp>
+        Ammo: int<ammo/comp>
     }
     interface INerd with
         member this.Text
             with get() =
-                sprintf "%.1f" (this.PowerOutput * int2float this.Count)
+                sprintf "%d" (this.Ammo * this.Count)
         member this.Tooltip
             with get() =
                 match this.Count with
-                | 1<comp> | 0<comp> -> sprintf "%.1f power generated" (this.PowerOutput * int2float this.Count)
-                | _ -> sprintf "%.1f (%.1f) power generated" (this.PowerOutput * int2float this.Count) this.PowerOutput
+                | 1<comp> | 0<comp> -> sprintf "%d magazine capacity" (this.Ammo * this.Count)
+                | _ -> sprintf "%d (%d) magazine capacity" (this.Ammo * this.Count) this.Ammo
         member this.Icon
             with get() =
-                Bolt
+                Boxes
         member this.Render
             with get() = true
         member this.Description
             with get() =
-                sprintf "Total Power Output %.1f" (this.PowerOutput * int2float this.Count)
-                |> Some
+                match this.Ammo with
+                | 0<ammo/comp> -> None
+                | _ ->
+                    sprintf "Magazine %d" (this.Ammo * this.Count)
+                    |> Some
