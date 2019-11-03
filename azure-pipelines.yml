@@ -23,10 +23,8 @@ steps:
 - script: npx webpack
   displayName: 'build application'
   
-- task: ArchiveFiles@2
+- task: PublishBuildArtifacts@1
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/deploy'
-    includeRootFolder: false
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    replaceExistingArchive: true
+    PathtoPublish: '$(System.DefaultWorkingDirectory)\deploy'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
