@@ -130,13 +130,21 @@ type ReactorBoostTech(basics, powerBoost, explosionChance) =
     member val PowerBoost: float = powerBoost with get
     member val ExplosionChance: float = explosionChance with get
 
-type GravSensorTech(basics) =
+type GravSensorTech(basics, sensorRating, hsPerComp, crewPerComp, uridiumCost) =
     inherit TechBase(basics)
     override this.Category = SensorsAndFireControl
+    member val SensorRating: int</comp> = sensorRating with get
+    member val HsPerComp: int<hs/comp> = hsPerComp with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val UridiumCost: float</comp> = uridiumCost with get
 
-type GeoSensorTech(basics) =
+type GeoSensorTech(basics, sensorRating, hsPerComp, crewPerComp, uridiumCost) =
     inherit TechBase(basics)
     override this.Category = SensorsAndFireControl
+    member val SensorRating: int</comp> = sensorRating with get
+    member val HsPerComp: int<hs/comp> = hsPerComp with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val UridiumCost: float</comp> = uridiumCost with get
 
 let private readTechCsv file generateFn =
     readCsv file (fun line -> generateFn (parseBasics line) line)
@@ -214,16 +222,6 @@ type AllTechnologies =
     member this.DefaultReactor           = this.Reactors.[0]
     member this.DefaultPowerBoost        = this.ReactorsPowerBoost.[0]
 
-    member this.GeologicalSurveySensors = "A2D19D2F-EF64-4DFC-B4B2-8838EEDAAC50"
-    member this.ImprovedGeologicalSurveySensors = "E77F9805-35E0-4E97-B399-32F00BA52563"
-    member this.AdvancedGeologicalSurveySensors = "723ECE17-627E-4CDB-B0B8-D46A60F6FA23"
-    member this.PhasedGeologicalSurveySensors = "8B8001E6-F983-4229-9892-B82363D73C49"
-
-    member this.GravitationalSurveySensors = "558A6A1F-2CEB-41A7-867D-2EA00447B9B7"
-    member this.ImprovedGravitationalSurveySensors = "CB243D80-E18E-4173-B89D-745DE66F7846"
-    member this.AdvancedGravitationalSurveySensors = "E4BB5DD3-5801-4D17-8770-60ABE08A7496"
-    member this.PhasedGravitationalSurveySensors = "8A72916C-3957-4002-98B3-BB3FD04BE35A"
-
     member this.AllPowerMods =
         this.EnginePowerMod
         |> List.collect (fun tech -> tech.UnlockedPowerMods)
@@ -252,10 +250,24 @@ let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
             )
         readTechCsv
             "data/tech-geo-sensors.csv"
-            (fun basics line -> GeoSensorTech basics)
+            (fun basics line ->
+                GeoSensorTech (basics,
+                    sensorRating = Convert.ToInt32 line.[5] * 1</comp>,
+                    crewPerComp = Convert.ToInt32 line.[6] * 1<people/comp>,
+                    hsPerComp = Convert.ToInt32 line.[7] * 1<hs/comp>,
+                    uridiumCost = Convert.ToDouble line.[8] * 1.0</comp>
+                )
+            )
         readTechCsv
             "data/tech-grav-sensors.csv"
-            (fun basics line -> GravSensorTech basics)
+            (fun basics line ->
+                GravSensorTech (basics,
+                    sensorRating = Convert.ToInt32 line.[5] * 1</comp>,
+                    crewPerComp = Convert.ToInt32 line.[6] * 1<people/comp>,
+                    hsPerComp = Convert.ToInt32 line.[7] * 1<hs/comp>,
+                    uridiumCost = Convert.ToDouble line.[8] * 1.0</comp>
+                )
+            )
         readTechCsv
             "data/tech-cargo-handling.csv"
             (fun basics line ->

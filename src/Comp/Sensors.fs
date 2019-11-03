@@ -9,62 +9,67 @@ type Sensors =
     {
         Id: GameObjectId
         
-        StandardGeo: int<comp>
-        ImprovedGeo: int<comp>
-        AdvancedGeo: int<comp>
-        PhasedGeo: int<comp>
-        
-        StandardGrav: int<comp>
-        ImprovedGrav: int<comp>
-        AdvancedGrav: int<comp>
-        PhasedGrav: int<comp>
+        GeoSensors: Map<Technology.GeoSensorTech, int<comp>>
+        GravSensors: Map<Technology.GravSensorTech, int<comp>>
     }
     static member Zero
         with get() =
             {
                 Id = GameObjectId.generate()
-                StandardGeo = 0<comp>
-                ImprovedGeo = 0<comp>
-                AdvancedGeo = 0<comp>
-                PhasedGeo = 0<comp>
-                StandardGrav = 0<comp>
-                ImprovedGrav = 0<comp>
-                AdvancedGrav = 0<comp>
-                PhasedGrav = 0<comp>
+                GeoSensors = Map.empty
+                GravSensors = Map.empty
             }
     //#region Calculated Values
-    member private this._Count =
-        lazy (
-            this.StandardGeo + this.StandardGrav
-            + this.ImprovedGeo + this.ImprovedGrav
-            + this.AdvancedGeo + this.AdvancedGrav
-            + this.PhasedGeo + this.PhasedGrav
-        )
     member private this._TotalSize =
         lazy (
-            hs2tonint <| this.Count * 5<hs/comp>
+            (
+                this.GeoSensors
+                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+            )
+            +
+            (
+                this.GravSensors
+                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+            )
+            |> hs2tonint
         )
     member private this._Crew =
         lazy (
-            this.Count * 10<people/comp>
+            (
+                this.GeoSensors
+                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+            )
+            +
+            (
+                this.GravSensors
+                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+            )
         )
     member private this._BuildCost =
         lazy (
-            let cost =
-                (
-                    (this.StandardGeo + this.StandardGrav) * 100
-                    + (this.ImprovedGeo + this.ImprovedGrav) * 150
-                    + (this.AdvancedGeo + this.AdvancedGrav) * 200
-                    + (this.PhasedGeo + this.PhasedGrav) * 300
-                ) * 1</comp>
-            { TotalBuildCost.Zero with
-                BuildPoints = float cost
-                Uridium = float cost
-            }
+            (
+                this.GeoSensors
+                |> Seq.sumBy (fun kvp ->
+                    { TotalBuildCost.Zero with
+                        BuildPoints = kvp.Key.UridiumCost * int2float kvp.Value
+                        Uridium = kvp.Key.UridiumCost * int2float kvp.Value
+                    }
+                )
+            )
+            +
+            (
+                this.GravSensors
+                |> Seq.sumBy (fun kvp ->
+                    { TotalBuildCost.Zero with
+                        BuildPoints = kvp.Key.UridiumCost * int2float kvp.Value
+                        Uridium = kvp.Key.UridiumCost * int2float kvp.Value
+                    }
+                )
+            )
         )
     member private this._MaintenanceClass =
         lazy (
-            match [ this.StandardGrav; this.ImprovedGrav; this.AdvancedGrav; this.PhasedGrav ]
+            match Map.values this.GravSensors
                   |> List.exists (fun a -> a > 0<comp>) with
             | true -> Military
             | false -> Commercial
@@ -72,26 +77,21 @@ type Sensors =
     member private this._GeoSensorRating =
         lazy (
             (
-                this.StandardGeo
-                + this.ImprovedGeo * 2
-                + this.AdvancedGeo * 3
-                + this.PhasedGeo * 5
-            ) * 1</comp>
+                this.GeoSensors
+                |> Seq.sumBy (fun kvp -> kvp.Key.SensorRating * kvp.Value)
+            )
         )
     member private this._GravSensorRating =
         lazy (
             (
-                this.StandardGrav
-                + this.ImprovedGrav * 2
-                + this.AdvancedGrav * 3
-                + this.PhasedGrav * 5
-            ) * 1</comp>
+                this.GravSensors
+                |> Seq.sumBy (fun kvp -> kvp.Key.SensorRating * kvp.Value)
+            )
         )
     //#endregion
 
     //#region Accessors
     member this.BuildCost with get() = this._BuildCost.Value
-    member private this.Count with get() = this._Count.Value
     member this.Crew with get() = this._Crew.Value
     member this.GeoSensorRating with get() = this._GeoSensorRating.Value
     member this.GravSensorRating with get() = this._GravSensorRating.Value

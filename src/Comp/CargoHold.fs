@@ -40,7 +40,7 @@ type CargoHold =
                 this.CargoHolds
                 |> Seq.sumBy (fun kvp ->
                     { TotalBuildCost.Zero with
-                        BuildPoints = (kvp.Key.DuraniumCost) * int2float kvp.Value
+                        BuildPoints = kvp.Key.DuraniumCost * int2float kvp.Value
                         Duranium = kvp.Key.DuraniumCost * int2float kvp.Value
                     }
                 )
