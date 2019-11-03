@@ -32,35 +32,33 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
         [
             Bulma.FC.HorizontalGroup
                 None
-                [
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Tiny Cargo Hold"
-                            Value = comp.Tiny
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with Tiny = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Small Cargo Hold"
-                            Value = comp.Small
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with Small = n }) |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Standard Cargo Hold"
-                            Value = comp.Standard
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, CargoHold { comp with Standard = n }) |> dispatch)
-                ]
+                (
+                    allTechs.CargoHolds
+                    |> List.map (fun tech ->
+                        Bulma.FC.IntInput
+                            {
+                                Label = Some tech.Name
+                                Value =
+                                    comp.CargoHolds
+                                    |> Map.tryFind tech
+                                    |> Option.defaultValue 0<comp>
+                                Min = Some 0
+                                Max = None
+                                Disabled = false
+                            }
+                            (fun n ->
+                                Msg.ReplaceShipComponent
+                                    (
+                                        ship,
+                                        CargoHold
+                                            { comp with
+                                                CargoHolds = comp.CargoHolds.Add (tech, n)
+                                            }
+                                    )
+                                |> dispatch
+                            )
+                    )
+                )
             Bulma.FC.HorizontalGroup
                 None
                 (
@@ -88,7 +86,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                     )
                                 |> dispatch
                             )
-                        )
+                    )
                 )
         ]
     let actions =

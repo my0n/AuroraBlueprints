@@ -67,6 +67,14 @@ type ArmorTech(basics, strength, duraniumRatio, neutroniumRatio) =
     member val DuraniumRatio: float = duraniumRatio with get
     member val NeutroniumRatio: float = neutroniumRatio with get
 
+type CargoHoldTech(basics, cargoCapacity, crewPerComp, hsPerComp, duraniumCost) =
+    inherit TechBase(basics)
+    override this.Category = LogisticsAndGroundCombat
+    member val CargoCapacity: int<cargoCapacity/comp> = cargoCapacity with get
+    member val CrewPerComp: int<people/comp> = crewPerComp with get
+    member val HsPerComp: int<hs/comp> = hsPerComp with get
+    member val DuraniumCost: float</comp> = duraniumCost with get
+
 type CargoHandlingTech(basics, tractorStrength, crewPerComp, hsPerComp, duraniumCost, mercassiumCost) =
     inherit TechBase(basics)
     override this.Category = LogisticsAndGroundCombat
@@ -186,6 +194,7 @@ type AllTechnologies =
 
     member this.Armor                   = this.Technologies |> techsOfType<ArmorTech>              |> List.sortBy (fun tech -> tech.Level)
     member this.CargoHandling           = this.Technologies |> techsOfType<CargoHandlingTech>      |> List.sortBy (fun tech -> tech.Level)
+    member this.CargoHolds              = this.Technologies |> techsOfType<CargoHoldTech>          |> List.sortBy (fun tech -> tech.Level)
     member this.Engines                 = this.Technologies |> techsOfType<EngineTech>             |> List.sortBy (fun tech -> tech.Level)
     member this.EngineEfficiency        = this.Technologies |> techsOfType<EngineEfficiencyTech>   |> List.sortBy (fun tech -> tech.Level)
     member this.EnginePowerMod          = this.Technologies |> techsOfType<EngineBoostUnlockTech>  |> List.sortBy (fun tech -> tech.Level)
@@ -257,6 +266,16 @@ let allTechnologies: Fable.Import.JS.Promise<AllTechnologies> =
                     hsPerComp = Convert.ToInt32 line.[7] * 1<hs/comp>,
                     duraniumCost = Convert.ToDouble line.[8] * 1.0</comp>,
                     mercassiumCost = Convert.ToDouble line.[9] * 1.0</comp>
+                )
+            )
+        readTechCsv
+            "data/tech-cargo-holds.csv"
+            (fun basics line ->
+                CargoHoldTech (basics,
+                    cargoCapacity = Convert.ToInt32 line.[5] * 1<cargoCapacity/comp>,
+                    crewPerComp = Convert.ToInt32 line.[6] * 1<people/comp>,
+                    hsPerComp = Convert.ToInt32 line.[7] * 1<hs/comp>,
+                    duraniumCost = Convert.ToDouble line.[8] * 1.0</comp>
                 )
             )
         readTechCsv

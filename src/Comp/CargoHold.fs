@@ -8,10 +8,7 @@ type CargoHold =
     {
         Id: GameObjectId
 
-        Tiny: int<comp>
-        Small: int<comp>
-        Standard: int<comp>
-
+        CargoHolds: Map<Technology.CargoHoldTech, int<comp>>
         CargoHandlingSystems: Map<Technology.CargoHandlingTech, int<comp>>
     }
     static member Zero
@@ -19,9 +16,7 @@ type CargoHold =
             {
                 Id = GameObjectId.generate()
 
-                Tiny = 0<comp>
-                Small = 0<comp>
-                Standard = 0<comp>
+                CargoHolds = Map.empty
                 CargoHandlingSystems = Map.empty
             }
 
@@ -29,28 +24,26 @@ type CargoHold =
     member private this._TotalSize =
         lazy (
             (
-                this.Tiny * 50
-                + this.Small * 100
-                + this.Standard * 500
-            ) * 50<ton/comp>
+                this.CargoHolds
+                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+            )
             +
             (
                 this.CargoHandlingSystems
                 |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
-                |> hs2tonint
             )
+            |> hs2tonint
         )
     member private this._BuildCost =
         lazy (
-            { TotalBuildCost.Zero with
-                BuildPoints = 6.0
-                Duranium = 6.0
-            }
-            *
-            int2float (
-                this.Tiny * 6</comp>
-                + this.Small * 12</comp>
-                + this.Standard * 50</comp>
+            (
+                this.CargoHolds
+                |> Seq.sumBy (fun kvp ->
+                    { TotalBuildCost.Zero with
+                        BuildPoints = (kvp.Key.DuraniumCost) * int2float kvp.Value
+                        Duranium = kvp.Key.DuraniumCost * int2float kvp.Value
+                    }
+                )
             )
             +
             (
@@ -66,15 +59,15 @@ type CargoHold =
         )
     member private this._CargoCapacity =
         lazy (
-            this.Tiny * 2500<cargoCapacity/comp>
-            + this.Small * 5000<cargoCapacity/comp>
-            + this.Standard * 25000<cargoCapacity/comp>
+            this.CargoHolds
+            |> Seq.sumBy (fun kvp -> kvp.Key.CargoCapacity * kvp.Value)
         )
     member private this._Crew =
         lazy (
-            this.Tiny * 1<people/comp>
-            + this.Small * 2<people/comp>
-            + this.Standard * 5<people/comp>
+            (
+                this.CargoHolds
+                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+            )
             +
             (
                 this.CargoHandlingSystems
