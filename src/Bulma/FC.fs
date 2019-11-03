@@ -3,8 +3,8 @@ module Bulma.FC
 open System
 open Global
 open Model.Measures
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 
 [<Flags>]
 type ControlOpts =

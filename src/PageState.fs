@@ -1,9 +1,8 @@
 module PageState
 
-open Elmish.Browser.Navigation
-open Elmish.Browser.UrlParser
-open Fable.Import.Browser
-open Global
+open Elmish.Navigation
+open Elmish.UrlParser
+open Browser
 open App.Model
 
 let pageParser: Parser<Page->Page,Page> =

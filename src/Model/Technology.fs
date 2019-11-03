@@ -5,7 +5,6 @@ open System
 open File.CsvReader
 open Model.Measures
 open Global
-open Fable.PowerPack
 
 type ParsedBasics =
     {
@@ -240,7 +239,7 @@ type AllTechnologies =
             |> List.find (fun tech -> tech.Level = 1)
         ).UnlockedPowerMods.[0]
 
-let allTechnologies: Fable.Import.JS.Promise<AllTechnologies> =
+let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
     [
         readTechCsv
             "data/tech-armor.csv"

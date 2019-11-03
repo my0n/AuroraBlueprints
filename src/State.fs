@@ -2,7 +2,6 @@ module App.State
 
 open Elmish
 open Global
-open System
 
 open App.Model
 open App.Msg
@@ -12,13 +11,9 @@ let init result =
     let (model, cmd) = PageState.urlUpdate result Model.empty
     model, Cmd.batch [
         cmd
-        Cmd.ofPromise
+        Cmd.OfPromise.perform
             (fun _ -> Technology.allTechnologies) ()
             InitializeTechnologies
-            (fun err -> 
-                Fable.Import.Browser.console.log (err) |> ignore
-                Noop
-            )
     ]
     
 let orNoneIf pred inp =
@@ -46,8 +41,29 @@ let update msg model =
                 %+ Comp.ShipComponent.PowerPlant     (Comp.PowerPlant.powerPlant techs)
                 %+ Comp.ShipComponent.Sensors        (Comp.Sensors.Sensors.Zero)
                 %+ Comp.ShipComponent.TroopTransport (Comp.TroopTransport.TroopTransport.Zero)
+        }, Cmd.OfPromise.perform
+            (fun _ -> Model.GameInfo.gameInfo) ()
+            InitializeGameInfo
+    | InitializeGameInfo gameInfo ->
+        let applyPreset =
+            match model.CurrentTechnology with
+            | [] -> Cmd.ofMsg <| ApplyPreset gameInfo.DefaultPreset
+            | _ ->  Cmd.none
+        { model with
+            Presets = gameInfo.Presets
             FullyInitialized = true
-        }, Cmd.none
+        }, applyPreset
+    | ApplyPreset preset ->
+        let preset' =
+            model.Presets
+            |> List.tryFind (fun p -> p.Name = preset)
+        match preset' with
+        | None ->
+            model, Cmd.none
+        | Some preset' ->
+            { model with
+                CurrentTechnology = preset'.Technologies
+            }, Cmd.none
 
     // Ships
     | NewShip ->

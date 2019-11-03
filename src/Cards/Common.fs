@@ -4,8 +4,8 @@ open System
 
 open Global
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Bulma.Card
 open Nerds.Common
 

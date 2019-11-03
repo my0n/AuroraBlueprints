@@ -1,7 +1,6 @@
 module File.CsvReader
 
-open Fable.PowerPack.Fetch
-open Fable.PowerPack
+open Fetch
 
 let readCsv file consumeFn =
     fetch file [ Cache RequestCache.Nostore ]

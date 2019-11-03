@@ -1,9 +1,8 @@
 module TechView
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 
-open System
 open Global
 
 open App.Model
@@ -35,7 +34,6 @@ let techList header techsToDisplay currentTechs dispatch =
                 }
 
             Bulma.FC.Checkbox opts (fun value ->
-                Fable.Import.Browser.console.log (value)
                 match value with
                 | true ->  AddTechnology tech.Id
                 | false -> RemoveTechnology tech.Id
@@ -50,7 +48,7 @@ let techList header techsToDisplay currentTechs dispatch =
 
     div [ ClassName "content" ]
         [
-            h4 [ ClassName "title is-unselectable is-4" ] [ str header ]
+            h4 [ ClassName "title is-unselectable is-5" ] [ str header ]
             l
         ]
 
@@ -71,7 +69,6 @@ let defensiveSystemsCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let powerAndPropulsionCard model dispatch =
     {
         key = "PowerAndPropulsion"
@@ -100,7 +97,6 @@ let powerAndPropulsionCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let logisticsAndGroundCombatCard model dispatch =
     {
         key = "LogisticsAndGroundCombat"
@@ -122,7 +118,6 @@ let logisticsAndGroundCombatCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let missilesAndKineticWeaponsCard model dispatch =
     {
         key = "MissilesAndKineticWeapons"
@@ -144,7 +139,6 @@ let missilesAndKineticWeaponsCard model dispatch =
         Actions = []
         HasExpanderToggle = true
     }
-
 let sensorsAndFireControlCard model dispatch =
     {
         key = "SensorsAndFireControl"
@@ -176,8 +170,8 @@ let root model dispatch =
                     [
                         defensiveSystemsCard
                         logisticsAndGroundCombatCard
-                        powerAndPropulsionCard
                         missilesAndKineticWeaponsCard
+                        powerAndPropulsionCard
                         sensorsAndFireControlCard
                     ]
                     |> List.map (fun propsFn -> Bulma.Card.render <| propsFn model dispatch)

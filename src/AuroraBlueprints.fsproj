@@ -14,6 +14,7 @@
     <Compile Include="Model\Technology.fs" />
     <Compile Include="Model\ArmorCalc.fs" />
     <Compile Include="Model\MaintenanceClass.fs" />
+    <Compile Include="Model\GameInfo.fs" />
     <Compile Include="Comp\Bridge.fs" />
     <Compile Include="Comp\CargoHold.fs" />
     <Compile Include="Comp\Sensors.fs" />
