@@ -1,7 +1,7 @@
 module TechView
 
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 
 open System
 open Global
@@ -35,7 +35,6 @@ let techList header techsToDisplay currentTechs dispatch =
                 }
 
             Bulma.FC.Checkbox opts (fun value ->
-                Fable.Import.Browser.console.log (value)
                 match value with
                 | true ->  AddTechnology tech.Id
                 | false -> RemoveTechnology tech.Id
@@ -50,7 +49,7 @@ let techList header techsToDisplay currentTechs dispatch =
 
     div [ ClassName "content" ]
         [
-            h4 [ ClassName "title is-unselectable is-4" ] [ str header ]
+            h4 [ ClassName "title is-unselectable is-5" ] [ str header ]
             l
         ]
 

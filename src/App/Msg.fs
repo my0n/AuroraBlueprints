@@ -10,6 +10,8 @@ type Msg =
 
     // Initialization
     | InitializeTechnologies of Technology.AllTechnologies
+    | InitializeGameInfo of Model.GameInfo.GameInfo
+    | ApplyPreset of string
 
     // Ships
     | NewShip

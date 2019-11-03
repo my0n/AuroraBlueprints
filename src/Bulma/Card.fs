@@ -1,15 +1,15 @@
 module Bulma.Card
 
 open Global
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 open Fable.Core
 open Fable.Import
 open Nerds.Icon
 
 type CardHeaderElement =
     | Title of string
-    | Info of React.ReactElement
+    | Info of ReactElement
     | Button of Icon * (unit -> unit)
     | NoRender
 
@@ -24,7 +24,7 @@ type CardProps =
     {
         key: string
         HeaderItems: CardHeaderElement list
-        Contents: React.ReactElement list
+        Contents: ReactElement list
         Actions: (string * ColorStatus * (unit -> unit)) list
         HasExpanderToggle: bool
     }
@@ -35,7 +35,7 @@ type CardState =
     }
 
 type private Card(props) as this =
-    inherit React.Component<CardProps, CardState>(props)
+    inherit Fable.React.Component<CardProps, CardState>(props)
     do this.setInitState({ IsBodyVisible = true })
 
     let toggleState _ = this.ToggleState

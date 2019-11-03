@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{FA339438-8
 EndProject
 Project("{9330E333-8FDC-43B3-9474-1A39A6E36DE8}") = "data", "data", "{BB3464AE-9922-43B0-BE8A-6505A79A019E}"
 	ProjectSection(SolutionItems) = preProject
+		public\data\gameinfo.json = data\gameinfo.json
 		public\data\tech-armor.csv = data\tech-armor.csv
 		public\data\tech-cargo-handling.csv = data\tech-cargo-handling.csv
 		public\data\tech-cargo-holds.csv = data\tech-cargo-holds.csv

@@ -22,6 +22,7 @@ type Model =
         AllComponents: Map<GameObjectId, ShipComponent>
         CurrentTechnology: GameObjectId list
         AllTechnologies: Technology.AllTechnologies
+        Presets: Model.GameInfo.Preset list
         FullyInitialized: bool
     }
     static member empty =
@@ -32,5 +33,6 @@ type Model =
             AllComponents = Map.empty
             CurrentTechnology = List.empty
             AllTechnologies = { Technologies = Map.empty }
+            Presets = List.empty
             FullyInitialized = false
         }

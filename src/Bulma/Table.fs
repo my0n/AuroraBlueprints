@@ -1,8 +1,8 @@
 module Bulma.Table
 
 open Bulma.Button
-open Fable.Helpers.React
-open Fable.Helpers.React.Props
+open Fable.React
+open Fable.React.Props
 
 type RowRenderer =
     | Normal
@@ -10,7 +10,7 @@ type RowRenderer =
 
 type CellRenderer<'a> =
     | String of ('a -> string)
-    | Custom of ('a -> Fable.Import.React.ReactElement)
+    | Custom of ('a -> Fable.React.ReactElement)
     | Button of (string * ('a -> unit))
 
 type ColumnOptions<'a> =
