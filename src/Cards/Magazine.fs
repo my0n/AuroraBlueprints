@@ -71,5 +71,8 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                         (fun n -> App.Msg.ReplaceShipComponent (ship, Magazine { comp with Ejection = n }) |> dispatch)
                 ]
         ]
-    let actions = []
+    let actions =
+        [
+            "Remove", Bulma.Card.DangerColor, (fun _ -> App.Msg.RemoveComponentFromShip (ship, Magazine comp) |> dispatch)
+        ]
     shipComponentCard (comp.Id.ToString ()) header form actions
