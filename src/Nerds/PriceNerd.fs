@@ -30,12 +30,15 @@ type PriceNerd =
                         bpr this.BuildCost.BuildPoints "build points"
                         bpr this.BuildCost.Boronide "boronide"
                         bpr this.BuildCost.Corbomite "corbomite"
+                        bpr this.BuildCost.Corundium "corundium"
                         bpr this.BuildCost.Duranium "duranium"
                         bpr this.BuildCost.Gallicite "gallicite"
                         bpr this.BuildCost.Mercassium "mercassium"
                         bpr this.BuildCost.Neutronium "neutronium"
+                        bpr this.BuildCost.Sorium "sorium"
                         bpr this.BuildCost.Tritanium "tritanium"
                         bpr this.BuildCost.Uridium "uridium"
+                        bpr this.BuildCost.Vendarite "vendarite"
                     ]
                     |> List.choose id
                     |> String.concat "\r\n"
