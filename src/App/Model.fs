@@ -16,11 +16,14 @@ let toHash page =
 
 type Model =
     {
-        CurrentPage: Page
-        CurrentShip: Ship option
+        // stuff that gets saved
         AllShips: Map<GameObjectId, Ship>
         AllComponents: Map<GameObjectId, ShipComponent>
         CurrentTechnology: GameObjectId list
+
+        // stuff that does not
+        CurrentPage: Page
+        CurrentShip: Ship option
         AllTechnologies: Technology.AllTechnologies
         Presets: Model.GameInfo.Preset list
         FullyInitialized: bool

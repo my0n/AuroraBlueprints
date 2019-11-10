@@ -9,8 +9,7 @@ type Msg =
     | Noop
 
     // Initialization
-    | InitializeTechnologies of Technology.AllTechnologies
-    | InitializeGameInfo of Model.GameInfo.GameInfo
+    | InitializeGame of Technology.AllTechnologies * Model.GameInfo.GameInfo
     | ApplyPreset of string
 
     // Ships

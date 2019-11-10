@@ -56,3 +56,11 @@ let inline (@%%) (a: Map<'a, 'b>) (b: Map<'a, 'b>) =
     Map.toSeq a
     |> Seq.append (Map.toSeq b)
     |> Map.ofSeq
+
+module String =
+    let inline split (ch: char[]) (count: int) (s: string) = s.Split(ch, count)
+
+// lol
+let inline (|||>) (a, b, c) f = f a b c
+let inline (||||>) (a, b, c, d) f = f a b c d
+let inline (|||||>) (a, b, c, d, e) f = f a b c d e
