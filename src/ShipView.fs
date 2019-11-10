@@ -25,21 +25,22 @@ let shipInfo dispatch allTechs tech ship =
         let shipComponents =
             ship.Components
             |> Map.values
-            |> List.map (fun comp ->
+            |> List.map (fun (count, comp) ->
                 match comp with
-                | Bridge comp         -> Cards.Bridge.render ship comp dispatch
+                | Bridge comp         -> Cards.Bridge.render ship count comp dispatch
                 | CargoHold comp      -> Cards.CargoHold.render allTechs tech ship comp dispatch
-                | Engine comp         -> Cards.Engine.render allTechs tech ship comp dispatch
+                | Engine comp         -> Cards.Engine.render allTechs tech ship count comp dispatch
                 | FuelStorage comp    -> Cards.FuelStorage.render allTechs tech ship comp dispatch
-                | Magazine comp       -> Cards.Magazine.render allTechs tech ship comp dispatch
-                | PowerPlant comp     -> Cards.PowerPlant.render allTechs tech ship comp dispatch
+                | Magazine comp       -> Cards.Magazine.render allTechs tech ship count comp dispatch
+                | PowerPlant comp     -> Cards.PowerPlant.render allTechs tech ship count comp dispatch
                 | Sensors comp        -> Cards.Sensors.render allTechs tech ship comp dispatch
-                | TroopTransport comp -> Cards.TroopTransport.render allTechs tech  ship comp dispatch
+                | TroopTransport comp -> Cards.TroopTransport.render allTechs tech ship comp dispatch
             )
 
-        [ Cards.Classification.render ship dispatch
-          Cards.Armor.render allTechs tech ship dispatch
-          Cards.CrewQuarters.render ship dispatch
+        [
+            Cards.Classification.render ship dispatch
+            Cards.Armor.render allTechs tech ship dispatch
+            Cards.CrewQuarters.render ship dispatch
         ]
         @ shipComponents
         @ [ Cards.ShipDescription.render ship ]
@@ -51,21 +52,30 @@ let root model dispatch =
 
     let removeShip ship = Msg.RemoveShip ship |> dispatch
     let selectShip ship = Msg.SelectShip ship |> dispatch
-    let addComponent ship comp = Msg.CopyComponentToShip (ship, comp) |> dispatch
+    let addComponent ship (comp: ShipComponent) =
+        match comp.BuiltIn with
+        | true -> Msg.CopyComponentToShip (ship, comp)
+        | false -> Msg.AddComponentToShip (ship, comp)
+        |> dispatch
+    let deleteComponent comp = Msg.RemoveComponent comp |> dispatch
 
     let shipListOptions: ColumnOptions<Ship> list =
         [
             {
                 Name = "Name"
-                Value = String (fun ship -> ship.Name)
+                Render = fun ship -> str ship.Name
             }
             {
                 Name = "Size (HS)"
-                Value = String (fun ship -> sprintf "%.1f" << ton2hs <| int2float ship.Size)
+                Render = fun ship -> str << sprintf "%.1f" << ton2hs <| int2float ship.Size
             }
             {
                 Name = ""
-                Value = Button ("Remove", removeShip)
+                Render = fun ship ->
+                    Bulma.FC.Button
+                        "Remove"
+                        Bulma.FC.ButtonOpts.Empty
+                        (fun _ -> removeShip ship)
             }
         ]
 
@@ -73,15 +83,27 @@ let root model dispatch =
         [
             {
                 Name = "Name"
-                Value = String (fun comp -> comp.Name)
+                Render = fun comp -> str comp.Name
             }
             {
                 Name = ""
-                Value = Button ("Add", fun comp ->
-                    match model.CurrentShip with
-                    | Some ship -> addComponent ship comp
-                    | None -> ()
-                )
+                Render = fun comp ->
+                    Bulma.FC.Button
+                        "Add"
+                        Bulma.FC.ButtonOpts.Empty
+                        (
+                            match model.CurrentShip with
+                            | Some ship -> fun _ -> addComponent ship comp
+                            | None -> id
+                        )
+            }
+            {
+                Name = ""
+                Render = fun comp ->
+                    Bulma.FC.Button
+                        "Delete"
+                        (match Model.canDeleteComponent model comp with true -> Bulma.FC.ButtonOpts.Empty | false -> Bulma.FC.ButtonOpts.Disabled)
+                        (fun _ -> deleteComponent comp)
             }
         ]
 

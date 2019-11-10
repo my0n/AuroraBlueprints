@@ -2,6 +2,8 @@ module App.Msg
 
 open Global
 
+open Model.Measures
+
 open Comp.Ship
 open Comp.ShipComponent
 
@@ -20,16 +22,16 @@ type Msg =
     | ShipUpdateName of Ship * string
     | ShipUpdateClass of Ship * string
 
-    // Component Designs
-    | NewComponentDesign of ShipComponent
-    | RemoveComponentDesign of ShipComponent
-    | ReplaceComponentDesign of ShipComponent
-
     // Components
-    | SaveComponentToDesigns of ShipComponent
+    | AddComponentToShip of Ship * ShipComponent
     | CopyComponentToShip of Ship * ShipComponent
+    | UpdateComponentInShip of Ship * ShipComponent
     | RemoveComponentFromShip of Ship * ShipComponent
-    | ReplaceShipComponent of Ship * ShipComponent
+    | SetComponentCount of Ship * ShipComponent * int<comp>
+    | UpdateComponent of ShipComponent
+    | RemoveComponent of ShipComponent
+    | LockComponent of ShipComponent
+    | UnlockComponent of ShipComponent
 
     // Technology
     | AddTechnology of GameObjectId

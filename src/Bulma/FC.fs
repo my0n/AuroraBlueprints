@@ -7,6 +7,11 @@ open Fable.React
 open Fable.React.Props
 
 [<Flags>]
+type ButtonOpts =
+    | Empty = 0
+    | Disabled = 1
+
+[<Flags>]
 type ControlOpts =
     | Empty = 0
     | IsSmall = 1
@@ -45,8 +50,9 @@ let Control (opts: ControlOpts) els =
                     ]
         ] els
     
-let Button lbl cb =
+let Button lbl (opts: ButtonOpts) cb =
     a [ ClassName "button"
+        Disabled <| opts.HasFlag ButtonOpts.Disabled
         OnClick (fun _ -> cb())
       ]
       [ str lbl ]

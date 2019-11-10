@@ -23,10 +23,10 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
     let header =
         [
             Name "Cargo Hold"
-            Nerd { TotalBuildCost = comp.BuildCost }
-            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.TotalSize*1</comp> }
-            Nerd { CargoCapacity = comp.CargoCapacity }
-            Nerd { TractorStrength = comp.TractorStrength; LoadTime = ship.LoadTime }
+            Nerd { TotalBuildCost = comp.BuildCost * 1<comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.Size }
+            Nerd { CargoCapacity = comp.CargoCapacity * 1<comp> }
+            Nerd { TractorStrength = comp.TractorStrength * 1<comp>; LoadTime = ship.LoadTime }
         ]
     let form =
         [
@@ -47,14 +47,11 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
                                 Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
-                                Msg.ReplaceShipComponent
-                                    (
-                                        ship,
-                                        CargoHold
-                                            { comp with
-                                                CargoHolds = comp.CargoHolds.Add (tech, n)
-                                            }
-                                    )
+                                CargoHold
+                                    { comp with
+                                        CargoHolds = comp.CargoHolds.Add (tech, n)
+                                    }
+                                |> Msg.UpdateComponent
                                 |> dispatch
                             )
                     )
@@ -76,14 +73,11 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
                                 Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
-                                Msg.ReplaceShipComponent
-                                    (
-                                        ship,
-                                        CargoHold
-                                            { comp with
-                                                CargoHandlingSystems = comp.CargoHandlingSystems.Add (tech, n)
-                                            }
-                                    )
+                                CargoHold
+                                    { comp with
+                                        CargoHandlingSystems = comp.CargoHandlingSystems.Add (tech, n)
+                                    }
+                                |> Msg.UpdateComponent
                                 |> dispatch
                             )
                     )

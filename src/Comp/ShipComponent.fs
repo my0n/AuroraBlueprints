@@ -54,44 +54,86 @@ type ShipComponent =
     member this.Crew
         with get() =
             match this with
-            | Bridge c         -> c.Crew * c.Count
+            | Bridge c         -> c.Crew
             | CargoHold c      -> c.Crew
-            | Engine c         -> c.Crew * c.Count
-            | FuelStorage c    -> 0<people>
-            | Magazine c       -> c.Crew * c.Count
-            | PowerPlant c     -> c.Crew * c.Count
+            | Engine c         -> c.Crew
+            | FuelStorage c    -> 0<people/comp>
+            | Magazine c       -> c.Crew
+            | PowerPlant c     -> c.Crew
             | Sensors c        -> c.Crew
             | TroopTransport c -> c.Crew
     member this.Cost
         with get() =
             match this with
-            | Bridge c         -> c.BuildCost * c.Count
+            | Bridge c         -> c.BuildCost
             | CargoHold c      -> c.BuildCost
-            | Engine c         -> c.BuildCost * c.Count
+            | Engine c         -> c.BuildCost
             | FuelStorage c    -> c.BuildCost
-            | Magazine c       -> c.BuildCost * c.Count
-            | PowerPlant c     -> c.BuildCost * c.Count
+            | Magazine c       -> c.BuildCost
+            | PowerPlant c     -> c.BuildCost
             | Sensors c        -> c.BuildCost
             | TroopTransport c -> c.BuildCost
-    member this.TotalSize
+    member this.Size
         with get() =
             match this with
-            | Bridge c         -> c.TotalSize
-            | CargoHold c      -> c.TotalSize
-            | Engine c         -> c.TotalSize
-            | FuelStorage c    -> c.TotalSize
-            | Magazine c       -> c.TotalSize
-            | PowerPlant c     -> c.TotalSize
-            | Sensors c        -> c.TotalSize
-            | TroopTransport c -> c.TotalSize
+            | Bridge c         -> c.Size * 50<ton/hs>
+            | CargoHold c      -> c.Size
+            | Engine c         -> c.Size * 50<ton/hs>
+            | FuelStorage c    -> c.Size
+            | Magazine c       -> c.Size * 50<ton/hs>
+            | PowerPlant c     -> c.Size * 50.0<ton/hs> |> float2int
+            | Sensors c        -> c.Size
+            | TroopTransport c -> c.Size
+    member this.Locked
+        with get() =
+            match this with
+            | Bridge c         -> c.Locked
+            | CargoHold c      -> c.Locked
+            | Engine c         -> c.Locked
+            | FuelStorage c    -> c.Locked
+            | Magazine c       -> c.Locked
+            | PowerPlant c     -> c.Locked
+            | Sensors c        -> c.Locked
+            | TroopTransport c -> c.Locked
+    member this.BuiltIn
+        with get() =
+            match this with
+            | Bridge c         -> c.BuiltIn
+            | CargoHold c      -> c.BuiltIn
+            | Engine c         -> c.BuiltIn
+            | FuelStorage c    -> c.BuiltIn
+            | Magazine c       -> c.BuiltIn
+            | PowerPlant c     -> c.BuiltIn
+            | Sensors c        -> c.BuiltIn
+            | TroopTransport c -> c.BuiltIn
+    member this.Composite
+        with get() =
+            match this with
+            | Bridge c         -> false
+            | CargoHold c      -> true
+            | Engine c         -> false
+            | FuelStorage c    -> true
+            | Magazine c       -> false
+            | PowerPlant c     -> false
+            | Sensors c        -> true
+            | TroopTransport c -> true
+    member this.WithLocked (locked) =
+        match this with
+        | Bridge c             -> Bridge { c with Locked = locked }
+        | CargoHold c          -> CargoHold { c with Locked = locked }
+        | Engine c             -> Engine { c with Locked = locked }
+        | FuelStorage c        -> FuelStorage { c with Locked = locked }
+        | Magazine c           -> Magazine { c with Locked = locked }
+        | PowerPlant c         -> PowerPlant { c with Locked = locked }
+        | Sensors c            -> Sensors { c with Locked = locked }
+        | TroopTransport c     -> TroopTransport { c with Locked = locked }
     member this.duplicate =
         match this with
-        | Bridge c             -> Bridge { c with Id = GameObjectId.generate() }
-        | CargoHold c          -> CargoHold { c with Id = GameObjectId.generate() }
-        | Engine c             -> Engine { c with Id = GameObjectId.generate() }
-        | FuelStorage c        -> FuelStorage { c with Id = GameObjectId.generate() }
-        | Magazine c           -> Magazine { c with Id = GameObjectId.generate() }
-        | PowerPlant c         -> PowerPlant { c with Id = GameObjectId.generate() }
-        | Sensors c            -> Sensors { c with Id = GameObjectId.generate() }
-        | TroopTransport c     -> TroopTransport { c with Id = GameObjectId.generate() }
-        
+        | Bridge c             -> Bridge { c with Id = GameObjectId.generate(); BuiltIn = false }
+        | CargoHold c          -> CargoHold { c with Id = GameObjectId.generate(); BuiltIn = false }
+        | Engine c             -> Engine { c with Id = GameObjectId.generate(); BuiltIn = false }
+        | FuelStorage c        -> FuelStorage { c with Id = GameObjectId.generate(); BuiltIn = false }
+        | Magazine c           -> Magazine { c with Id = GameObjectId.generate(); BuiltIn = false }
+        | PowerPlant c         -> PowerPlant { c with Id = GameObjectId.generate(); BuiltIn = false }
+        | Sensors c            -> Sensors { c with Id = GameObjectId.generate(); BuiltIn = false }
+        | TroopTransport c     -> TroopTransport { c with Id = GameObjectId.generate(); BuiltIn = false }

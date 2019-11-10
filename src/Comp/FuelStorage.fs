@@ -7,6 +7,8 @@ open Model.Measures
 type FuelStorage =
     {
         Id: GameObjectId
+        Locked: bool
+        BuiltIn: bool
 
         FuelStorages: Map<Technology.FuelStorageTech, int<comp>>
     }
@@ -14,32 +16,40 @@ type FuelStorage =
         with get() =
             {
                 Id = GameObjectId.generate()
+                Locked = false
+                BuiltIn = false
 
                 FuelStorages = Map.empty
             }
 
     //#region Calculated Values
-    member private this._TotalSize =
+    member private this._Size =
         lazy (
-            this.FuelStorages
-            |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * int2float kvp.Value)
-            |> hs2ton
-            |> float2int
+            (
+                this.FuelStorages
+                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * int2float kvp.Value)
+                |> hs2ton
+                |> float2int
+            )
+            * 1</comp>
         )
     member private this._FuelCapacity =
         lazy (
-            this.FuelStorages
-            |> Seq.sumBy (fun kvp -> kvp.Key.FuelCapacity * kvp.Value)
-            |> int2float
+            (
+                this.FuelStorages
+                |> Seq.sumBy (fun kvp -> kvp.Key.FuelCapacity * kvp.Value)
+                |> int2float
+            )
+            * 1.0</comp>
         )
     member private this._BuildCost =
         lazy (
             this.FuelStorages
             |> Seq.sumBy (fun kvp ->
-                { TotalBuildCost.Zero with
-                    BuildPoints = (kvp.Key.DuraniumCost + kvp.Key.BoronideCost) * int2float kvp.Value
-                    Duranium = kvp.Key.DuraniumCost * int2float kvp.Value
-                    Boronide = kvp.Key.BoronideCost * int2float kvp.Value
+                { BuildCost.Zero with
+                    BuildPoints = (kvp.Key.DuraniumCost + kvp.Key.BoronideCost) * float kvp.Value
+                    Duranium = kvp.Key.DuraniumCost * float kvp.Value
+                    Boronide = kvp.Key.BoronideCost * float kvp.Value
                 }
             )
         )
@@ -48,5 +58,5 @@ type FuelStorage =
     //#region Accessors
     member this.BuildCost with get() = this._BuildCost.Value
     member this.FuelCapacity with get() = this._FuelCapacity.Value
-    member this.TotalSize with get() = this._TotalSize.Value
+    member this.Size with get() = this._Size.Value
     //#endregion

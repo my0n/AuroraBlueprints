@@ -4,10 +4,9 @@ open Global
 open LocalStorage
 open Thoth.Json
 
-let serialize (ct: GameObjectId list) = "ct", "currenttech", "1", ct
+let serialize (ct: GameObjectId list) = "ct", "1", "currenttech", (Encode.Auto.toString (0, ct))
 
 let deserialize version key str =
-    Fable.Core.JS.console.log str
     match version with
     | "1" ->
         match Decode.Auto.fromString<GameObjectId list> str with

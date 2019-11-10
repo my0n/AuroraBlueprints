@@ -7,6 +7,8 @@ open Model.Measures
 type CargoHold =
     {
         Id: GameObjectId
+        Locked: bool
+        BuiltIn: bool
 
         CargoHolds: Map<Technology.CargoHoldTech, int<comp>>
         CargoHandlingSystems: Map<Technology.CargoHandlingTech, int<comp>>
@@ -15,33 +17,38 @@ type CargoHold =
         with get() =
             {
                 Id = GameObjectId.generate()
+                Locked = false
+                BuiltIn = false
 
                 CargoHolds = Map.empty
                 CargoHandlingSystems = Map.empty
             }
 
     //#region Calculated Values
-    member private this._TotalSize =
+    member private this._Size =
         lazy (
             (
-                this.CargoHolds
-                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+                (
+                    this.CargoHolds
+                    |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+                )
+                +
+                (
+                    this.CargoHandlingSystems
+                    |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+                )
+                |> hs2tonint
             )
-            +
-            (
-                this.CargoHandlingSystems
-                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
-            )
-            |> hs2tonint
+            * 1</comp>
         )
     member private this._BuildCost =
         lazy (
             (
                 this.CargoHolds
                 |> Seq.sumBy (fun kvp ->
-                    { TotalBuildCost.Zero with
-                        BuildPoints = kvp.Key.DuraniumCost * int2float kvp.Value
-                        Duranium = kvp.Key.DuraniumCost * int2float kvp.Value
+                    { BuildCost.Zero with
+                        BuildPoints = kvp.Key.DuraniumCost * float kvp.Value
+                        Duranium = kvp.Key.DuraniumCost * float kvp.Value
                     }
                 )
             )
@@ -49,35 +56,44 @@ type CargoHold =
             (
                 this.CargoHandlingSystems
                 |> Seq.sumBy (fun kvp ->
-                    { TotalBuildCost.Zero with
-                        BuildPoints = (kvp.Key.DuraniumCost + kvp.Key.MercassiumCost) * int2float kvp.Value
-                        Duranium = kvp.Key.DuraniumCost * int2float kvp.Value
-                        Mercassium = kvp.Key.MercassiumCost * int2float kvp.Value
+                    { BuildCost.Zero with
+                        BuildPoints = (kvp.Key.DuraniumCost + kvp.Key.MercassiumCost) * float kvp.Value
+                        Duranium = kvp.Key.DuraniumCost * float kvp.Value
+                        Mercassium = kvp.Key.MercassiumCost * float kvp.Value
                     }
                 )
             )
         )
     member private this._CargoCapacity =
         lazy (
-            this.CargoHolds
-            |> Seq.sumBy (fun kvp -> kvp.Key.CargoCapacity * kvp.Value)
+            (
+                this.CargoHolds
+                |> Seq.sumBy (fun kvp -> kvp.Key.CargoCapacity * kvp.Value)
+            )
+            * 1</comp>
         )
     member private this._Crew =
         lazy (
             (
-                this.CargoHolds
-                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+                (
+                    this.CargoHolds
+                    |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+                )
+                +
+                (
+                    this.CargoHandlingSystems
+                    |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+                )
             )
-            +
-            (
-                this.CargoHandlingSystems
-                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
-            )
+            * 1</comp>
         )
     member private this._TractorStrength =
         lazy (
-            this.CargoHandlingSystems
-            |> Seq.sumBy (fun kvp -> kvp.Key.TractorStrength * kvp.Value)
+            (
+                this.CargoHandlingSystems
+                |> Seq.sumBy (fun kvp -> kvp.Key.TractorStrength * kvp.Value)
+            )
+            * 1</comp>
         )
     //#endregion
 
@@ -85,6 +101,6 @@ type CargoHold =
     member this.BuildCost with get() = this._BuildCost.Value
     member this.CargoCapacity with get() = this._CargoCapacity.Value
     member this.Crew with get() = this._Crew.Value
-    member this.TotalSize with get() = this._TotalSize.Value
+    member this.Size with get() = this._Size.Value
     member this.TractorStrength with get() = this._TractorStrength.Value
     //#endregion

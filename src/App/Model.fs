@@ -39,3 +39,15 @@ type Model =
             Presets = List.empty
             FullyInitialized = false
         }
+        
+module Model =
+    let canDeleteComponent (model) (comp: ShipComponent) =
+        not comp.BuiltIn
+        &&
+        not (
+            model.AllShips
+            |> Map.values
+            |> Seq.exists (fun ship ->
+                ship.Components.ContainsKey comp.Id
+            )
+        )

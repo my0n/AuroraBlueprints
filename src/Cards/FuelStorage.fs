@@ -20,9 +20,9 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
     let header =
         [
             Name "Fuel Storage"
-            Nerd { TotalBuildCost = comp.BuildCost }
-            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.TotalSize*1</comp> }
-            Nerd { FuelCapacity = comp.FuelCapacity }
+            Nerd { TotalBuildCost = comp.BuildCost * 1<comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.Size }
+            Nerd { FuelCapacity = comp.FuelCapacity * 1.0<comp> }
         ]
     let form =
         [
@@ -43,9 +43,8 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
                                 Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
-                                Msg.ReplaceShipComponent
+                                Msg.UpdateComponent
                                     (
-                                        ship,
                                         FuelStorage
                                             { comp with
                                                 FuelStorages = comp.FuelStorages.Add (tech, n)

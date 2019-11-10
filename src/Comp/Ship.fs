@@ -16,7 +16,7 @@ type Ship =
         Id: GameObjectId
         Name: string
         ShipClass: string
-        Components: Map<GameObjectId, ShipComponent>
+        Components: Map<GameObjectId, int<comp> * ShipComponent>
 
         // armor
         ArmorDepth: int
@@ -76,7 +76,7 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c -> c.TotalSize)
+            |> List.sumBy (fun (count, comp) -> count * comp.Size)
         )
     member private this._SizeBeforeArmor =
         lazy (
@@ -103,7 +103,7 @@ type Ship =
             let baseCrew =
                 this.Components
                 |> Map.values
-                |> List.sumBy (fun c -> c.Crew)
+                |> List.sumBy (fun (count, comp) -> count * comp.Crew)
                 |> int2float
             match baseCrew with
             | crew when this.DeployTime < 0.1<mo> -> crew / 6.0
@@ -119,9 +119,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | CargoHold c -> c.CargoCapacity
+            |> List.sumBy (function
+                | count, CargoHold c -> count * c.CargoCapacity
                 | _ -> 0<cargoCapacity>
             )
         )
@@ -129,9 +128,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | CargoHold c -> c.TractorStrength
+            |> List.sumBy (function
+                | count, CargoHold c -> count * c.TractorStrength
                 | _ -> 0<tractorStrength>
             )
             |> max 1<tractorStrength>
@@ -150,9 +148,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | Magazine c -> c.Capacity * c.Count
+            |> List.sumBy (function
+                | count, Magazine c -> count * c.Capacity
                 | _ -> 0<ammo>
             )
         )
@@ -163,9 +160,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | TroopTransport c -> c.CryoDropCapability
+            |> List.sumBy (function
+                | count, TroopTransport c -> count * c.CryoDropCapability
                 | _ -> 0<company>
             )
         )
@@ -173,9 +169,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | TroopTransport c -> c.CombatDropCapability
+            |> List.sumBy (function
+                | count, TroopTransport c -> count * c.CombatDropCapability
                 | _ -> 0<company>
             )
         )
@@ -183,9 +178,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | TroopTransport c -> c.TroopTransportCapability
+            |> List.sumBy (function
+                | count, TroopTransport c -> count * c.TroopTransportCapability
                 | _ -> 0<company>
             )
         )
@@ -196,9 +190,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | Engine c -> c.Count
+            |> List.sumBy (function
+                | count, Engine _ -> count
                 | _ -> 0<comp>
             )
         )
@@ -210,9 +203,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | Engine c -> c.EnginePower * int2float c.Count
+            |> List.sumBy (function
+                | count, Engine c -> c.EnginePower * int2float count
                 | _ -> 0.0<ep>
             )
         )
@@ -233,9 +225,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | FuelStorage c -> c.FuelCapacity
+            |> List.sumBy (function
+                | count, FuelStorage c -> c.FuelCapacity * int2float count
                 | _ -> 0.0<kl>
             )
         )
@@ -243,9 +234,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.tryFindMap (fun c ->
-                match c with
-                | Engine c -> Some (c.FuelConsumption * int2float c.Count)
+            |> List.tryFindMap (function
+                | count, Engine c -> Some (c.FuelConsumption * int2float count)
                 | _ -> None
             )
             |> Option.defaultValue 0.0<kl/hr>
@@ -277,9 +267,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.tryFindMap (fun c ->
-                match c with
-                | Engine c -> Some c.ThermalOutput
+            |> List.tryFindMap (function
+                | _, Engine c -> Some c.ThermalOutput
                 | _ -> None
             )
             |> Option.defaultValue 0.0<therm/comp>
@@ -288,9 +277,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | Engine c -> c.ThermalOutput * int2float c.Count
+            |> List.sumBy (function
+                | count, Engine c -> c.ThermalOutput * int2float count
                 | _ -> 0.0<therm>
             )
         )
@@ -301,9 +289,8 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.sumBy (fun c ->
-                match c with
-                | PowerPlant c -> c.Power * int2float c.Count
+            |> List.sumBy (function
+                | count, PowerPlant c -> c.Power * int2float count
                 | _ -> 0.0<power>
             )
         )
@@ -314,7 +301,7 @@ type Ship =
         lazy (
             this.Components
             |> Map.values
-            |> List.tryFindMap (fun c -> match c.MaintenanceClass with Military -> Some Military | Commercial -> None)
+            |> List.tryFindMap (fun (count, c) -> match c.MaintenanceClass with Military -> Some Military | Commercial -> None)
             |> Option.defaultValue Commercial
         )
     //#endregion

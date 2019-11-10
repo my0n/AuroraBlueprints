@@ -9,10 +9,11 @@ open Technology
 type Magazine =
     {
         Id: GameObjectId
+        Locked: bool
+        BuiltIn: bool
+
         Name: string
         Manufacturer: string
-
-        Count: int<comp>
         HTK: int
         Size: int<hs/comp>
         Armor: ArmorTech
@@ -88,12 +89,6 @@ type Magazine =
         lazy (
             String.Format("Capacity {0} Magazine: Exp {1}%  HTK{2}", this.Capacity, int (100.0 - this.Ejection.EjectionChance * 100.0), this.HTK)
         )
-    member private this._TotalSize =
-        lazy (
-            this.Size
-            * this.Count
-            |> hs2tonint
-        )
     //#endregion
 
     //#region Accessors
@@ -101,17 +96,18 @@ type Magazine =
     member this.Capacity with get() = this._Capacity.Value
     member this.Crew with get() = this._Crew.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
-    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 
 let magazine (allTechs: AllTechnologies) =
     let zero =
         {
             Id = GameObjectId.generate()
+            Locked = false
+            BuiltIn = false
+
             Name = ""
             Manufacturer = "Aurora Industries"
 
-            Count = 0<comp>
             Size = 1<hs/comp>
             HTK = 1
             Armor = allTechs.DefaultArmor

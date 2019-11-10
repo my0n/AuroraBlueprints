@@ -52,7 +52,7 @@ let inline (%+) (m: Map<GameObjectId, 'b>) (v: ^b) =
 let inline (%-) (m: Map<GameObjectId, 'b>) (v: ^b) =
     m |> Map.remove ((^b) : (member Id : GameObjectId) (v))
 
-let inline (@%%) (a: Map<'a, 'b>) (b: Map<'a, 'b>) =
+let inline (%@) (a: Map<'a, 'b>) (b: Map<'a, 'b>) =
     Map.toSeq a
     |> Seq.append (Map.toSeq b)
     |> Map.ofSeq

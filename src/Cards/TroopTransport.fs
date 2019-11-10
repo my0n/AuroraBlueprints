@@ -23,9 +23,9 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
         [
             Name "Troop Transport"
             Nerd { MaintenanceClass = comp.MaintenanceClass }
-            Nerd { TotalBuildCost = comp.BuildCost }
-            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.TotalSize*1</comp> }
-            Nerd { CryoDrop = comp.CryoDropCapability; CombatDrop = comp.CombatDropCapability; TroopTransport = comp.TroopTransportCapability  }
+            Nerd { TotalBuildCost = comp.BuildCost * 1<comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.Size }
+            Nerd { CryoDrop = comp.CryoDropCapability * 1<comp>; CombatDrop = comp.CombatDropCapability * 1<comp>; TroopTransport = comp.TroopTransportCapability * 1<comp> }
         ]
     let form =
         [
@@ -46,9 +46,8 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
                                 Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
-                                Msg.ReplaceShipComponent
+                                Msg.UpdateComponent
                                     (
-                                        ship,
                                         TroopTransport
                                             { comp with
                                                 TroopTransports = comp.TroopTransports.Add (tech, n)

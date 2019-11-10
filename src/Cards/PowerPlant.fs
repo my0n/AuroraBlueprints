@@ -17,13 +17,13 @@ open Nerds.PowerProductionNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: PowerPlant) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name
-            Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
-            Nerd { RenderMode = HS; Count = comp.Count; Size = float2int <| comp.Size * 50.0<ton/hs> }
-            Nerd { Count = comp.Count; PowerOutput = comp.Power }
+            Nerd { Count = count; BuildCost = comp.BuildCost }
+            Nerd { Count = count; RenderMode = HS; Size = float2int <| comp.Size * 50.0<ton/hs> }
+            Nerd { Count = count; PowerOutput = comp.Power }
         ]
 
     let sizeOptions =
@@ -35,15 +35,9 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
             Bulma.FC.HorizontalGroup
                 None
                 [
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Count"
-                            Value = comp.Count
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Count = n }) |> dispatch)
+                    boundCountField ship (PowerPlant comp) dispatch
+                        "Count"
+                        count
                     Bulma.FC.WithLabel
                         "Name"
                         [
@@ -51,10 +45,11 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                 [
                                     Bulma.FC.TextInput
                                         comp.Name
-                                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Name = n }) |> dispatch)
+                                        (fun n -> Msg.UpdateComponent (PowerPlant { comp with Name = n }) |> dispatch)
                                     Bulma.FC.Button
                                         "Generate"
-                                        (fun _ -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Name = comp.GeneratedName }) |> dispatch)
+                                        Bulma.FC.ButtonOpts.Empty
+                                        (fun _ -> Msg.UpdateComponent (PowerPlant { comp with Name = comp.GeneratedName }) |> dispatch)
                                 ]
                         ]
                     Bulma.FC.WithLabel
@@ -62,7 +57,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                         [
                             Bulma.FC.TextInput
                                 comp.Manufacturer
-                                (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Manufacturer = n }) |> dispatch)
+                                (fun n -> Msg.UpdateComponent (PowerPlant { comp with Manufacturer = n }) |> dispatch)
                         ]
                 ]
             Bulma.FC.HorizontalGroup
@@ -86,17 +81,17 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                  |> Option.defaultValue 1
                                 ).ToString()
                         }
-                        (fun n -> Msg.ReplaceShipComponent (ship, PowerPlant { comp with Size = sizeOptions.[Int32.Parse(n)]}) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (PowerPlant { comp with Size = sizeOptions.[Int32.Parse(n)]}) |> dispatch)
                     boundTechField tech
                         "Power Plant Technology"
                         allTechs.Reactors
                         comp.Technology
-                        (fun n -> App.Msg.ReplaceShipComponent (ship, PowerPlant { comp with Technology = n }) |> dispatch)
+                        (fun n -> App.Msg.UpdateComponent (PowerPlant { comp with Technology = n }) |> dispatch)
                     boundTechField tech
                         "Power Boost"
                         allTechs.ReactorsPowerBoost
                         comp.PowerBoost
-                        (fun n -> App.Msg.ReplaceShipComponent (ship, PowerPlant { comp with PowerBoost = n }) |> dispatch)
+                        (fun n -> App.Msg.UpdateComponent (PowerPlant { comp with PowerBoost = n }) |> dispatch)
                 ]
         ]
     let actions =

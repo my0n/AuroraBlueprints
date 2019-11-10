@@ -96,13 +96,12 @@ let private powerAndMaintenanceClass ship =
     let pp =
         ship.Components
         |> Map.values
-        |> List.map (fun c ->
-            match c with
-            | PowerPlant c when c.Count > 0<comp> ->
+        |> List.map (function
+            | count, PowerPlant c when count > 0<comp> ->
                 [
                     Text c.Name
-                    Text <| sprintf "(%d)" c.Count
-                    Nerd { Count = c.Count; PowerOutput = c.Power }
+                    Text <| sprintf "(%d)" count
+                    Nerd { Count = count; PowerOutput = c.Power }
                     Nerd { Depth = 0 }
                     Nerd { ExplosionChance = c.PowerBoost.ExplosionChance }
                 ]
