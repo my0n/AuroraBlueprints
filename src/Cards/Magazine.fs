@@ -2,6 +2,8 @@ module Cards.Magazine
 
 open Global
 
+open App.Msg
+
 open Cards.Common
 open Model.Measures
 open Comp.Ship
@@ -14,24 +16,22 @@ open Nerds.SizeNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: Magazine) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: Magazine) dispatch =
     let header =
         [
             Name comp.Name
-            Nerd { Ammo = comp.Capacity; Count = comp.Count }
-            Nerd { BuildCost = comp.BuildCost; Count = comp.Count }
-            Nerd { RenderMode = HS; Count = comp.Count; Size = float2int <| int2float comp.Size * 50.0<ton/hs> }
+            Nerd { Ammo = comp.Capacity; Count = count }
+            Nerd { BuildCost = comp.BuildCost; Count = count }
+            Nerd { RenderMode = HS; Count = count; Size = float2int <| int2float comp.Size * 50.0<ton/hs> }
         ]
     let form =
         [
             Bulma.FC.HorizontalGroup
                 None
                 [
-                    boundIntField ship dispatch
+                    boundCountField ship (Magazine comp) dispatch
                         "Count"
-                        (Some 0, None)
-                        comp.Count
-                        (fun n -> Magazine { comp with Count = n })
+                        count
                     boundNameField ship dispatch
                         comp.Name
                         comp.GeneratedName
@@ -58,17 +58,17 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                         "Armor"
                         allTechs.Armor
                         comp.Armor
-                        (fun n -> App.Msg.ReplaceShipComponent (ship, Magazine { comp with Armor = n }) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (Magazine { comp with Armor = n }) |> dispatch)
                     boundTechField tech
                         "Feed System"
                         allTechs.MagazineEfficiency
                         comp.FeedSystem
-                        (fun n -> App.Msg.ReplaceShipComponent (ship, Magazine { comp with FeedSystem = n }) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (Magazine { comp with FeedSystem = n }) |> dispatch)
                     boundTechField tech
                         "Ejection"
                         allTechs.MagazineEjection
                         comp.Ejection
-                        (fun n -> App.Msg.ReplaceShipComponent (ship, Magazine { comp with Ejection = n }) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (Magazine { comp with Ejection = n }) |> dispatch)
                 ]
         ]
     let actions =

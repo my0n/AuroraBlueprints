@@ -3,6 +3,7 @@ module Cards.Common
 open System
 
 open Global
+open Model.Measures
 
 open Fable.React
 open Fable.React.Props
@@ -44,10 +45,11 @@ let inline boundNameField ship dispatch getName getGeneratedName setName =
                 [
                     Bulma.FC.TextInput
                         getName
-                        (fun n -> App.Msg.ReplaceShipComponent (ship, setName n) |> dispatch)
+                        (fun n -> App.Msg.RemoveComponentFromShip (ship, setName n) |> dispatch)
                     Bulma.FC.Button
                         "Generate"
-                        (fun _ -> App.Msg.ReplaceShipComponent (ship, setName getGeneratedName) |> dispatch)
+                        Bulma.FC.ButtonOpts.Empty
+                        (fun _ -> App.Msg.RemoveComponentFromShip (ship, setName getGeneratedName) |> dispatch)
                 ]
         ]
 
@@ -57,7 +59,7 @@ let inline boundStringField ship dispatch lbl getter setter =
         [
             Bulma.FC.TextInput
                 getter
-                (fun n -> App.Msg.ReplaceShipComponent (ship, setter n) |> dispatch)
+                (fun n -> App.Msg.RemoveComponentFromShip (ship, setter n) |> dispatch)
         ]
 
 let inline boundShipIntField dispatch lbl (min, max) getter setter =
@@ -80,7 +82,18 @@ let inline boundIntField ship dispatch lbl (min, max) getter setter =
             Max = max
             Disabled = false
         }
-        (fun n -> App.Msg.ReplaceShipComponent (ship, setter n) |> dispatch)
+        (fun n -> App.Msg.RemoveComponentFromShip (ship, setter n) |> dispatch)
+
+let inline boundCountField ship comp dispatch lbl count =
+    Bulma.FC.IntInput
+        {
+            Label = Some lbl
+            Value = count
+            Min = Some 0
+            Max = None
+            Disabled = false
+        }
+        (fun n -> App.Msg.SetComponentCount (ship, comp, n) |> dispatch)
 
 let inline boundFloatChoiceField (availableOptions: float list) ship dispatch lbl (options: float list) (getter: float) (nameFn: float -> string) (setter: float -> Comp.ShipComponent.ShipComponent) = 
     Bulma.FC.Select
@@ -97,7 +110,7 @@ let inline boundFloatChoiceField (availableOptions: float list) ship dispatch lb
                 )
             Value = getter.ToString()
         }
-        (fun n -> App.Msg.ReplaceShipComponent (ship, setter <| Double.Parse(n)) |> dispatch)
+        (fun n -> App.Msg.RemoveComponentFromShip (ship, setter <| Double.Parse(n)) |> dispatch)
 
 let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) lbl (options: 'a list) (getter: 'a) (cb: 'a -> unit) = 
     Bulma.FC.Select

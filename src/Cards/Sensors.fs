@@ -23,9 +23,9 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
         [
             Name "Sensors"
             Nerd { MaintenanceClass = comp.MaintenanceClass }
-            Nerd { TotalBuildCost = comp.BuildCost }
-            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.TotalSize*1</comp> }
-            Nerd { Geo = comp.GeoSensorRating; Grav = comp.GravSensorRating }
+            Nerd { TotalBuildCost = comp.BuildCost * 1<comp> }
+            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.Size }
+            Nerd { Geo = comp.GeoSensorRating * 1<comp>; Grav = comp.GravSensorRating * 1<comp> }
         ]
     let form =
         [
@@ -46,9 +46,8 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
                                 Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
-                                Msg.ReplaceShipComponent
+                                Msg.UpdateComponent
                                     (
-                                        ship,
                                         Sensors
                                             { comp with
                                                 GeoSensors = comp.GeoSensors.Add (tech, n)
@@ -75,9 +74,8 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
                                 Disabled = not <| List.contains tech.Id currentTech
                             }
                             (fun n ->
-                                Msg.ReplaceShipComponent
+                                Msg.UpdateComponent
                                     (
-                                        ship,
                                         Sensors
                                             { comp with
                                                 GravSensors = comp.GravSensors.Add (tech, n)

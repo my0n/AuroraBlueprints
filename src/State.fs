@@ -3,6 +3,8 @@ module App.State
 open Elmish
 open Global
 
+open Model.Measures
+
 open App.Model
 open App.Msg
 open Comp.Ship
@@ -21,10 +23,23 @@ let getInitInfo () =
             )
     }
 
-let saveCurrentTechnologies model =
-    model.CurrentTechnology
+let saveCurrentTechnologies currentTechnology =
+    currentTechnology
     |> Saving.Technology.serialize
     ||||> save
+
+let saveComponent (comp: Comp.ShipComponent.ShipComponent) =
+    match comp.BuiltIn with
+    | false ->
+        comp
+        |> Saving.Components.serialize
+        ||||> save
+    | true -> ()    
+
+let removeComponent comp =
+    comp
+    |> Saving.Components.serialize
+    ||||> delete
 
 let init result =
     let (model, cmd) = PageState.urlUpdate result Model.empty
@@ -56,19 +71,31 @@ let update msg model =
             | [] -> Cmd.ofMsg <| ApplyPreset gameInfo.DefaultPreset
             | _ -> Cmd.none
 
+        let customComponents =
+            load "comp" (Saving.Components.deserialize techs)
+            |> Seq.map (function
+                | Success comp -> Some comp
+                | NotFound -> None
+                | Failure _ -> None
+            )
+            |> Seq.choose id
+            |> Seq.map (fun comp -> comp.Id, comp)
+            |> Map.ofSeq
+
         { model with
             AllTechnologies = techs
             CurrentTechnology = currentTechnology
             AllComponents =
                 Map.empty
-                %+ Comp.ShipComponent.Bridge         (Comp.Bridge.Bridge.Zero)
-                %+ Comp.ShipComponent.CargoHold      (Comp.CargoHold.CargoHold.Zero)
-                %+ Comp.ShipComponent.Engine         ({ Comp.Engine.engine techs with Name = "Engine" })
-                %+ Comp.ShipComponent.FuelStorage    (Comp.FuelStorage.FuelStorage.Zero)
-                %+ Comp.ShipComponent.Magazine       ({ Comp.Magazine.magazine techs with Name = "Magazine" })
-                %+ Comp.ShipComponent.PowerPlant     ({ Comp.PowerPlant.powerPlant techs with Name = "Power Plant" })
-                %+ Comp.ShipComponent.Sensors        (Comp.Sensors.Sensors.Zero)
-                %+ Comp.ShipComponent.TroopTransport (Comp.TroopTransport.TroopTransport.Zero)
+                %+ Comp.ShipComponent.Bridge         ({ Comp.Bridge.Bridge.Zero with BuiltIn = true })
+                %+ Comp.ShipComponent.CargoHold      ({ Comp.CargoHold.CargoHold.Zero with BuiltIn = true })
+                %+ Comp.ShipComponent.Engine         ({ Comp.Engine.engine techs with Name = "Engine"; BuiltIn = true })
+                %+ Comp.ShipComponent.FuelStorage    ({ Comp.FuelStorage.FuelStorage.Zero with BuiltIn = true })
+                %+ Comp.ShipComponent.Magazine       ({ Comp.Magazine.magazine techs with Name = "Magazine"; BuiltIn = true })
+                %+ Comp.ShipComponent.PowerPlant     ({ Comp.PowerPlant.powerPlant techs with Name = "Power Plant"; BuiltIn = true })
+                %+ Comp.ShipComponent.Sensors        ({ Comp.Sensors.Sensors.Zero with BuiltIn = true })
+                %+ Comp.ShipComponent.TroopTransport ({ Comp.TroopTransport.TroopTransport.Zero with BuiltIn = true })
+                %@ customComponents
             Presets = gameInfo.Presets
             FullyInitialized = true
         }, Cmd.batch [
@@ -118,29 +145,141 @@ let update msg model =
             CurrentShip = Some ship
         }, Cmd.none
 
-    // Components - Design
-    | NewComponentDesign shipComponent ->
-        { model with
-            AllComponents = model.AllComponents %+ shipComponent
-        }, Cmd.none
-    | RemoveComponentDesign shipComponent ->
-        { model with
-            AllComponents = model.AllComponents %- shipComponent
-        }, Cmd.none
-    | ReplaceComponentDesign shipComponent ->
-        { model with
-            AllComponents = model.AllComponents %+ shipComponent
-        }, Cmd.none
-
     // Components
-    | SaveComponentToDesigns shipComponent ->
-        model, Cmd.ofMsg (NewComponentDesign shipComponent.duplicate)
-    | CopyComponentToShip (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent.duplicate})
-    | RemoveComponentFromShip (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %- shipComponent })
-    | ReplaceShipComponent (ship, shipComponent) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Components = ship.Components %+ shipComponent })
+    | AddComponentToShip (ship, comp) ->
+        model,
+        match comp.BuiltIn with
+        | false ->
+            ship.Components
+            |> Map.tryFind comp.Id
+            |> function
+            | None ->
+                ReplaceShip
+                    { ship with
+                        Components =
+                            ship.Components.Add(
+                                comp.Id,
+                                (1<comp>, comp)
+                            )
+                    }
+                |> Cmd.ofMsg
+            | Some (count, _) ->
+                match comp.Composite with
+                | true ->
+                    Cmd.none
+                | false ->
+                    SetComponentCount (ship, comp, count + 1<comp>)
+                    |> Cmd.ofMsg
+        | true ->
+            [
+                UpdateComponent comp
+                ReplaceShip
+                    { ship with
+                        Components =
+                            ship.Components.Add(
+                                comp.Id,
+                                (1<comp>, comp)
+                            )
+                    }
+            ]
+            |> List.map Cmd.ofMsg
+            |> Cmd.batch
+    | CopyComponentToShip (ship, comp) ->
+        let comp' = comp.duplicate
+        model,
+        [
+            UpdateComponent comp'
+            AddComponentToShip (ship, comp')
+        ]
+        |> List.map Cmd.ofMsg
+        |> Cmd.batch
+    | UpdateComponentInShip (ship, comp) ->
+        model,
+        ship.Components
+        |> Map.tryFind comp.Id
+        |> function
+        | None ->
+            Cmd.none
+        | Some (count, _) ->
+            [
+                ReplaceShip
+                    { ship with
+                        Components =
+                            ship.Components.Add(
+                                comp.Id,
+                                (count, comp)
+                            )
+                    }
+            ]
+            |> List.map Cmd.ofMsg
+            |> Cmd.batch
+    | RemoveComponentFromShip (ship, comp) ->
+        let replaceShip =
+            ReplaceShip
+                { ship with
+                    Components =
+                        ship.Components.Remove comp.Id
+                }
+            |> Cmd.ofMsg
+        let cleanup =
+            match (comp.Locked, comp.Composite) with
+            | false, true -> Cmd.ofMsg <| RemoveComponent comp
+            | _ -> Cmd.none
+
+        model, Cmd.batch [
+            replaceShip
+            cleanup
+        ]
+    | SetComponentCount (ship, comp, count) ->
+        let count' =
+            match comp.Composite with
+            | true -> 1<comp>
+            | false -> count
+
+        model,
+        ReplaceShip
+            { ship with
+                Components =
+                    ship.Components.Add(
+                        comp.Id,
+                        (count', comp)
+                    )
+            }
+        |> Cmd.ofMsg
+    | UpdateComponent comp ->
+        saveComponent comp
+
+        { model with
+            AllComponents = model.AllComponents.Add(comp.Id, comp)
+        },
+        model.AllShips
+        |> Map.values
+        |> Seq.filter (fun ship -> ship.Components.ContainsKey comp.Id)
+        |> Seq.map (fun ship ->
+            UpdateComponentInShip (ship, comp)
+            |> Cmd.ofMsg
+        )
+        |> Cmd.batch
+    | RemoveComponent comp ->
+        match Model.canDeleteComponent model comp with
+        | true ->
+            removeComponent comp
+            
+            { model with
+                AllComponents = model.AllComponents.Remove comp.Id
+            },
+            Cmd.none
+        | false ->
+            model,
+            Cmd.none
+    | LockComponent comp ->
+        model,
+        UpdateComponent <| comp.WithLocked true
+        |> Cmd.ofMsg
+    | UnlockComponent comp ->
+        model,
+        UpdateComponent <| comp.WithLocked false
+        |> Cmd.ofMsg
 
     // Technologies
     | AddTechnology tech ->
@@ -152,7 +291,7 @@ let update msg model =
                     | true ->  model.CurrentTechnology
             }
 
-        saveCurrentTechnologies model |> ignore
+        saveCurrentTechnologies model.CurrentTechnology
         model, Cmd.none
     | RemoveTechnology tech ->
         let removed =
@@ -164,5 +303,5 @@ let update msg model =
                 CurrentTechnology = removed
             }
         
-        saveCurrentTechnologies model |> ignore
+        saveCurrentTechnologies model.CurrentTechnology
         model, Cmd.none

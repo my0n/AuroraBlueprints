@@ -2,10 +2,8 @@ module Cards.Bridge
 
 open Model.Measures
 
-open Global
 open App.Msg
 open Bulma.Card
-open Bulma.FC
 open Cards.Common
 open Comp.Bridge
 open Comp.ShipComponent
@@ -14,27 +12,17 @@ open Comp.Ship
 open Nerds.PriceNerd
 open Nerds.SizeNerd
 
-let render (ship: Ship) (comp: Bridge) dispatch =
+let render (ship: Ship) (count: int<comp>) (comp: Bridge) dispatch =
     let header =
         [
             Name "Bridge"
-            Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
-            Nerd { RenderMode = HS; Count = comp.Count; Size = comp.Size * 50<ton/hs> }
+            Nerd { Count = count; BuildCost = comp.BuildCost }
+            Nerd { RenderMode = HS; Count = count; Size = comp.Size * 50<ton/hs> }
         ]
     let form =
-        Bulma.FC.HorizontalGroup
-            None
-            [
-                Bulma.FC.IntInput
-                    {
-                        Label = Some "Count"
-                        Value = comp.Count
-                        Min = Some 0
-                        Max = None
-                        Disabled = false
-                    }
-                    (fun n -> Msg.ReplaceShipComponent (ship, Bridge { comp with Count = n }) |> dispatch)
-            ]
+        boundCountField ship (Bridge comp) dispatch
+            "Count"
+            count
     let actions =
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Bridge comp) |> dispatch)

@@ -8,6 +8,8 @@ open Model.Measures
 type Sensors =
     {
         Id: GameObjectId
+        Locked: bool
+        BuiltIn: bool
         
         GeoSensors: Map<Technology.GeoSensorTech, int<comp>>
         GravSensors: Map<Technology.GravSensorTech, int<comp>>
@@ -16,43 +18,51 @@ type Sensors =
         with get() =
             {
                 Id = GameObjectId.generate()
+                Locked = false
+                BuiltIn = false
                 GeoSensors = Map.empty
                 GravSensors = Map.empty
             }
     //#region Calculated Values
-    member private this._TotalSize =
+    member private this._Size =
         lazy (
             (
-                this.GeoSensors
-                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+                (
+                    this.GeoSensors
+                    |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+                )
+                +
+                (
+                    this.GravSensors
+                    |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
+                )
+                |> hs2tonint
             )
-            +
-            (
-                this.GravSensors
-                |> Seq.sumBy (fun kvp -> kvp.Key.HsPerComp * kvp.Value)
-            )
-            |> hs2tonint
+            * 1</comp>
         )
     member private this._Crew =
         lazy (
             (
-                this.GeoSensors
-                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+                (
+                    this.GeoSensors
+                    |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+                )
+                +
+                (
+                    this.GravSensors
+                    |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
+                )
             )
-            +
-            (
-                this.GravSensors
-                |> Seq.sumBy (fun kvp -> kvp.Key.CrewPerComp * kvp.Value)
-            )
+            * 1</comp>
         )
     member private this._BuildCost =
         lazy (
             (
                 this.GeoSensors
                 |> Seq.sumBy (fun kvp ->
-                    { TotalBuildCost.Zero with
-                        BuildPoints = kvp.Key.UridiumCost * int2float kvp.Value
-                        Uridium = kvp.Key.UridiumCost * int2float kvp.Value
+                    { BuildCost.Zero with
+                        BuildPoints = kvp.Key.UridiumCost * float kvp.Value
+                        Uridium = kvp.Key.UridiumCost * float kvp.Value
                     }
                 )
             )
@@ -60,9 +70,9 @@ type Sensors =
             (
                 this.GravSensors
                 |> Seq.sumBy (fun kvp ->
-                    { TotalBuildCost.Zero with
-                        BuildPoints = kvp.Key.UridiumCost * int2float kvp.Value
-                        Uridium = kvp.Key.UridiumCost * int2float kvp.Value
+                    { BuildCost.Zero with
+                        BuildPoints = kvp.Key.UridiumCost * float kvp.Value
+                        Uridium = kvp.Key.UridiumCost * float kvp.Value
                     }
                 )
             )
@@ -80,6 +90,7 @@ type Sensors =
                 this.GeoSensors
                 |> Seq.sumBy (fun kvp -> kvp.Key.SensorRating * kvp.Value)
             )
+            * 1</comp>
         )
     member private this._GravSensorRating =
         lazy (
@@ -87,6 +98,7 @@ type Sensors =
                 this.GravSensors
                 |> Seq.sumBy (fun kvp -> kvp.Key.SensorRating * kvp.Value)
             )
+            * 1</comp>
         )
     //#endregion
 
@@ -96,7 +108,5 @@ type Sensors =
     member this.GeoSensorRating with get() = this._GeoSensorRating.Value
     member this.GravSensorRating with get() = this._GravSensorRating.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
-    member this.TotalSize with get() = this._TotalSize.Value
+    member this.Size with get() = this._Size.Value
     //#endregion
-
-    

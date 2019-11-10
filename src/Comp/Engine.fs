@@ -10,6 +10,8 @@ open Technology
 type Engine =
     {
         Id: GameObjectId
+        Locked: bool
+        BuiltIn: bool
 
         Name: string
         Manufacturer: string
@@ -19,7 +21,6 @@ type Engine =
         EfficiencyTech: EngineEfficiencyTech
         ThermalEfficiencyTech: EngineThermalTech
         Size: int<hs/comp>
-        Count: int<comp>
     }
 
     //#region Calculated Values
@@ -48,7 +49,7 @@ type Engine =
         )
     member private this._MaintenanceClass =
         lazy (
-            match (this.Size < 25<hs/comp> || this.PowerModTech > 0.5) && this.Count > 0<comp> with
+            match (this.Size < 25<hs/comp> || this.PowerModTech > 0.5) with
             | true -> Military
             | false -> Commercial
         )
@@ -72,10 +73,6 @@ type Engine =
                 | Commercial -> "Commercial "
             sprintf "%.0fEP %s%s Engine" this.EnginePower cl this.EngineTech.Name
         )
-    member private this._TotalSize =
-        lazy (
-            hs2tonint <| this.Size * this.Count
-        )
     //#endregion
 
     //#region Accessors
@@ -86,13 +83,14 @@ type Engine =
     member this.GeneratedName with get() = this._GeneratedName.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.ThermalOutput with get() = this._ThermalOutput.Value
-    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 
 let engine (allTech: AllTechnologies) =
     let zero =
         {
             Id = GameObjectId.generate()
+            Locked = false
+            BuiltIn = false
 
             Name = ""
             Manufacturer = "Aurora Industries"
@@ -102,7 +100,6 @@ let engine (allTech: AllTechnologies) =
             EfficiencyTech = allTech.DefaultEngineEfficiency
             ThermalEfficiencyTech = allTech.DefaultThermalEfficiency
             Size = 1<hs/comp>
-            Count = 1<comp>
         }
     { zero with
         Name = zero.GeneratedName

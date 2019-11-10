@@ -3,13 +3,14 @@ module Saving.LocalStorage
 open Global
 
 open Browser
-open Thoth.Json
 
 let inline toKey prefix version key = prefix + "|" + version + "|" + key
 
-let inline save prefix key version serialized =
-    let serialized = Encode.Auto.toString (0, serialized)
+let inline save prefix version key serialized =
     localStorage.setItem(toKey prefix version key, serialized)
+
+let inline delete prefix version key _ =
+    localStorage.removeItem(toKey prefix version key)
 
 type LoadedData<'t> =
     | Success of 't

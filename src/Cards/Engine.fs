@@ -20,30 +20,24 @@ open Nerds.FuelConsumptionNerd
 
 open Technology
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (comp: Engine) dispatch =
+let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
             Nerd { MaintenanceClass = comp.MaintenanceClass }
-            Nerd { Count = comp.Count; BuildCost = comp.BuildCost }
-            Nerd { RenderMode = HS; Count = comp.Count; Size = comp.Size * 50<ton/hs> }
-            Nerd { Count = comp.Count; EnginePower = comp.EnginePower; Size = comp.Size * 50<ton/hs>; Speed = ship.Speed }
-            Nerd { Count = comp.Count; Consumption = comp.FuelConsumption; Efficiency = comp.FuelConsumption / comp.EnginePower }
+            Nerd { Count = count; BuildCost = comp.BuildCost }
+            Nerd { Count = count; RenderMode = HS; Size = comp.Size * 50<ton/hs> }
+            Nerd { Count = count; EnginePower = comp.EnginePower; Size = comp.Size * 50<ton/hs>; Speed = ship.Speed }
+            Nerd { Count = count; Consumption = comp.FuelConsumption; Efficiency = comp.FuelConsumption / comp.EnginePower }
         ]
     let form =
         [
             Bulma.FC.HorizontalGroup
                 None
                 [
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Count"
-                            Value = comp.Count
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Count = n }) |> dispatch)
+                    boundCountField ship (Engine comp) dispatch
+                        "Count"
+                        count
                     Bulma.FC.WithLabel
                         "Name"
                         [
@@ -51,10 +45,11 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                 [
                                     Bulma.FC.TextInput
                                         comp.Name
-                                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Name = n }) |> dispatch)
+                                        (fun n -> Msg.UpdateComponent (Engine { comp with Name = n }) |> dispatch)
                                     Bulma.FC.Button
                                         "Generate"
-                                        (fun _ -> Msg.ReplaceShipComponent (ship, Engine { comp with Name = comp.GeneratedName }) |> dispatch)
+                                        Bulma.FC.ButtonOpts.Empty
+                                        (fun _ -> Msg.UpdateComponent (Engine { comp with Name = comp.GeneratedName }) |> dispatch)
                                 ]
                         ]
                     Bulma.FC.WithLabel
@@ -62,7 +57,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                         [
                             Bulma.FC.TextInput
                                 comp.Manufacturer
-                                (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Manufacturer = n }) |> dispatch)
+                                (fun n -> Msg.UpdateComponent (Engine { comp with Manufacturer = n }) |> dispatch)
                         ]
                 ]
             Bulma.FC.HorizontalGroup
@@ -76,17 +71,17 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                             Max = Some 50
                             Disabled = false
                         }
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with Size = n }) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (Engine { comp with Size = n }) |> dispatch)
                     boundTechField tech
                         "Engine Technology"
                         allTechs.Engines
                         comp.EngineTech
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EngineTech = n }) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (Engine { comp with EngineTech = n }) |> dispatch)
                     boundTechField tech
                         "Engine Efficiency"
                         allTechs.EngineEfficiency
                         comp.EfficiencyTech
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with EfficiencyTech = n }) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (Engine { comp with EfficiencyTech = n }) |> dispatch)
                     boundFloatChoiceField (allTechs.UnlockedPowerMods tech) ship dispatch
                         "Engine Power"
                         allTechs.AllPowerMods
@@ -97,7 +92,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                         "Thermal Efficiency"
                         allTechs.EngineThermalEfficiency
                         comp.ThermalEfficiencyTech
-                        (fun n -> Msg.ReplaceShipComponent (ship, Engine { comp with ThermalEfficiencyTech = n }) |> dispatch)
+                        (fun n -> Msg.UpdateComponent (Engine { comp with ThermalEfficiencyTech = n }) |> dispatch)
                 ]
         ]
     let actions =

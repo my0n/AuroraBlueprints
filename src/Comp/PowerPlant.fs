@@ -10,10 +10,12 @@ open Technology
 type PowerPlant =
     {
         Id: GameObjectId
+        Locked: bool
+        BuiltIn: bool
+
         Name: string
         Manufacturer: string
 
-        Count: int<comp>
         Size: float<hs/comp>
         PowerBoost: ReactorBoostTech
         Technology: ReactorTech
@@ -42,19 +44,9 @@ type PowerPlant =
             * this.Technology.PowerOutput
             * this.Size
         )
-    member private this._MaintenanceClass =
-        lazy (
-            match this.Count > 0<comp> with
-            | true -> Military
-            | false -> Commercial
-        )
     member private this._GeneratedName =
         lazy (
             String.Format("{0} Technology PB-{1}", this.Technology.Name, (1.0 + this.PowerBoost.PowerBoost))
-        )
-    member private this._TotalSize =
-        lazy (
-            float2int << hs2ton <| int2float this.Count * this.Size
         )
     //#endregion
 
@@ -62,19 +54,20 @@ type PowerPlant =
     member this.BuildCost with get() = this._BuildCost.Value
     member this.Crew with get() = this._Crew.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
-    member this.MaintenanceClass with get() = this._MaintenanceClass.Value
+    member this.MaintenanceClass with get() = Military
     member this.Power with get() = this._Power.Value
-    member this.TotalSize with get() = this._TotalSize.Value
     //#endregion
 
 let powerPlant (allTechs: AllTechnologies) =
     let zero =
         {
             Id = GameObjectId.generate()
+            Locked = false
+            BuiltIn = false
+
             Name = ""
             Manufacturer = "Aurora Industries"
 
-            Count = 0<comp>
             Size = 1.0<hs/comp>
             PowerBoost = allTechs.DefaultPowerBoost
             Technology = allTechs.DefaultReactor
