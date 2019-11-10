@@ -7,20 +7,33 @@ open App.Model
 open App.Msg
 open Comp.Ship
 
+open Saving.LocalStorage
+
+let getInitInfo () =
+    promise {
+        let! techs = Technology.allTechnologies
+        let! gameInfo = Model.GameInfo.gameInfo
+        
+        return
+            (
+                techs,
+                gameInfo
+            )
+    }
+
+let saveCurrentTechnologies model =
+    model.CurrentTechnology
+    |> Saving.Technology.serialize
+    ||||> save
+
 let init result =
     let (model, cmd) = PageState.urlUpdate result Model.empty
     model, Cmd.batch [
         cmd
         Cmd.OfPromise.perform
-            (fun _ -> Technology.allTechnologies) ()
-            InitializeTechnologies
+            getInitInfo ()
+            InitializeGame
     ]
-    
-let orNoneIf pred inp =
-    inp |> Option.bind (fun a -> match pred a with true -> None | false -> inp)
-
-let orOtherIf pred other inp =
-    inp |> Option.bind (fun a -> match pred a with true -> Some other | false -> inp)
 
 let update msg model =
     match msg with
@@ -28,9 +41,24 @@ let update msg model =
         model, Cmd.none
     
     // Initialization
-    | InitializeTechnologies techs ->
+    | InitializeGame (techs, gameInfo) ->
+        let currentTechnology =
+            load "ct" Saving.Technology.deserialize
+            |> Seq.tryHead
+            |> Option.defaultValue NotFound
+            |> function
+                | Success ct -> ct
+                | NotFound -> []
+                | Failure _ -> []
+
+        let applyPreset =
+            match currentTechnology with
+            | [] -> Cmd.ofMsg <| ApplyPreset gameInfo.DefaultPreset
+            | _ -> Cmd.none
+
         { model with
             AllTechnologies = techs
+            CurrentTechnology = currentTechnology
             AllComponents =
                 Map.empty
                 %+ Comp.ShipComponent.Bridge         (Comp.Bridge.Bridge.Zero)
@@ -41,18 +69,11 @@ let update msg model =
                 %+ Comp.ShipComponent.PowerPlant     ({ Comp.PowerPlant.powerPlant techs with Name = "Power Plant" })
                 %+ Comp.ShipComponent.Sensors        (Comp.Sensors.Sensors.Zero)
                 %+ Comp.ShipComponent.TroopTransport (Comp.TroopTransport.TroopTransport.Zero)
-        }, Cmd.OfPromise.perform
-            (fun _ -> Model.GameInfo.gameInfo) ()
-            InitializeGameInfo
-    | InitializeGameInfo gameInfo ->
-        let applyPreset =
-            match model.CurrentTechnology with
-            | [] -> Cmd.ofMsg <| ApplyPreset gameInfo.DefaultPreset
-            | _ ->  Cmd.none
-        { model with
             Presets = gameInfo.Presets
             FullyInitialized = true
-        }, applyPreset
+        }, Cmd.batch [
+            applyPreset
+        ]
     | ApplyPreset preset ->
         let preset' =
             model.Presets
@@ -73,11 +94,17 @@ let update msg model =
             CurrentShip = Some ship
         }, Cmd.none
     | RemoveShip ship ->
+        let orNoneIf pred inp =
+            inp |> Option.bind (fun a -> match pred a with true -> None | false -> inp)
+
         { model with
             AllShips = model.AllShips %- ship
             CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Id = ship.Id)
         }, Cmd.none
     | ReplaceShip ship ->
+        let orOtherIf pred other inp =
+            inp |> Option.bind (fun a -> match pred a with true -> Some other | false -> inp)
+
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Id = ship.Id) ship
@@ -117,14 +144,25 @@ let update msg model =
 
     // Technologies
     | AddTechnology tech ->
-        { model with
-            CurrentTechnology =
-                match List.contains tech model.CurrentTechnology with
-                | false -> model.CurrentTechnology @ [tech]
-                | true ->  model.CurrentTechnology
-        }, Cmd.none
+        let model =
+            { model with
+                CurrentTechnology =
+                    match List.contains tech model.CurrentTechnology with
+                    | false -> model.CurrentTechnology @ [tech]
+                    | true ->  model.CurrentTechnology
+            }
+
+        saveCurrentTechnologies model |> ignore
+        model, Cmd.none
     | RemoveTechnology tech ->
         let removed =
             model.CurrentTechnology
             |> List.except ((model.AllTechnologies.GetAllChildren model.CurrentTechnology tech) @ [tech])
-        { model with CurrentTechnology = removed }, Cmd.none
+
+        let model =
+            { model with
+                CurrentTechnology = removed
+            }
+        
+        saveCurrentTechnologies model |> ignore
+        model, Cmd.none
