@@ -35,6 +35,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) di
                 boundTechField tech
                     "Armor Technology"
                     allTechs.Armor
+                    (fun t -> t.Name)
                     ship.ArmorTechnology
                     (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = n } |> dispatch)
             ]

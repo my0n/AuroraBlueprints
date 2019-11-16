@@ -1,5 +1,7 @@
 module Cards.Magazine
 
+open System
+
 open Global
 
 open App.Msg
@@ -57,16 +59,19 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                     boundTechField tech
                         "Armor"
                         allTechs.Armor
+                        (fun t -> t.Name)
                         comp.Armor
                         (fun n -> Msg.UpdateComponent (Magazine { comp with Armor = n }) |> dispatch)
                     boundTechField tech
                         "Feed System"
                         allTechs.MagazineEfficiency
+                        (fun t -> sprintf "x%.2f ammo" (t.AmmoDensity / 20.0))
                         comp.FeedSystem
                         (fun n -> Msg.UpdateComponent (Magazine { comp with FeedSystem = n }) |> dispatch)
                     boundTechField tech
                         "Ejection"
                         allTechs.MagazineEjection
+                        (fun t -> String.Format("{0}% ejection chance", t.EjectionChance * 100.0))
                         comp.Ejection
                         (fun n -> Msg.UpdateComponent (Magazine { comp with Ejection = n }) |> dispatch)
                 ]
