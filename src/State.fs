@@ -34,11 +34,21 @@ let saveComponent (comp: Comp.ShipComponent.ShipComponent) =
         comp
         |> Saving.Components.serialize
         ||||> save
-    | true -> ()    
+    | true -> ()
 
 let removeComponent comp =
     comp
     |> Saving.Components.serialize
+    ||||> delete
+
+let saveShip (ship: Comp.Ship.Ship) =
+    ship
+    |> Saving.Ships.serialize
+    ||||> save
+
+let removeShip (ship: Comp.Ship.Ship) =
+    ship
+    |> Saving.Ships.serialize
     ||||> delete
 
 let init result =
@@ -82,6 +92,17 @@ let update msg model =
             |> Seq.map (fun comp -> comp.Id, comp)
             |> Map.ofSeq
 
+        let customShips =
+            load "ship" (Saving.Ships.deserialize (Map.values customComponents) techs)
+            |> Seq.map (function
+                | Success ship -> Some ship
+                | NotFound -> None
+                | Failure _ -> None
+            )
+            |> Seq.choose id
+            |> Seq.map (fun ship -> ship.Id, ship)
+            |> Map.ofSeq
+
         { model with
             AllTechnologies = techs
             CurrentTechnology = currentTechnology
@@ -96,6 +117,7 @@ let update msg model =
                 %+ Comp.ShipComponent.Sensors        ({ Comp.Sensors.Sensors.Zero with BuiltIn = true })
                 %+ Comp.ShipComponent.TroopTransport ({ Comp.TroopTransport.TroopTransport.Zero with BuiltIn = true })
                 %@ customComponents
+            AllShips = customShips
             Presets = gameInfo.Presets
             FullyInitialized = true
         }, Cmd.batch [
@@ -116,11 +138,14 @@ let update msg model =
     // Ships
     | NewShip ->
         let ship = Comp.Ship.ship model.AllTechnologies
+        saveShip ship
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = Some ship
         }, Cmd.none
     | RemoveShip ship ->
+        removeShip ship
+
         let orNoneIf pred inp =
             inp |> Option.bind (fun a -> match pred a with true -> None | false -> inp)
 
@@ -130,6 +155,8 @@ let update msg model =
         },
         Cmd.none
     | ReplaceShip ship ->
+        saveShip ship
+
         let orOtherIf pred other inp =
             inp |> Option.bind (fun a -> match pred a with true -> Some other | false -> inp)
 
