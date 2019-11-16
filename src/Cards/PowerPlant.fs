@@ -85,11 +85,13 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                     boundTechField tech
                         "Power Plant Technology"
                         allTechs.Reactors
+                        (fun t -> String.Format("{0} power - {1}", t.PowerOutput, t.Name))
                         comp.Technology
                         (fun n -> App.Msg.UpdateComponent (PowerPlant { comp with Technology = n }) |> dispatch)
                     boundTechField tech
                         "Power Boost"
                         allTechs.ReactorsPowerBoost
+                        (fun t -> t.Name)
                         comp.PowerBoost
                         (fun n -> App.Msg.UpdateComponent (PowerPlant { comp with PowerBoost = n }) |> dispatch)
                 ]

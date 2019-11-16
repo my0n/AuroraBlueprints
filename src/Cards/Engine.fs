@@ -75,22 +75,25 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                     boundTechField tech
                         "Engine Technology"
                         allTechs.Engines
+                        (fun t -> String.Format("{0} EP - {1}", t.PowerPerHs, t.Name))
                         comp.EngineTech
                         (fun n -> Msg.UpdateComponent (Engine { comp with EngineTech = n }) |> dispatch)
                     boundTechField tech
-                        "Engine Efficiency"
+                        "Fuel Consumption"
                         allTechs.EngineEfficiency
+                        (fun t -> sprintf "x%.3f fuel" (t.Efficiency / 1000.0))
                         comp.EfficiencyTech
                         (fun n -> Msg.UpdateComponent (Engine { comp with EfficiencyTech = n }) |> dispatch)
                     boundFloatChoiceField (allTechs.UnlockedPowerMods tech) ship dispatch
                         "Engine Power"
                         allTechs.AllPowerMods
                         comp.PowerModTech
-                        (fun n -> sprintf "Engine Power x%.2f" n)
+                        (fun n -> sprintf "x%.2f EP / x%.3f fuel" n (Math.Pow(n, 2.5)))
                         (fun n -> Engine { comp with PowerModTech = n })
                     boundTechField tech
                         "Thermal Efficiency"
                         allTechs.EngineThermalEfficiency
+                        (fun t -> sprintf "x%.2f therms" t.ThermalEfficiency)
                         comp.ThermalEfficiencyTech
                         (fun n -> Msg.UpdateComponent (Engine { comp with ThermalEfficiencyTech = n }) |> dispatch)
                 ]

@@ -112,7 +112,7 @@ let inline boundFloatChoiceField (availableOptions: float list) ship dispatch lb
         }
         (Double.Parse >> setter >> App.Msg.UpdateComponent >> dispatch)
 
-let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) lbl (options: 'a list) (getter: 'a) (cb: 'a -> unit) = 
+let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId list) lbl (options: 'a list) (nameFn: 'a -> string) (getter: 'a) (cb: 'a -> unit) = 
     Bulma.FC.Select
         {
             Label = Some lbl
@@ -121,7 +121,7 @@ let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId lis
                 |> List.map (fun v ->
                     {|
                         Key = v.Id.ToString()
-                        Text = v.Name
+                        Text = nameFn v
                         Disallowed = not <| (List.contains v.Id currentTech)
                     |}
                 )
