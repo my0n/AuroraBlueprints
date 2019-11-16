@@ -4,7 +4,7 @@ Web-based Aurora ship design application written in F# using Fable. Love the gam
 
 There's a good chance most of these calculations are off by a little or a lot. As of right now I don't even support maintenance calcs. I'm just doing this because F# is fun to write in.
 
-The latest stable version of the website can be found at: https://my0n.github.io/AuroraBlueprints
+The latest stable version of the website can be found at: https://my0n.github.io/AuroraBlueprints (releases once per day at midnight)
 
 # Running the app
 
