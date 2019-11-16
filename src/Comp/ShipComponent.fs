@@ -84,6 +84,7 @@ type ShipComponent =
             | PowerPlant c     -> c.Size * 50.0<ton/hs> |> float2int
             | Sensors c        -> c.Size
             | TroopTransport c -> c.Size
+    /// Is this component locked?
     member this.Locked
         with get() =
             match this with
@@ -95,6 +96,8 @@ type ShipComponent =
             | PowerPlant c     -> c.Locked
             | Sensors c        -> c.Locked
             | TroopTransport c -> c.Locked
+    /// Is this component a built-in base component, used for the sole purpose of
+    /// populating the defaults of duplicated components?
     member this.BuiltIn
         with get() =
             match this with
@@ -106,6 +109,7 @@ type ShipComponent =
             | PowerPlant c     -> c.BuiltIn
             | Sensors c        -> c.BuiltIn
             | TroopTransport c -> c.BuiltIn
+    /// Is this component composed of many, smaller components?
     member this.Composite
         with get() =
             match this with
