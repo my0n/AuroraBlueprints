@@ -127,7 +127,8 @@ let update msg model =
         { model with
             AllShips = model.AllShips %- ship
             CurrentShip = model.CurrentShip |> orNoneIf (fun s -> s.Id = ship.Id)
-        }, Cmd.none
+        },
+        Cmd.none
     | ReplaceShip ship ->
         let orOtherIf pred other inp =
             inp |> Option.bind (fun a -> match pred a with true -> Some other | false -> inp)
@@ -142,7 +143,9 @@ let update msg model =
         model, Cmd.ofMsg (ReplaceShip { ship with ShipClass = newName })
     | SelectShip ship ->
         { model with
-            CurrentShip = Some ship
+            CurrentShip =
+                model.AllShips
+                |> Map.tryFind ship.Id
         }, Cmd.none
 
     // Components
