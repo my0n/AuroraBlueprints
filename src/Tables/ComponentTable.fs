@@ -9,6 +9,11 @@ open Fable.React
 let render (comps: ShipComponent list) model dispatch =
     let groupedComps =
         comps
+        |> List.filter (fun comp ->
+            comp.BuiltIn
+            || comp.Locked
+            || not comp.Composite
+        )
         |> List.groupBy (function
             | comp when comp.BuiltIn -> "Built-In Components"
             | Engine _               -> "Engines"
