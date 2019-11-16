@@ -52,12 +52,6 @@ let root model dispatch =
 
     let removeShip ship = Msg.RemoveShip ship |> dispatch
     let selectShip ship = Msg.SelectShip ship |> dispatch
-    let addComponent ship (comp: ShipComponent) =
-        match comp.BuiltIn with
-        | true -> Msg.CopyComponentToShip (ship, comp)
-        | false -> Msg.AddComponentToShip (ship, comp)
-        |> dispatch
-    let deleteComponent comp = Msg.RemoveComponent comp |> dispatch
 
     let shipListOptions: ColumnOptions<Ship> list =
         [
@@ -79,34 +73,6 @@ let root model dispatch =
             }
         ]
 
-    let componentListOptions: ColumnOptions<ShipComponent> list =
-        [
-            {
-                Name = "Name"
-                Render = fun comp -> str comp.Name
-            }
-            {
-                Name = ""
-                Render = fun comp ->
-                    Bulma.FC.Button
-                        "Add"
-                        Bulma.FC.ButtonOpts.Empty
-                        (
-                            match model.CurrentShip with
-                            | Some ship -> fun _ -> addComponent ship comp
-                            | None -> id
-                        )
-            }
-            {
-                Name = ""
-                Render = fun comp ->
-                    Bulma.FC.Button
-                        "Delete"
-                        (match Model.canDeleteComponent model comp with true -> Bulma.FC.ButtonOpts.Empty | false -> Bulma.FC.ButtonOpts.Disabled)
-                        (fun _ -> deleteComponent comp)
-            }
-        ]
-
     div [ ClassName "columns" ]
         [
             div [ ClassName "column is-2" ]
@@ -117,5 +83,5 @@ let root model dispatch =
                   @+ div [ ClassName "content" ] [ shipInfo dispatch model.AllTechnologies model.CurrentTechnology model.CurrentShip ]
                 )
             div [ ClassName "column" ]
-                [ Bulma.Table.render componentListOptions comps None ignore ]
+                [ Tables.ComponentTable.render comps model dispatch ]
         ]
