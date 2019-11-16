@@ -14545,6 +14545,14 @@ label.panel-block:hover {
   padding: 3rem 1.5rem 6rem;
 }
 
+.table tr.is-selected a {
+  color: #0a0a0a;
+}
+
+.button:hover {
+  color: #0a0a0a;
+}
+
 .card {
   border: white dashed 2px;
   border-radius: 12px;
