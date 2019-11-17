@@ -83,12 +83,12 @@ type EngineBoostUnlockTech(basics, unlocked) =
 type EngineEfficiencyTech(basics, efficiency) =
     inherit TechBase(basics)
     override this.Category = PowerAndPropulsion
-    member val Efficiency: float<kl/hr/ep> = efficiency with get
+    member val Efficiency: float<l/hr/ep> = efficiency with get
 
 type FuelStorageTech(basics, fuelCapacity, hsPerComp, duraniumCost, boronideCost) =
     inherit TechBase(basics)
     override this.Category = LogisticsAndGroundCombat
-    member val FuelCapacity: int<kl/comp> = fuelCapacity with get
+    member val FuelCapacity: int<l/comp> = fuelCapacity with get
     member val HsPerComp: float<hs/comp> = hsPerComp with get
     member val DuraniumCost: float</comp> = duraniumCost with get
     member val BoronideCost: float</comp> = boronideCost with get

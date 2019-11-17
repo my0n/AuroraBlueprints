@@ -6,7 +6,7 @@ open Model.Measures
 
 type FuelCapacityNerd =
     {
-        FuelCapacity: float<kl>
+        FuelCapacity: float<l>
     }
     interface INerd with
         member this.Text
@@ -14,7 +14,7 @@ type FuelCapacityNerd =
                 sprintf "%.0f" this.FuelCapacity
         member this.Tooltip
             with get() =
-                sprintf "%.0f kL" this.FuelCapacity
+                sprintf "%.0f L" this.FuelCapacity
         member this.Icon
             with get() =
                 GasPump
@@ -22,5 +22,5 @@ type FuelCapacityNerd =
             with get() = true
         member this.Description
             with get() =
-                sprintf "Fuel Capacity %.0f Litres" <| kl2l this.FuelCapacity
+                sprintf "Fuel Capacity %.0f Litres" this.FuelCapacity
                 |> Some

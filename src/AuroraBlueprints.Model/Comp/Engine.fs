@@ -35,17 +35,23 @@ type Engine =
             this.EnginePower
             * this.ThermalEfficiencyTech.ThermalEfficiency
         )
+    member private this._FuelEfficiency =
+        lazy (
+            this.EfficiencyTech.Efficiency
+            * Math.Pow(this.PowerModTech, 2.5)
+            * (1.0 - ((int2float this.Size * 1.0<comp/hs>) / 100.0))
+            |> rounduom 0.0001<l/ep/hr>
+        )
     member private this._FuelConsumption =
         lazy (
             this.EnginePower
-            * this.EfficiencyTech.Efficiency
-            * Math.Pow(this.PowerModTech, 2.5)
-            * (1.0 - ((int2float this.Size * 1.0<comp/hs>) / 100.0))
+            * this.FuelEfficiency
         )
     member private this._Crew =
         lazy (
             flooruom (float this.Size * this.PowerModTech)
             * 1<people/comp>
+            |> max 1<people/comp>
         )
     member private this._MaintenanceClass =
         lazy (
@@ -56,10 +62,13 @@ type Engine =
     member private this._BuildCost =
         lazy (
             let cost =
-                this.EnginePower
-                * (this.PowerModTech / 2.0)
+                this.EnginePower * 1.0</ep>
+                * (
+                    this.PowerModTech / 2.0
+                    |> min 0.5
+                )
                 * this.ThermalEfficiencyTech.CostMultiplier
-                * 1.0</ep>
+                |> max 5.0</comp>
             { BuildCost.Zero with
                 BuildPoints = cost
                 Gallicite = cost
@@ -80,6 +89,7 @@ type Engine =
     member this.Crew with get() = this._Crew.Value
     member this.EnginePower with get(): float<ep/comp> = this._EnginePower.Value
     member this.FuelConsumption with get() = this._FuelConsumption.Value
+    member this.FuelEfficiency with get() = this._FuelEfficiency.Value
     member this.GeneratedName with get() = this._GeneratedName.Value
     member this.MaintenanceClass with get() = this._MaintenanceClass.Value
     member this.ThermalOutput with get() = this._ThermalOutput.Value

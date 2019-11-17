@@ -66,10 +66,10 @@ let private generalOverview (ship: Ship) =
     ]
 
 let private fuelCapAndRange (ship: Ship) =
-    let canMove = ship.HasEngines && ship.FuelCapacity > 0.0<kl>
+    let canMove = ship.HasEngines && ship.FuelCapacity > 0.0<l>
     [
         (match ship.FuelCapacity with
-         | fc when fc > 0.0<kl> ->
+         | fc when fc > 0.0<l> ->
             Nerd { FuelCapacity = ship.FuelCapacity } |> Some
          | _ ->
             None
@@ -123,7 +123,7 @@ let private describe (ship: Ship) =
     [
         Some generalOverview
 
-        (match ship.FuelCapacity > 0.0<kl> || ship.HasEngines with
+        (match ship.FuelCapacity > 0.0<l> || ship.HasEngines with
          | true -> Some fuelCapAndRange
          | false -> None
         )

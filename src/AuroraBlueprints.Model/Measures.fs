@@ -18,7 +18,7 @@ open System
 [<Measure>] type mo
 [<Measure>] type day
 [<Measure>] type hr
-[<Measure>] type min
+[<Measure>] type minute
 [<Measure>] type s
 [<Measure>] type power
 [<Measure>] type company
@@ -47,11 +47,11 @@ let inline mo2day (mo: float<mo>) = mo * 30.0<day/mo>
 let inline day2mo (day: float<day>) = day / 30.0<day/mo>
 let inline day2hr (day: float<day>) = day * 24.0<hr/day>
 let inline hr2day (hr: float<hr>) = hr / 60.0<hr/day>
-let inline hr2min (hr: float<hr>) = hr * 60.0<min/hr>
-let inline min2hr (min: float<min>) = min / 60.0<min/hr>
-let inline min2s (min: float<min>) = min * 60.0<s/min>
-let inline kphr2kps (kphr: float<km/hr>) = kphr / 60.0<min/hr> / 60.0<s/min>
-let inline kps2kphr (kps: float<km/s>) = kps * 60.0<min/hr> * 60.0<s/min>
+let inline hr2min (hr: float<hr>) = hr * 60.0<minute/hr>
+let inline min2hr (min: float<minute>) = min / 60.0<minute/hr>
+let inline min2s (min: float<minute>) = min * 60.0<s/minute>
+let inline kphr2kps (kphr: float<km/hr>) = kphr / 60.0<minute/hr> / 60.0<s/minute>
+let inline kps2kphr (kps: float<km/s>) = kps * 60.0<minute/hr> * 60.0<s/minute>
 let inline company2battalion (c: int<company>) = float c / 5.0</battalion>
 
 // hs conversions

@@ -14,4 +14,5 @@ Dev mode: `npx webpack-dev-server` will host on `localhost:8080`.
 
 Full build: `npx webpack` will deploy to the `deploy` folder.
 
+Tests: `npm run test`
 
