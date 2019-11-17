@@ -80,7 +80,7 @@ type Engine =
                 match this.MaintenanceClass with
                 | Military -> ""
                 | Commercial -> "Commercial "
-            sprintf "%.0fEP %s%s Engine" this.EnginePower cl this.EngineTech.Name
+            sprintf "%.0fEP %s%s" this.EnginePower cl this.EngineTech.Name
         )
     //#endregion
 
