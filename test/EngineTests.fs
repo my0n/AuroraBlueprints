@@ -6,22 +6,7 @@ open Model.Measures
 open Model.Technology
 open Comp.Engine
 
-type EngineTestInfo =
-    {
-        Size: int<hs/comp>
-        EngineTech: EngineTech
-        PowerModTech: float
-        EfficiencyTech: EngineEfficiencyTech
-        ThermalEfficiencyTech: EngineThermalTech
-
-        BuildPoints: float</comp>
-        Crew: int<people/comp>
-        Thermal: float<therm/comp>
-        EP: float<ep/comp>
-        Fuel: float<l/comp/hr>
-    }
-
-let emptyBasics = {Id = ""; Cost = 0<rp>; Level = 0; Name = ""; Parents = []}
+let emptyBasics            = {Id = ""; Cost = 0<rp>; Level = 0; Name = ""; Parents = []}
 
 let smallEngine            = 1<hs/comp>
 let bigEngine              = 50<hs/comp>
@@ -38,49 +23,49 @@ let highEfficiency         = EngineEfficiencyTech (emptyBasics, 0.9<l/ep/hr>)
 let normalThermal          = EngineThermalTech (emptyBasics, 1.0<therm/ep>, 1.0)
 let goodThermal            = EngineThermalTech (emptyBasics, 0.01<therm/ep>, 4.0)
 
-let expectEngineProperties testInfo =
+let expectEngineProperties ((size, engineTech, powerMod, efficiency, thermalEfficiency), (bp, crew, thermal, ep, fuel)) =
     let engine =
         {
             Id = ""; Name = ""; Manufacturer = ""; BuiltIn = false; Locked = false
-            Size = testInfo.Size
-            EngineTech = testInfo.EngineTech
-            PowerModTech = testInfo.PowerModTech
-            EfficiencyTech = testInfo.EfficiencyTech
-            ThermalEfficiencyTech = testInfo.ThermalEfficiencyTech
+            Size = size
+            EngineTech = engineTech
+            PowerModTech = powerMod
+            EfficiencyTech = efficiency
+            ThermalEfficiencyTech = thermalEfficiency
         }
     let name =
         sprintf
             "%d HS, %.1f ep/hs, x%.3f ep, x%.3f fuel, x%.3f therm"
-            testInfo.Size
-            testInfo.EngineTech.PowerPerHs
-            testInfo.PowerModTech
-            testInfo.EfficiencyTech.Efficiency
-            testInfo.ThermalEfficiencyTech.ThermalEfficiency
+            size
+            engineTech.PowerPerHs
+            powerMod
+            efficiency.Efficiency
+            thermalEfficiency.ThermalEfficiency
     
     testCase name <| fun _ ->
         Expect.floatClose
             Accuracy.high
             (float engine.BuildCost.BuildPoints)
-            (float testInfo.BuildPoints)
+            (float bp)
             "build points not equal"
         Expect.equal
             engine.Crew
-            testInfo.Crew
+            crew
             "crew not equal"
         Expect.floatClose
             Accuracy.high
             (float engine.ThermalOutput)
-            (float testInfo.Thermal)
+            (float thermal)
             "thermal output not equal"
         Expect.floatClose
             Accuracy.high
             (float engine.EnginePower)
-            (float testInfo.EP)
+            (float ep)
             "engine power not equal"
         Expect.floatClose
             { absolute = 5e-7; relative = 5e-4 } // medium-low accuracy, because of test case #8 (see below)
             (float engine.FuelConsumption)
-            (float testInfo.Fuel)
+            (float fuel)
             "fuel consumption not equal"
 
 [<Tests>]
@@ -97,20 +82,5 @@ let tests =
         (smallEngine, photonicEngineTech,     highPowerMod, highEfficiency, normalThermal), (62.5</comp>,   1<people/comp>,  125.0<therm/comp>,  125.0<ep/comp>,  194.5625<l/comp/hr>)
         (bigEngine,   photonicEngineTech,     highPowerMod, highEfficiency, normalThermal), (3125.0</comp>, 62<people/comp>, 6250.0<therm/comp>, 6250.0<ep/comp>, 4913.125<l/comp/hr>)
     ]
-    |> List.map (fun ((a, b, c, d, e), (f, g, h, i, j)) ->
-        {
-            Size = a
-            EngineTech = b
-            PowerModTech = c
-            EfficiencyTech = d
-            ThermalEfficiencyTech = e
-
-            BuildPoints = f
-            Crew = g
-            Thermal = h
-            EP = i
-            Fuel = j
-        }
-        |> expectEngineProperties
-    )
+    |> List.map expectEngineProperties
     |> testList "engine tests"
