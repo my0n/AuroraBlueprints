@@ -38,7 +38,7 @@ let highEfficiency         = EngineEfficiencyTech (emptyBasics, 0.9<l/ep/hr>)
 let normalThermal          = EngineThermalTech (emptyBasics, 1.0<therm/ep>, 1.0)
 let goodThermal            = EngineThermalTech (emptyBasics, 0.01<therm/ep>, 4.0)
 
-let testEngineProperties testInfo =
+let expectEngineProperties testInfo =
     let engine =
         {
             Id = ""; Name = ""; Manufacturer = ""; BuiltIn = false; Locked = false
@@ -50,12 +50,13 @@ let testEngineProperties testInfo =
         }
     let name =
         sprintf
-            "test engine calculations - %d HS, %.1f ep/hs, x%.3f ep, x%.3f fuel, x%.3f therm"
+            "%d HS, %.1f ep/hs, x%.3f ep, x%.3f fuel, x%.3f therm"
             testInfo.Size
             testInfo.EngineTech.PowerPerHs
             testInfo.PowerModTech
             testInfo.EfficiencyTech.Efficiency
             testInfo.ThermalEfficiencyTech.ThermalEfficiency
+    
     testCase name <| fun _ ->
         Expect.floatClose
             Accuracy.high
@@ -110,6 +111,6 @@ let tests =
             EP = i
             Fuel = j
         }
-        |> testEngineProperties
-    ) 
+        |> expectEngineProperties
+    )
     |> testList "engine tests"
