@@ -7,6 +7,13 @@ pool:
 steps:
 - script: .paket\paket.bootstrapper.exe
   displayName: 'Install paket'
+
+- script: dotnet restore
+  displayName: 'Restore dotnet packages'
+
+- script: dotnet run --project test\AuroraBlueprints.Tests.fsproj
+  displayName: 'Run tests'
+ 
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'
@@ -16,11 +23,18 @@ steps:
   displayName: 'Install packages'
 
 - script: npx webpack
-  displayName: 'Build'
-  
+  displayName: 'Build'  
+ 
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(System.DefaultWorkingDirectory)\deploy'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-  displayName: 'Publish'
+  displayName: 'Publish app'
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'NUnit'
+    testResultsFiles: '**/TestResults.xml'
+  displayName: 'Publish test results'
+
