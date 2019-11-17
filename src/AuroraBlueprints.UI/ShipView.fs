@@ -12,9 +12,28 @@ open Bulma.Table
 open Comp.ShipComponent
 open Comp.Ship
 
-let actionBar dispatch =
-    div []
-        [ Bulma.Button.render "New Ship" (fun _ -> Msg.NewShip |> dispatch)
+let actionBar ship dispatch =
+    Bulma.FC.HorizontalGroup
+        None
+        [
+            Bulma.FC.AddonGroup
+                [
+                    Bulma.FC.Button
+                        "New Ship"
+                        Bulma.FC.ButtonOpts.Empty
+                        (fun _ -> Msg.NewShip |> dispatch)
+                    Bulma.FC.Button
+                        "Clone Ship"
+                        Bulma.FC.ButtonOpts.Empty
+                        (fun _ -> 
+                            match ship with
+                            | None -> ()
+                            | Some ship' ->
+                                Msg.DuplicateShip ship'
+                                |> dispatch
+                        )
+                    Bulma.FC.Spacer
+                ]
         ]
 
 let shipInfo dispatch allTechs tech ship =
@@ -79,7 +98,7 @@ let root model dispatch =
                 [ Bulma.Table.render shipListOptions ships model.CurrentShip selectShip ]
             div [ ClassName "column is-8" ]
                 (
-                  [ actionBar dispatch ]
+                  [ actionBar model.CurrentShip dispatch ]
                   @+ div [ ClassName "content" ] [ shipInfo dispatch model.AllTechnologies model.CurrentTechnology model.CurrentShip ]
                 )
             div [ ClassName "column" ]

@@ -144,6 +144,9 @@ let IntInput (opts: IntInpOptions<'a>) (cb: int<'a> -> unit) =
     )
     |> Control ControlOpts.Empty
 
+let Spacer =
+    div [ ClassName "control is-expanded" ] []
+
 let TextInput value cb =
     input [ ClassName "input"
             Type "text"
