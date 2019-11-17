@@ -208,7 +208,7 @@ type Ship =
         )
     member private this._Speed =
         lazy (
-            match this.HasEngines && this.FuelCapacity > 0.0<kl> with
+            match this.HasEngines && this.FuelCapacity > 0.0<l> with
             | true ->
                 this.TotalEnginePower
                 * 1000.0<(km/s)/(ep/hs)>
@@ -225,7 +225,7 @@ type Ship =
             |> Map.values
             |> List.sumBy (function
                 | count, FuelStorage c -> c.FuelCapacity * int2float count
-                | _ -> 0.0<kl>
+                | _ -> 0.0<l>
             )
         )
     member private this._FuelConsumption =
@@ -236,11 +236,11 @@ type Ship =
                 | count, Engine c -> Some (c.FuelConsumption * int2float count)
                 | _ -> None
             )
-            |> Option.defaultValue 0.0<kl/hr>
+            |> Option.defaultValue 0.0<l/hr>
         )
     member private this._FullPowerTime =
         lazy (
-            match this.HasEngines && this.FuelCapacity > 0.0<kl> with
+            match this.HasEngines && this.FuelCapacity > 0.0<l> with
             | true ->
                 this.FuelCapacity / this.FuelConsumption
             | false ->
@@ -250,7 +250,7 @@ type Ship =
         )
     member private this._FuelRange =
         lazy (
-            match this.HasEngines && this.FuelCapacity > 0.0<kl> with
+            match this.HasEngines && this.FuelCapacity > 0.0<l> with
             | true ->
                 kps2kphr this.Speed
                 * this.FuelCapacity
@@ -323,7 +323,7 @@ type Ship =
     member this.EngineThermalSignatureContribution with get() = this._EngineThermalSignatureContribution.Value
     member this.HasEngines with get() = this._HasEngines.Value
     member this.FuelCapacity with get() = this._FuelCapacity.Value
-    member this.FuelConsumption with get() = this._FuelConsumption.Value
+    member this.FuelConsumption with get(): float<l/hr> = this._FuelConsumption.Value
     member this.FuelRange with get() = this._FuelRange.Value
     member this.FullPowerTime with get() = this._FullPowerTime.Value
     member this.LoadTime with get() = this._LoadTime.Value

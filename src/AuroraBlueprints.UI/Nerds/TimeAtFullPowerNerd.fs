@@ -8,7 +8,7 @@ type private NiceTime =
     | Years of float<year>
     | Days of float<day>
     | Hours of float<hr>
-    | Minutes of float<min>
+    | Minutes of float<minute>
     | Seconds of float<s>
 
 let inline private toNiceTime t =
@@ -34,19 +34,19 @@ type TimeAtFullPowerNerd =
         member this.Text
             with get() =
                 match this.FullPowerTime |> toNiceTime with
-                | Years t   -> sprintf "%.1f yr"                       t // lol
-                | Days t    -> sprintf "%.0f d"   <| rounduom 1.0<day> t
-                | Hours t   -> sprintf "%.0f hr"  <| rounduom 1.0<hr>  t
-                | Minutes t -> sprintf "%.0f min" <| rounduom 1.0<min> t
-                | Seconds t -> sprintf "%.0f s"   <| rounduom 1.0<s>   t
+                | Years t   -> sprintf "%.1f yr"                          t // lol
+                | Days t    -> sprintf "%.0f d"   <| rounduom 1.0<day>    t
+                | Hours t   -> sprintf "%.0f hr"  <| rounduom 1.0<hr>     t
+                | Minutes t -> sprintf "%.0f min" <| rounduom 1.0<minute> t
+                | Seconds t -> sprintf "%.0f s"   <| rounduom 1.0<s>      t
         member this.Tooltip
             with get() =
                 match this.FullPowerTime |> toNiceTime with
-                | Years t   -> sprintf "%.1f years"                        t // lol
-                | Days t    -> sprintf "%.0f days"    <| rounduom 1.0<day> t
-                | Hours t   -> sprintf "%.0f hours"   <| rounduom 1.0<hr>  t
-                | Minutes t -> sprintf "%.0f minutes" <| rounduom 1.0<min> t
-                | Seconds t -> sprintf "%.0f seconds" <| rounduom 1.0<s>   t
+                | Years t   -> sprintf "%.1f years"                           t
+                | Days t    -> sprintf "%.0f days"    <| rounduom 1.0<day>    t
+                | Hours t   -> sprintf "%.0f hours"   <| rounduom 1.0<hr>     t
+                | Minutes t -> sprintf "%.0f minutes" <| rounduom 1.0<minute> t
+                | Seconds t -> sprintf "%.0f seconds" <| rounduom 1.0<s>      t
                 |> sprintf "%s at full power"
         member this.Icon
             with get() =
@@ -56,10 +56,10 @@ type TimeAtFullPowerNerd =
         member this.Description
             with get() =
                 match this.FullPowerTime |> toNiceTime with
-                | Years t   -> sprintf "%.1f years"                        t // lol
-                | Days t    -> sprintf "%.0f days"    <| rounduom 1.0<day> t
-                | Hours t   -> sprintf "%.0f hours"   <| rounduom 1.0<hr>  t
-                | Minutes t -> sprintf "%.0f minutes" <| rounduom 1.0<min> t
-                | Seconds t -> sprintf "%.0f seconds" <| rounduom 1.0<s>   t
+                | Years t   -> sprintf "%.1f years"                           t
+                | Days t    -> sprintf "%.0f days"    <| rounduom 1.0<day>    t
+                | Hours t   -> sprintf "%.0f hours"   <| rounduom 1.0<hr>     t
+                | Minutes t -> sprintf "%.0f minutes" <| rounduom 1.0<minute> t
+                | Seconds t -> sprintf "%.0f seconds" <| rounduom 1.0<s>      t
                 |> sprintf "%s at full power"
                 |> Some
