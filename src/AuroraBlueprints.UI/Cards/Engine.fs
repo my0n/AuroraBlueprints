@@ -81,7 +81,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                     boundTechField tech
                         "Fuel Consumption"
                         allTechs.EngineEfficiency
-                        (fun t -> sprintf "x%.3f fuel" (t.Efficiency / 1000.0))
+                        (fun t -> sprintf "x%.3f fuel" t.Efficiency)
                         comp.EfficiencyTech
                         (fun n -> Msg.UpdateComponent (Engine { comp with EfficiencyTech = n }) |> dispatch)
                     boundFloatChoiceField (allTechs.UnlockedPowerMods tech) ship dispatch
