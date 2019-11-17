@@ -6,29 +6,29 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AuroraBlueprints.Model", "s
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AuroraBlueprints.UI", "src\AuroraBlueprints.UI\AuroraBlueprints.UI.fsproj", "{E5DEFC96-37CF-4844-9C9E-CFA0A9A8AED3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "sass", "{FA339438-85B8-43B0-BE8A-6505A79A01AF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sass", "src\AuroraBlueprints.UI\sass", "{FA339438-85B8-43B0-BE8A-6505A79A01AF}"
 	ProjectSection(SolutionItems) = preProject
-		sass\main.sass = sass\main.sass
+		src\AuroraBlueprints.UI\sass\main.sass = sass\main.sass
 	EndProjectSection
 EndProject
-Project("{9330E333-8FDC-43B3-9474-1A39A6E36DE8}") = "data", "data", "{BB3464AE-9922-43B0-BE8A-6505A79A019E}"
+Project("{9330E333-8FDC-43B3-9474-1A39A6E36DE8}") = "data", "src\AuroraBlueprints.UI\data", "{BB3464AE-9922-43B0-BE8A-6505A79A019E}"
 	ProjectSection(SolutionItems) = preProject
-		public\data\gameinfo.json = data\gameinfo.json
-		public\data\tech-armor.csv = data\tech-armor.csv
-		public\data\tech-cargo-handling.csv = data\tech-cargo-handling.csv
-		public\data\tech-cargo-holds.csv = data\tech-cargo-holds.csv
-		public\data\tech-engines.csv = data\tech-engines.csv
-		public\data\tech-engine-efficiency.csv = data\tech-engine-efficiency.csv
-		public\data\tech-engine-power-mod.csv = data\tech-engine-power-mod.csv
-		public\data\tech-engine-thermal-efficiency.csv = data\tech-engine-thermal-efficiency.csv
-		public\data\tech-fuel-storage.csv = data\tech-fuel-storage.csv
-		public\data\tech-geo-sensors.csv = data\tech-geo-sensor.csv
-		public\data\tech-grav-sensors.csv = data\tech-grav-sensor.csv
-		public\data\tech-magazine-efficiency.csv = data\tech-magazine-efficiency.csv
-		public\data\tech-magazine-ejection.csv = data\tech-magazine-ejection.csv
-		public\data\tech-reactors-power-boost.csv = data\tech-reactors-power-boost.csv
-		public\data\tech-reactors.csv = data\tech-reactors.csv
-		public\data\tech-troop-transports.csv = data\tech-troop-transports.csv
+		src\AuroraBlueprints.UI\public\data\gameinfo.json = data\gameinfo.json
+		src\AuroraBlueprints.UI\public\data\tech-armor.csv = data\tech-armor.csv
+		src\AuroraBlueprints.UI\public\data\tech-cargo-handling.csv = data\tech-cargo-handling.csv
+		src\AuroraBlueprints.UI\public\data\tech-cargo-holds.csv = data\tech-cargo-holds.csv
+		src\AuroraBlueprints.UI\public\data\tech-engines.csv = data\tech-engines.csv
+		src\AuroraBlueprints.UI\public\data\tech-engine-efficiency.csv = data\tech-engine-efficiency.csv
+		src\AuroraBlueprints.UI\public\data\tech-engine-power-mod.csv = data\tech-engine-power-mod.csv
+		src\AuroraBlueprints.UI\public\data\tech-engine-thermal-efficiency.csv = data\tech-engine-thermal-efficiency.csv
+		src\AuroraBlueprints.UI\public\data\tech-fuel-storage.csv = data\tech-fuel-storage.csv
+		src\AuroraBlueprints.UI\public\data\tech-geo-sensors.csv = data\tech-geo-sensor.csv
+		src\AuroraBlueprints.UI\public\data\tech-grav-sensors.csv = data\tech-grav-sensor.csv
+		src\AuroraBlueprints.UI\public\data\tech-magazine-efficiency.csv = data\tech-magazine-efficiency.csv
+		src\AuroraBlueprints.UI\public\data\tech-magazine-ejection.csv = data\tech-magazine-ejection.csv
+		src\AuroraBlueprints.UI\public\data\tech-reactors-power-boost.csv = data\tech-reactors-power-boost.csv
+		src\AuroraBlueprints.UI\public\data\tech-reactors.csv = data\tech-reactors.csv
+		src\AuroraBlueprints.UI\public\data\tech-troop-transports.csv = data\tech-troop-transports.csv
 	EndProjectSection
 EndProject
 Global

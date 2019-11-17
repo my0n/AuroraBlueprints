@@ -17,9 +17,9 @@ var CONFIG = {
     // See https://github.com/jantimon/html-webpack-plugin
     indexHtmlTemplate: "./src/AuroraBlueprints.UI/index.html",
     fsharpEntry: "./src/AuroraBlueprints.UI/AuroraBlueprints.UI.fsproj",
-    cssEntry: "./sass/main.sass",
+    cssEntry: "./src/AuroraBlueprints.UI/sass/main.sass",
     outputDir: "./deploy",
-    assetsDir: "./public",
+    assetsDir: "./src/AuroraBlueprints.UI/public",
     devServerPort: 8080,
     // When using webpack-dev-server, you may need to redirect some calls
     // to a external API server. See https://webpack.js.org/configuration/dev-server/#devserver-proxy
