@@ -1,4 +1,4 @@
-module Model.GameInfo
+module GameInfo
 
 open Global
 

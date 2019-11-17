@@ -2,6 +2,7 @@ module Saving.Components
 
 open Global
 open Model.Measures
+open Model.Technology
 open LocalStorage
 open Thoth.Json
 
@@ -12,11 +13,11 @@ let inline serializeTechCount map =
     )
     |> Map
 
-let inline deserializeTech (techs: #Technology.TechBase list) (key: string) =
+let inline deserializeTech (techs: #TechBase list) (key: string) =
     techs
     |> List.find (fun t -> t.Id = key)
 
-let inline deserializeTechCount (techs: #Technology.TechBase list) (map: Map<string, int>) =
+let inline deserializeTechCount (techs: #TechBase list) (map: Map<string, int>) =
     map
     |> Map.mapKvp (fun k v ->
         techs
@@ -55,7 +56,7 @@ let serializeCargoHold (c: Comp.CargoHold.CargoHold) =
     |}
     |> fun c -> Encode.Auto.toString (0, c)
 
-let deserializeCargo1 id (techs: Technology.AllTechnologies) : Decoder<Comp.CargoHold.CargoHold> =
+let deserializeCargo1 id (techs: AllTechnologies) : Decoder<Comp.CargoHold.CargoHold> =
     Decode.map3
         (fun locked holds handlers ->
             {
@@ -86,7 +87,7 @@ let serializeEngine (c: Comp.Engine.Engine) =
     |}
     |> fun c -> Encode.Auto.toString (0, c)
 
-let deserializeEngine1 id (techs: Technology.AllTechnologies) : Decoder<Comp.Engine.Engine> =
+let deserializeEngine1 id (techs: AllTechnologies) : Decoder<Comp.Engine.Engine> =
     Decode.map8
         (fun locked name mfr size eff tech pwr thm ->
             {
@@ -121,7 +122,7 @@ let serializeFuelStorage (c: Comp.FuelStorage.FuelStorage) =
     |}
     |> fun c -> Encode.Auto.toString (0, c)
 
-let deserializeFuelStorage1 id (techs: Technology.AllTechnologies) : Decoder<Comp.FuelStorage.FuelStorage> =
+let deserializeFuelStorage1 id (techs: AllTechnologies) : Decoder<Comp.FuelStorage.FuelStorage> =
     Decode.map2
         (fun locked fuels ->
             {
@@ -150,7 +151,7 @@ let serializeMagazine (c: Comp.Magazine.Magazine) =
     |}
     |> fun c -> Encode.Auto.toString (0, c)
 
-let deserializeMagazine1 id (techs: Technology.AllTechnologies) : Decoder<Comp.Magazine.Magazine> =
+let deserializeMagazine1 id (techs: AllTechnologies) : Decoder<Comp.Magazine.Magazine> =
     Decode.map8
         (fun locked name mfr size htk armor ejc feed ->
             {
@@ -189,7 +190,7 @@ let serializePowerPlant (c: Comp.PowerPlant.PowerPlant) =
     |}
     |> fun c -> Encode.Auto.toString (0, c)
 
-let deserializePowerPlant1 id (techs: Technology.AllTechnologies) : Decoder<Comp.PowerPlant.PowerPlant> =
+let deserializePowerPlant1 id (techs: AllTechnologies) : Decoder<Comp.PowerPlant.PowerPlant> =
     Decode.map6
         (fun locked name mfr size pwr tech ->
             {
@@ -221,7 +222,7 @@ let serializeSensors (c: Comp.Sensors.Sensors) =
     |}
     |> fun c -> Encode.Auto.toString (0, c)
 
-let deserializeSensors1 id (techs: Technology.AllTechnologies) : Decoder<Comp.Sensors.Sensors> =
+let deserializeSensors1 id (techs: AllTechnologies) : Decoder<Comp.Sensors.Sensors> =
     Decode.map3
         (fun locked geo grav ->
             {
@@ -246,7 +247,7 @@ let serializeTroopTransport (c: Comp.TroopTransport.TroopTransport) =
     |}
     |> fun c -> Encode.Auto.toString (0, c)
 
-let deserializeTroopTransports1 id (techs: Technology.AllTechnologies) : Decoder<Comp.TroopTransport.TroopTransport> =
+let deserializeTroopTransports1 id (techs: AllTechnologies) : Decoder<Comp.TroopTransport.TroopTransport> =
     Decode.map2
         (fun locked troop ->
             {
@@ -273,7 +274,7 @@ let serialize (c: Comp.ShipComponent.ShipComponent) =
         | Comp.ShipComponent.TroopTransport c -> serializeTroopTransport c
     "comp", version, c.Id, serialized
 
-let deserialize (techs: Technology.AllTechnologies) version key str =
+let deserialize (techs: AllTechnologies) version key str =
     let applyDeserialization fn fout =
         Decode.fromString (fn key techs) str |> Result.map fout
 

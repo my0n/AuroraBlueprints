@@ -1,17 +1,16 @@
 module App.Msg
 
 open Global
-
-open Model.Measures
-
 open Comp.Ship
 open Comp.ShipComponent
+open Model.Measures
+open Model.Technology
 
 type Msg =
     | Noop
 
     // Initialization
-    | InitializeGame of Technology.AllTechnologies * Model.GameInfo.GameInfo
+    | InitializeGame of AllTechnologies * GameInfo.GameInfo
     | ApplyPreset of string
 
     // Ships

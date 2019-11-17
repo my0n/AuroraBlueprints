@@ -4,7 +4,7 @@ open System
 open Global
 open Model.BuildCost
 open Model.Measures
-open Technology
+open Model.Technology
 
 type Magazine =
     {

@@ -3,6 +3,7 @@ module Comp.CargoHold
 open Global
 open Model.BuildCost
 open Model.Measures
+open Model.Technology
 
 type CargoHold =
     {
@@ -10,8 +11,8 @@ type CargoHold =
         Locked: bool
         BuiltIn: bool
 
-        CargoHolds: Map<Technology.CargoHoldTech, int<comp>>
-        CargoHandlingSystems: Map<Technology.CargoHandlingTech, int<comp>>
+        CargoHolds: Map<CargoHoldTech, int<comp>>
+        CargoHandlingSystems: Map<CargoHandlingTech, int<comp>>
     }
     static member Zero
         with get() =

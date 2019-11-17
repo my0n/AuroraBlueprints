@@ -10,7 +10,7 @@ open Fable.React.Props
 open Bulma.Card
 open Nerds.Common
 
-open Technology
+open Model.Technology
 
 type ShipComponentCardHeaderItem =
     | Name of string

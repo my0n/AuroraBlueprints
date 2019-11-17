@@ -18,7 +18,7 @@ open Nerds.SizeNerd
 open Nerds.EnginePowerNerd
 open Nerds.FuelConsumptionNerd
 
-open Technology
+open Model.Technology
 
 let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: Engine) dispatch =
     let header =

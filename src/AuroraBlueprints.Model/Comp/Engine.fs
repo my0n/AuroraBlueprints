@@ -5,7 +5,7 @@ open Global
 open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
-open Technology
+open Model.Technology
 
 type Engine =
     {

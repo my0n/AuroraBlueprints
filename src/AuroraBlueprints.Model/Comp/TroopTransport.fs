@@ -4,6 +4,7 @@ open Global
 open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
+open Model.Technology
 
 type TroopTransport =
     {
@@ -11,7 +12,7 @@ type TroopTransport =
         Locked: bool
         BuiltIn: bool
         
-        TroopTransports: Map<Technology.TroopTransportTech, int<comp>>
+        TroopTransports: Map<TroopTransportTech, int<comp>>
     }
     static member Zero
         with get() =
