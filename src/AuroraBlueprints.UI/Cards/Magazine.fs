@@ -16,7 +16,7 @@ open Nerds.MagazineCapacityNerd
 open Nerds.PriceNerd
 open Nerds.SizeNerd
 
-open Technology
+open Model.Technology
 
 let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: Magazine) dispatch =
     let header =

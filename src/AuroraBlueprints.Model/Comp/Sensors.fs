@@ -4,6 +4,7 @@ open Global
 open Model.BuildCost
 open Model.MaintenanceClass
 open Model.Measures
+open Model.Technology
 
 type Sensors =
     {
@@ -11,8 +12,8 @@ type Sensors =
         Locked: bool
         BuiltIn: bool
         
-        GeoSensors: Map<Technology.GeoSensorTech, int<comp>>
-        GravSensors: Map<Technology.GravSensorTech, int<comp>>
+        GeoSensors: Map<GeoSensorTech, int<comp>>
+        GravSensors: Map<GravSensorTech, int<comp>>
     }
     static member Zero
         with get() =

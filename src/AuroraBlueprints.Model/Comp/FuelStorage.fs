@@ -3,6 +3,7 @@ module Comp.FuelStorage
 open Global
 open Model.BuildCost
 open Model.Measures
+open Model.Technology
 
 type FuelStorage =
     {
@@ -10,7 +11,7 @@ type FuelStorage =
         Locked: bool
         BuiltIn: bool
 
-        FuelStorages: Map<Technology.FuelStorageTech, int<comp>>
+        FuelStorages: Map<FuelStorageTech, int<comp>>
     }
     static member Zero
         with get() =

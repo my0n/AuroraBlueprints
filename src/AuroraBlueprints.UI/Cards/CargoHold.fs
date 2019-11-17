@@ -17,7 +17,7 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.TractorStrengthNerd
 
-open Technology
+open Model.Technology
 
 let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: Ship) (comp: CargoHold) dispatch =
     let header =

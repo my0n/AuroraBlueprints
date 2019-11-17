@@ -1,7 +1,5 @@
 module Comp.Ship
 
-open System
-
 open Global
 
 open Model.BuildCost
@@ -9,7 +7,7 @@ open Model.MaintenanceClass
 open Model.Measures
 open Comp.ShipComponent
 
-open Technology
+open Model.Technology
 
 type Ship =
     {

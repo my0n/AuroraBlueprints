@@ -5,7 +5,7 @@ open System
 open Model.BuildCost
 open Model.Measures
 open Model.MaintenanceClass
-open Technology
+open Model.Technology
 
 type PowerPlant =
     {

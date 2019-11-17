@@ -3,18 +3,18 @@ module App.State
 open Elmish
 open Global
 
-open Model.Measures
 
 open App.Model
 open App.Msg
 open Comp.Ship
+open Model.Measures
 
 open Saving.LocalStorage
 
 let getInitInfo () =
     promise {
-        let! techs = Technology.allTechnologies
-        let! gameInfo = Model.GameInfo.gameInfo
+        let! techs = File.CsvReader.allTechnologies
+        let! gameInfo = GameInfo.gameInfo
         
         return
             (

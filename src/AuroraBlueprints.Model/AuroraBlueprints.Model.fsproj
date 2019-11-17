@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Global.fs" />
+    <Compile Include="Measures.fs" />
+    <Compile Include="BuildCost.fs" />
+    <Compile Include="Technology.fs" />
+    <Compile Include="ArmorCalc.fs" />
+    <Compile Include="MaintenanceClass.fs" />
+    <Compile Include="Comp/Bridge.fs" />
+    <Compile Include="Comp/CargoHold.fs" />
+    <Compile Include="Comp/Sensors.fs" />
+    <Compile Include="Comp/Engine.fs" />
+    <Compile Include="Comp/FuelStorage.fs" />
+    <Compile Include="Comp/Magazine.fs" />
+    <Compile Include="Comp/PowerPlant.fs" />
+    <Compile Include="Comp/TroopTransport.fs" />
+    <Compile Include="Comp/ShipComponent.fs" />
+    <Compile Include="Comp/Ship.fs" />
+  </ItemGroup>
+
+</Project>

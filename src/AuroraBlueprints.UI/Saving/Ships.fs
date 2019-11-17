@@ -2,6 +2,7 @@ module Saving.Ships
 
 open Global
 open Model.Measures
+open Model.Technology
 open LocalStorage
 open Thoth.Json
 
@@ -26,7 +27,7 @@ let serialize (ship: Ship) =
 
     "ship", "1", ship.Id, serialized
 
-let deserializeShip1 id (comps: ShipComponent list) (techs: Technology.AllTechnologies) =
+let deserializeShip1 id (comps: ShipComponent list) (techs: AllTechnologies) =
     Decode.object
         (fun get ->
             {
@@ -52,7 +53,7 @@ let deserializeShip1 id (comps: ShipComponent list) (techs: Technology.AllTechno
             } : Ship
         )
 
-let deserialize (comps: ShipComponent list) (techs: Technology.AllTechnologies) version key str =
+let deserialize (comps: ShipComponent list) (techs: AllTechnologies) version key str =
     let applyDeserialization fn =
         Decode.fromString (fn key comps techs) str
 

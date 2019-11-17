@@ -4,6 +4,7 @@ open Global
 
 open Comp.Ship
 open Comp.ShipComponent
+open Model.Technology
 
 type Page =
     | Ships
@@ -24,8 +25,8 @@ type Model =
         // stuff that does not
         CurrentPage: Page
         CurrentShip: Ship option
-        AllTechnologies: Technology.AllTechnologies
-        Presets: Model.GameInfo.Preset list
+        AllTechnologies: AllTechnologies
+        Presets: GameInfo.Preset list
         FullyInitialized: bool
     }
     static member empty =

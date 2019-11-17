@@ -10,10 +10,12 @@ open App.Msg
 open Bulma.FC
 open Bulma.Card
 
+open Model.Technology
+
 let techList header techsToDisplay currentTechs dispatch =
     let l =
         techsToDisplay
-        |> List.map (fun (tech: #Technology.TechBase) ->
+        |> List.map (fun (tech: #TechBase) ->
             let researched =
                 currentTechs
                 |> List.contains tech.Id
