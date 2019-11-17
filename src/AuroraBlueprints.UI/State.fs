@@ -3,11 +3,11 @@ module App.State
 open Elmish
 open Global
 
-
 open App.Model
 open App.Msg
 open Comp.Ship
 open Model.Measures
+open Model.Names
 
 open Saving.LocalStorage
 
@@ -145,7 +145,11 @@ let update msg model =
         },
         Cmd.none
     | DuplicateShip ship ->
-        let ship' = { ship with Id = GameObjectId.generate () }
+        let ship' =
+            { ship with
+                Id = GameObjectId.generate ()
+                Name = nameOfCopy ship.Name
+            }
         saveShip ship'
         { model with
             AllShips = model.AllShips %+ ship'

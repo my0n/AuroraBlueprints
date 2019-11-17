@@ -1,4 +1,4 @@
-module Tests
+module Tests.EngineTests
 
 open Expecto
 
@@ -83,4 +83,4 @@ let tests =
         (bigEngine,   photonicEngineTech,     highPowerMod, highEfficiency, normalThermal), (3125.0</comp>, 62<people/comp>, 6250.0<therm/comp>, 6250.0<ep/comp>, 4913.125<l/comp/hr>)
     ]
     |> List.map expectEngineProperties
-    |> testList "engine tests"
+    |> testList "engines"
