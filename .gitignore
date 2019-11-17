@@ -1,4 +1,4 @@
-public/bundle.js*
+# Paket
 !.paket/paket.bootstrapper.exe
 
 # VSCode
