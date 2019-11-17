@@ -14,7 +14,12 @@ type Msg =
     | ApplyPreset of string
 
     // Ships
+    /// Create a new and empty ship, and navigate to the new ship.
+    /// * Accesses local storage
     | NewShip
+    /// Create a clone of an existing ship, and navigate to the cloned ship.
+    /// * Accesses local storage
+    | DuplicateShip of Ship
     | RemoveShip of Ship
     | ReplaceShip of Ship
     | SelectShip of Ship

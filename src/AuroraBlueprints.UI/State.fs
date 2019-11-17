@@ -142,7 +142,16 @@ let update msg model =
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = Some ship
-        }, Cmd.none
+        },
+        Cmd.none
+    | DuplicateShip ship ->
+        let ship' = { ship with Id = GameObjectId.generate () }
+        saveShip ship'
+        { model with
+            AllShips = model.AllShips %+ ship'
+            CurrentShip = Some ship'
+        },
+        Cmd.none
     | RemoveShip ship ->
         removeShip ship
 
@@ -163,18 +172,23 @@ let update msg model =
         { model with
             AllShips = model.AllShips %+ ship
             CurrentShip = model.CurrentShip |> orOtherIf (fun s -> s.Id = ship.Id) ship
-        }, Cmd.none
+        },
+        Cmd.none
     | ShipUpdateName (ship, newName) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with Name = newName })
+        model,
+        ReplaceShip { ship with Name = newName }
+        |> Cmd.ofMsg
     | ShipUpdateClass (ship, newName) ->
-        model, Cmd.ofMsg (ReplaceShip { ship with ShipClass = newName })
+        model,
+        ReplaceShip { ship with ShipClass = newName }
+        |> Cmd.ofMsg
     | SelectShip ship ->
         { model with
             CurrentShip =
                 model.AllShips
                 |> Map.tryFind ship.Id
-        }, Cmd.none
-
+        },
+        Cmd.none
     // Components
     | AddComponentToShip (ship, comp) ->
         model,
