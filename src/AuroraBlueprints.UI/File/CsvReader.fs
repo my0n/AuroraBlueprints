@@ -125,7 +125,7 @@ let allTechnologies: Fable.Core.JS.Promise<AllTechnologies> =
             "data/tech-fuel-storage.csv"
             (fun basics line ->
                 FuelStorageTech (basics,
-                    fuelCapacity = Convert.ToInt32 line.[5] * 1000<l/comp>,
+                    fuelCapacity = Convert.ToInt32 line.[5] * 1<l/comp>,
                     hsPerComp = Convert.ToDouble line.[6] * 1.0<hs/comp>,
                     duraniumCost = Convert.ToDouble line.[7] * 1.0</comp>,
                     boronideCost = Convert.ToDouble line.[8] * 1.0</comp>
