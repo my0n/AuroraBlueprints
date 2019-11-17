@@ -3,9 +3,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Remove="sass\**" />
-  </ItemGroup>
-  <ItemGroup>
     <!-- Global to the app -->
     <Compile Include="Global.fs" />
     <Compile Include="File\CsvReader.fs" />
@@ -84,5 +81,5 @@
     <Compile Include="State.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
