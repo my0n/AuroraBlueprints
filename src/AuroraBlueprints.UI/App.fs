@@ -7,7 +7,7 @@ open Fable.Core.JsInterop
 open App.State
 open App.Model
 
-importAll "../../sass/main.sass"
+importAll "./sass/main.sass"
 
 open Fable.React
 open Fable.React.Props
