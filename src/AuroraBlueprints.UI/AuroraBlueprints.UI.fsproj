@@ -48,6 +48,7 @@
     <Compile Include="Bulma/Table.fs" />
     <Compile Include="Bulma/FC.fs" />
     <Compile Include="Bulma/Card.fs" />
+    <Compile Include="Bulma/Tabs.fs" />
     <Compile Include="Cards/Common.fs" />
     <Compile Include="Cards/Classification.fs" />
     <Compile Include="Cards/Armor.fs" />
@@ -63,6 +64,7 @@
     <Compile Include="Cards/ShipDescription.fs" />
     <Compile Include="Tables/ComponentTable.fs" />
     <Compile Include="Tables/ShipTable.fs" />
+    <Compile Include="ShipView/SidePanel.fs" />
     <Compile Include="ShipView/Page.fs" />
     <Compile Include="TechView.fs" />
     <Compile Include="NavbarView.fs" />
