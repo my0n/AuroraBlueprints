@@ -69,33 +69,10 @@ let root model dispatch =
     let ships = model.AllShips |> Map.values
     let comps = model.AllComponents |> Map.values
 
-    let removeShip ship = Msg.RemoveShip ship |> dispatch
-    let selectShip ship = Msg.SelectShip ship |> dispatch
-
-    let shipListOptions: ColumnOptions<Ship> list =
-        [
-            {
-                Name = "Name"
-                Render = fun ship -> str ship.Name
-            }
-            {
-                Name = "Size (HS)"
-                Render = fun ship -> str << sprintf "%.1f" << ton2hs <| int2float ship.Size
-            }
-            {
-                Name = ""
-                Render = fun ship ->
-                    Bulma.FC.Button
-                        "Remove"
-                        Bulma.FC.ButtonOpts.Empty
-                        (fun _ -> removeShip ship)
-            }
-        ]
-
     div [ ClassName "columns" ]
         [
             div [ ClassName "column is-2" ]
-                [ Bulma.Table.render shipListOptions ships model.CurrentShip selectShip ]
+                [ Tables.ShipTable.render ships model dispatch ]
             div [ ClassName "column is-8" ]
                 (
                   [ actionBar model.CurrentShip dispatch ]
