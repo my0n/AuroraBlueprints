@@ -64,18 +64,13 @@ let shipInfo dispatch allTechs tech ship =
         |> ofList
 
 let root model dispatch =
-    let ships = model.AllShips |> Map.values
-    let comps = model.AllComponents |> Map.values
-
     div [ ClassName "columns" ]
         [
-            div [ ClassName "column is-2" ]
-                [ Tables.ShipTable.render ships model dispatch ]
-            div [ ClassName "column is-8" ]
+            div [ ClassName "column is-3" ]
+                [ SidePanel.render model dispatch ]
+            div [ ClassName "column" ]
                 (
                   [ actionBar model.CurrentShip dispatch ]
                   @+ div [ ClassName "content" ] [ shipInfo dispatch model.AllTechnologies model.CurrentTechnology model.CurrentShip ]
                 )
-            div [ ClassName "column" ]
-                [ Tables.ComponentTable.render comps model dispatch ]
         ]
