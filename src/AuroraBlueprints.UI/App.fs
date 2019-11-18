@@ -16,7 +16,7 @@ let root model dispatch =
 
   let pageHtml page =
     match page with
-    | Ships -> Ships.View.root model dispatch
+    | Ships -> ShipView.Page.root model dispatch
     | Tech -> TechView.root model dispatch
 
   div

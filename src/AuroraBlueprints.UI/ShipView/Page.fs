@@ -1,4 +1,4 @@
-module Ships.View
+module ShipView.Page
 
 open Fable.React
 open Fable.React.Props
