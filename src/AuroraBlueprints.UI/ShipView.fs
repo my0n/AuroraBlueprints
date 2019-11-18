@@ -5,10 +5,8 @@ open Fable.React.Props
 
 open Global
 
-open Model.Measures
 open App.Model
 open App.Msg
-open Bulma.Table
 open Comp.ShipComponent
 open Comp.Ship
 
