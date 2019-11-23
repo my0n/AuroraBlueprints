@@ -14545,6 +14545,12 @@ label.panel-block:hover {
   padding: 3rem 1.5rem 6rem;
 }
 
+.tabs li.is-active a {
+  color: #0a0a0a;
+  background-color: white;
+  border-radius: 3px;
+}
+
 .table tr.is-selected a {
   color: #0a0a0a;
 }
