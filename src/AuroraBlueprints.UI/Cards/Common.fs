@@ -3,7 +3,6 @@ module Cards.Common
 open System
 
 open Global
-open Model.Measures
 
 open Fable.React
 open Fable.React.Props

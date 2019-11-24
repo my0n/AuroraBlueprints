@@ -33,7 +33,6 @@ type Msg =
     // Components
     | AddComponentToShip of Ship * ShipComponent
     | CopyComponentToShip of Ship * ShipComponent
-    | UpdateComponentInShip of Ship * ShipComponent
     | RemoveComponentFromShip of Ship * ShipComponent
     | SetComponentCount of Ship * ShipComponent * int<comp>
     | UpdateComponent of ShipComponent
