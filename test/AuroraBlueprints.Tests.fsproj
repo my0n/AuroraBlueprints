@@ -1,3 +1,4 @@
+<!--<GenerateProgramFile>false</GenerateProgramFile>-->
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,10 +9,15 @@
     <ProjectReference Include="..\src\AuroraBlueprints.Model\AuroraBlueprints.Model.fsproj">
       <Name>AuroraBlueprints.Model.fsproj</Name>
     </ProjectReference>
+    <ProjectReference Include="..\src\AuroraBlueprints.State\AuroraBlueprints.State.fsproj">
+      <Name>AuroraBlueprints.State.fsproj</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generators.fs" />
     <Compile Include="EngineTests.fs" />
     <Compile Include="NamesTests.fs" />
+    <Compile Include="StateComponentTests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
   <ItemGroup>
