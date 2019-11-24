@@ -1,8 +1,8 @@
 module Tables.ComponentTable
 
-open App.Model
-open App.Model.Components
-open App.Msg
+open State.Components
+open State.Model
+open State.Msg
 open Bulma.Table
 open Comp.ShipComponent
 open Fable.React

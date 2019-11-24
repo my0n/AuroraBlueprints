@@ -5,8 +5,8 @@ open Fable.React.Props
 
 open Global
 
-open App.Model
-open App.Msg
+open State.Model
+open State.Msg
 open Comp.ShipComponent
 open Comp.Ship
 

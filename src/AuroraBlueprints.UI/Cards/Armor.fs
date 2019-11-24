@@ -1,7 +1,9 @@
 module Cards.Armor
 
-open App.Model.UI
-open App.Msg
+open State.UI
+open State.Msg
+open State.Model
+
 open Cards.Common
 open Comp.Ship
 
@@ -12,7 +14,7 @@ open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (model: App.Model.Model) (ship: Ship) dispatch =
+let render (model: State.Model.Model) (ship: Ship) dispatch =
     let currentTech = model.CurrentTechnology
     let allTechs = model.AllTechnologies
     let key = ship.Id.ToString() + "armor"

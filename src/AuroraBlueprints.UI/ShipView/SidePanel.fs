@@ -1,7 +1,7 @@
 module ShipView.SidePanel
 
 open Global
-open App.Model
+open State.Model
 
 let render model dispatch =
     let ships = model.AllShips |> Map.values

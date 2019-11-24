@@ -2,8 +2,9 @@ module Cards.FuelStorage
 
 open Global
 
-open App.Msg
-open App.Model.UI
+open State.Msg
+open State.Model
+open State.UI
 open Bulma.Card
 open Cards.Common
 open Model.Measures
@@ -15,7 +16,7 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.FuelCapacityNerd
 
-let render (comp: FuelStorage) (model: App.Model.Model) (ship: Ship) dispatch =
+let render (comp: FuelStorage) (model: State.Model.Model) (ship: Ship) dispatch =
     let currentTech = model.CurrentTechnology
     let allTechs = model.AllTechnologies
     let key = ship.Id.ToString() + comp.Id.ToString()

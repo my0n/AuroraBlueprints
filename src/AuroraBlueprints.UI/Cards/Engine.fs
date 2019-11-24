@@ -5,8 +5,9 @@ open Model.Measures
 open Global
 open System
 
-open App.Msg
-open App.Model.UI
+open State.Msg
+open State.UI
+open State.Model
 open Bulma.Card
 open Cards.Common
 open Comp.Engine
@@ -19,7 +20,7 @@ open Nerds.SizeNerd
 open Nerds.EnginePowerNerd
 open Nerds.FuelConsumptionNerd
 
-let render (comp: Engine) (count: int<comp>) (model: App.Model.Model) (ship: Ship) dispatch =
+let render (comp: Engine) (count: int<comp>) (model: State.Model.Model) (ship: Ship) dispatch =
     let currentTech = model.CurrentTechnology
     let allTechs = model.AllTechnologies
     let key = ship.Id.ToString() + comp.Id.ToString()

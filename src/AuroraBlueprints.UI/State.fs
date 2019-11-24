@@ -2,16 +2,71 @@ module App.State
 
 open Elmish
 
-open App.Model
-open App.Model.Builder
-open App.Model.Components
-open App.Model.Initialization
-open App.Model.Ships
-open App.Model.Technology
-open App.Model.UI
-open App.Msg
+open Global
+
+open State.Model
+open State.Builder
+open State.Components
+open State.Initialization
+open State.Saving
+open State.Ships
+open State.Technology
+open State.UI
+open State.Msg
 open Comp.Ship
 open Model.Measures
+
+open Saving.LocalStorage
+
+let storage =
+    {
+        LoadComponents = fun allTechs ->
+            load "comp" (Saving.Components.deserialize allTechs)
+            |> Seq.map (function
+                | Success comp -> Some comp
+                | NotFound -> None
+                | Failure _ -> None
+            )
+            |> Seq.choose id
+            |> Seq.toList
+        SaveComponent = fun comp ->
+            comp
+            |> Saving.Components.serialize
+            ||||> save
+        DeleteComponent = fun comp ->
+            comp
+            |> Saving.Components.serialize
+            ||||> delete
+        LoadShips = fun allTechs customComponents ->
+            load "ship" (Saving.Ships.deserialize (Map.values customComponents) allTechs)
+            |> Seq.map (function
+                | Success ship -> Some ship
+                | NotFound -> None
+                | Failure _ -> None
+            )
+            |> Seq.choose id
+            |> Seq.toList
+        SaveShip = fun ship ->
+            ship
+            |> Saving.Ships.serialize
+            ||||> save
+        DeleteShip = fun ship ->
+            ship
+            |> Saving.Ships.serialize
+            ||||> delete
+        LoadCurrentTechnology = fun _ ->
+            load "ct" Saving.Technology.deserialize
+            |> Seq.tryHead
+            |> Option.defaultValue NotFound
+            |> function
+                | Success ct -> ct
+                | NotFound -> []
+                | Failure _ -> []
+        SaveCurrentTechnology = fun techs ->
+            techs
+            |> Saving.Technology.serialize
+            ||||> save
+    } : Storage
 
 let getInitInfo () =
     promise {
@@ -21,7 +76,7 @@ let getInitInfo () =
         return
             (
                 techs,
-                gameInfo
+                gameInfo.Presets
             )
     }
 
@@ -35,65 +90,69 @@ let init result =
     ]
 
 let update msg model =
+    let builderParams = (storage, model)
+
     match msg with
     | Noop ->
-        model, Cmd.none
+        builder builderParams {
+            return Cmd.none
+        }
 
     // Initialization
     | InitializeGame (techs, gameInfo) ->
-        builder model {
-            do! Model.initializeModel techs gameInfo
+        builder builderParams {
+            do! Model.initializeModel techs gameInfo storage
             return Cmd.none
         }
     | ApplyPreset preset ->
-        builder model {
+        builder builderParams {
             let! _ = Model.setPreset preset
             return Cmd.none
         }
 
     // UI
     | SetSectionExpanded (section, expanded) ->
-        builder model {
+        builder builderParams {
             do! Model.setSectionExpanded section expanded
             return Cmd.none
         }
     | SelectShip ship ->
-        builder model {
+        builder builderParams {
             do! Model.setCurrentShip ship
             return Cmd.none
         }
 
     // Ships
     | NewShip ->
-        builder model {
+        builder builderParams {
             let! ship = Model.createNewShip
             do! Model.setCurrentShip ship
             return Cmd.none
         }
     | DuplicateShip ship ->
-        builder model {
+        builder builderParams {
             let! ship' = Model.duplicateShip ship
             do! Model.setCurrentShip ship'
             return Cmd.none
         }
     | RemoveShip ship ->
-        builder model {
+        builder builderParams {
             do! Model.removeShip ship
             return Cmd.none
         }
     | ReplaceShip ship ->
-        builder model {
+        builder builderParams {
             do! Model.replaceShip ship
             return Cmd.none
         }
     | ShipUpdateName (ship, newName) ->
-        builder model {
+        builder builderParams {
             let ship' = { ship with Name = newName }
             do! Model.replaceShip ship'
             return Cmd.none
         }
     | ShipUpdateClass (ship, newName) ->
-        builder model {
+        builder builderParams {
             let ship' = { ship with ShipClass = newName }
             do! Model.replaceShip ship'
             return Cmd.none
@@ -101,45 +160,45 @@ let update msg model =
 
     // Components
     | AddComponentToShip (ship, comp) ->
-        builder model {
+        builder builderParams {
             let! count = Model.getComponentCount comp ship
             let! _ = Model.setComponentCount (count + 1<comp>) comp ship
             return Cmd.none
         }
     | CopyComponentToShip (ship, comp) ->
-        builder model {
+        builder builderParams {
             let! comp' = Model.duplicateComponent comp
             let! _ = Model.setComponentCount 1<comp> comp' ship
             return Cmd.none
         }
     | RemoveComponentFromShip (ship, comp) ->
-        builder model {
+        builder builderParams {
             let! _ = Model.removeComponentFromShip comp ship
             return Cmd.none
         }
     | SetComponentCount (ship, comp, count) ->
-        builder model {
+        builder builderParams {
             let! _ = Model.setComponentCount count comp ship
             return Cmd.none
         }
     | UpdateComponent comp ->
-        builder model {
+        builder builderParams {
             let! _ = Model.updateComponent comp
             return Cmd.none
         }
     | RemoveComponent comp ->
-        builder model {
+        builder builderParams {
             let! _ = Model.removeComponent comp
             return Cmd.none
         }
     | LockComponent comp ->
-        builder model {
+        builder builderParams {
             let comp' = comp.WithLocked true
             let! _ = Model.updateComponent comp'
             return Cmd.none
         }
     | UnlockComponent comp ->
-        builder model {
+        builder builderParams {
             let comp' = comp.WithLocked false
             let! _ = Model.updateComponent comp'
             return Cmd.none
@@ -147,12 +206,12 @@ let update msg model =
 
     // Technologies
     | AddTechnology tech ->
-        builder model {
+        builder builderParams {
             let! _ = Model.addCurrentTechnology tech
             return Cmd.none
         }
     | RemoveTechnology tech ->
-        builder model {
+        builder builderParams {
             let! _ = Model.removeCurrentTechnology tech
             return Cmd.none
         }

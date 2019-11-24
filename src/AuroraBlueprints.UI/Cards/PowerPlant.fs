@@ -1,8 +1,9 @@
 module Cards.PowerPlant
 
 open Model.Measures
-open App.Msg
-open App.Model.UI
+open State.Msg
+open State.Model
+open State.UI
 open Bulma.Card
 open Cards.Common
 open Comp.PowerPlant
@@ -15,7 +16,7 @@ open Nerds.PriceNerd
 open Nerds.SizeNerd
 open Nerds.PowerProductionNerd
 
-let render (comp: PowerPlant) (count: int<comp>) (model: App.Model.Model) (ship: Ship) dispatch =
+let render (comp: PowerPlant) (count: int<comp>) (model: State.Model.Model) (ship: Ship) dispatch =
     let currentTech = model.CurrentTechnology
     let allTechs = model.AllTechnologies
     let key = ship.Id.ToString() + comp.Id.ToString()
@@ -90,13 +91,13 @@ let render (comp: PowerPlant) (count: int<comp>) (model: App.Model.Model) (ship:
                         allTechs.Reactors
                         (fun t -> String.Format("{0} power - {1}", t.PowerOutput, t.Name))
                         comp.Technology
-                        (fun n -> App.Msg.UpdateComponent (PowerPlant { comp with Technology = n }) |> dispatch)
+                        (fun n -> State.Msg.UpdateComponent (PowerPlant { comp with Technology = n }) |> dispatch)
                     boundTechField currentTech
                         "Power Boost"
                         allTechs.ReactorsPowerBoost
                         (fun t -> t.Name)
                         comp.PowerBoost
-                        (fun n -> App.Msg.UpdateComponent (PowerPlant { comp with PowerBoost = n }) |> dispatch)
+                        (fun n -> State.Msg.UpdateComponent (PowerPlant { comp with PowerBoost = n }) |> dispatch)
                 ]
         ]
     let actions =

@@ -1,45 +1,28 @@
-module App.Model.Initialization
+module State.Initialization
 
 open Global
 open Model.Technology
-open GameInfo
+open State.Msg
+open State.Model
 
-open Saving.LocalStorage
+open State.Saving
 
 module Model =
 
     /// <returns>The updated model</returns>
-    let initializeModel (allTechs: AllTechnologies) (gameInfo: GameInfo) model =
+    let initializeModel (allTechs: AllTechnologies) (presets: Preset list) (storage: Storage) model =
         let currentTechnology =
-            load "ct" Saving.Technology.deserialize
-            |> Seq.tryHead
-            |> Option.defaultValue NotFound
-            |> function
-                | Success ct -> ct
-                | NotFound -> []
-                | Failure _ -> []
+            storage.LoadCurrentTechnology ()
 
         let customComponents =
-            load "comp" (Saving.Components.deserialize allTechs)
-            |> Seq.map (function
-                | Success comp -> Some comp
-                | NotFound -> None
-                | Failure _ -> None
-            )
-            |> Seq.choose id
-            |> Seq.map (fun comp -> comp.Id, comp)
-            |> Map.ofSeq
+            storage.LoadComponents allTechs
+            |> List.map (fun comp -> comp.Id, comp)
+            |> Map.ofList
 
         let customShips =
-            load "ship" (Saving.Ships.deserialize (Map.values customComponents) allTechs)
-            |> Seq.map (function
-                | Success ship -> Some ship
-                | NotFound -> None
-                | Failure _ -> None
-            )
-            |> Seq.choose id
-            |> Seq.map (fun ship -> ship.Id, ship)
-            |> Map.ofSeq
+            storage.LoadShips allTechs customComponents
+            |> List.map (fun ship -> ship.Id, ship)
+            |> Map.ofList
 
         { model with
             AllTechnologies = allTechs
@@ -56,6 +39,6 @@ module Model =
                 %+ Comp.ShipComponent.TroopTransport ({ Comp.TroopTransport.TroopTransport.Zero with BuiltIn = true })
                 %@ customComponents
             AllShips = customShips
-            Presets = gameInfo.Presets
+            Presets = presets
             FullyInitialized = true
         }

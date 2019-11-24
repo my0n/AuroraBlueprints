@@ -1,7 +1,8 @@
-module App.Model
+module State.Model
 
 open Global
 
+open State.Msg
 open Comp.Ship
 open Comp.ShipComponent
 open Model.Technology
@@ -33,7 +34,7 @@ type Model =
         CurrentPage: Page
         CurrentShip: Ship option
         AllTechnologies: AllTechnologies
-        Presets: GameInfo.Preset list
+        Presets: Preset list
         FullyInitialized: bool
         CollapsedSections: string list
 

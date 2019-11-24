@@ -5,7 +5,7 @@ open Elmish.Navigation
 open Elmish.UrlParser
 open Fable.Core.JsInterop
 open App.State
-open App.Model
+open State.Model
 
 importAll "./sass/main.sass"
 
