@@ -25,10 +25,8 @@ let render (ship: Ship) dispatch =
                     ]                    
             ]
 
-    Bulma.Card.render {
-        key = "classification"
-        HeaderItems = []
-        Contents = [ form ]
-        Actions = []
-        HasExpanderToggle = false
-    }
+    Bulma.Card.render <| Bulma.Card.CardProps
+        (
+            name = "classification",
+            contents = [ form ]
+        )

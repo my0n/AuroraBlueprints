@@ -55,118 +55,94 @@ let techList header techsToDisplay currentTechs dispatch =
         ]
 
 let defensiveSystemsCard model dispatch =
-    {
-        key = "DefensiveSystems"
-        HeaderItems = [ Title "Defensive Systems" ]
-        Contents =
+    "DefensiveSystems",
+    "Defensive Systems",
+    [
+        div [ ClassName "columns" ]
             [
-                div [ ClassName "columns" ]
+                div [ ClassName "column is-4" ]
                     [
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Armor" model.AllTechnologies.Armor model.CurrentTechnology dispatch
-                            ]
+                        techList "Armor" model.AllTechnologies.Armor model.CurrentTechnology dispatch
                     ]
             ]
-        Actions = []
-        HasExpanderToggle = true
-    }
+    ]
 let powerAndPropulsionCard model dispatch =
-    {
-        key = "PowerAndPropulsion"
-        HeaderItems = [ Title "Power and Propulsion" ]
-        Contents =
+    "PowerAndPropulsion",
+    "Power and Propulsion",
+    [
+        div [ ClassName "columns" ]
             [
-                div [ ClassName "columns" ]
+                div [ ClassName "column is-4" ]
                     [
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Reactors" model.AllTechnologies.Reactors model.CurrentTechnology dispatch
-                                techList "Reactor Power Boost" model.AllTechnologies.ReactorsPowerBoost model.CurrentTechnology dispatch
-                            ]
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Engines" model.AllTechnologies.Engines model.CurrentTechnology dispatch
-                                techList "Engine Efficiency" model.AllTechnologies.EngineEfficiency model.CurrentTechnology dispatch
-                            ]
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Engine Power Mod" model.AllTechnologies.EnginePowerMod model.CurrentTechnology dispatch
-                                techList "Engine Thermal Efficiency" model.AllTechnologies.EngineThermalEfficiency model.CurrentTechnology dispatch
-                            ]
+                        techList "Reactors" model.AllTechnologies.Reactors model.CurrentTechnology dispatch
+                        techList "Reactor Power Boost" model.AllTechnologies.ReactorsPowerBoost model.CurrentTechnology dispatch
+                    ]
+                div [ ClassName "column is-4" ]
+                    [
+                        techList "Engines" model.AllTechnologies.Engines model.CurrentTechnology dispatch
+                        techList "Engine Efficiency" model.AllTechnologies.EngineEfficiency model.CurrentTechnology dispatch
+                    ]
+                div [ ClassName "column is-4" ]
+                    [
+                        techList "Engine Power Mod" model.AllTechnologies.EnginePowerMod model.CurrentTechnology dispatch
+                        techList "Engine Thermal Efficiency" model.AllTechnologies.EngineThermalEfficiency model.CurrentTechnology dispatch
                     ]
             ]
-        Actions = []
-        HasExpanderToggle = true
-    }
+    ]
 let logisticsAndGroundCombatCard model dispatch =
-    {
-        key = "LogisticsAndGroundCombat"
-        HeaderItems = [ Title "Logistics and Ground Combat" ]
-        Contents =
+    "LogisticsAndGroundCombat",
+    "Logistics and Ground Combat",
+    [
+        div [ ClassName "columns" ]
             [
-                div [ ClassName "columns" ]
+                div [ ClassName "column is-4" ]
                     [
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Cargo Holds" model.AllTechnologies.CargoHolds model.CurrentTechnology dispatch
-                                techList "Cargo Handling" model.AllTechnologies.CargoHandling model.CurrentTechnology dispatch
-                            ]
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Fuel Storage" model.AllTechnologies.FuelStorages model.CurrentTechnology dispatch
-                            ]
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Troop Transports" model.AllTechnologies.TroopTransports model.CurrentTechnology dispatch
-                            ]
+                        techList "Cargo Holds" model.AllTechnologies.CargoHolds model.CurrentTechnology dispatch
+                        techList "Cargo Handling" model.AllTechnologies.CargoHandling model.CurrentTechnology dispatch
+                    ]
+                div [ ClassName "column is-4" ]
+                    [
+                        techList "Fuel Storage" model.AllTechnologies.FuelStorages model.CurrentTechnology dispatch
+                    ]
+                div [ ClassName "column is-4" ]
+                    [
+                        techList "Troop Transports" model.AllTechnologies.TroopTransports model.CurrentTechnology dispatch
                     ]
             ]
-        Actions = []
-        HasExpanderToggle = true
-    }
+    ]
+
 let missilesAndKineticWeaponsCard model dispatch =
-    {
-        key = "MissilesAndKineticWeapons"
-        HeaderItems = [ Title "Missiles and Kinetic Weapons" ]
-        Contents =
+    "MissilesAndKineticWeapons",
+    "Missiles and Kinetic Weapons",
+    [
+        div [ ClassName "columns" ]
             [
-                div [ ClassName "columns" ]
+                div [ ClassName "column is-4" ]
                     [
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Magazine Efficiency" model.AllTechnologies.MagazineEfficiency model.CurrentTechnology dispatch
-                            ]
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Magazine Ejection" model.AllTechnologies.MagazineEjection model.CurrentTechnology dispatch
-                            ]
+                        techList "Magazine Efficiency" model.AllTechnologies.MagazineEfficiency model.CurrentTechnology dispatch
+                    ]
+                div [ ClassName "column is-4" ]
+                    [
+                        techList "Magazine Ejection" model.AllTechnologies.MagazineEjection model.CurrentTechnology dispatch
                     ]
             ]
-        Actions = []
-        HasExpanderToggle = true
-    }
+    ]
 let sensorsAndFireControlCard model dispatch =
-    {
-        key = "SensorsAndFireControl"
-        HeaderItems = [ Title "Sensors and Fire Control" ]
-        Contents =
+    "SensorsAndFireControl",
+    "Sensors and Fire Control",
+    [
+        div [ ClassName "columns" ]
             [
-                div [ ClassName "columns" ]
+                div [ ClassName "column is-4" ]
                     [
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Geo Sensors" model.AllTechnologies.GeoSensors model.CurrentTechnology dispatch
-                            ]
-                        div [ ClassName "column is-4" ]
-                            [
-                                techList "Grav Sensors" model.AllTechnologies.GravSensors model.CurrentTechnology dispatch
-                            ]
+                        techList "Geo Sensors" model.AllTechnologies.GeoSensors model.CurrentTechnology dispatch
+                    ]
+                div [ ClassName "column is-4" ]
+                    [
+                        techList "Grav Sensors" model.AllTechnologies.GravSensors model.CurrentTechnology dispatch
                     ]
             ]
-        Actions = []
-        HasExpanderToggle = true
-    }
+    ]
 
 let root model dispatch =
     div [ ClassName "columns" ]
@@ -181,7 +157,25 @@ let root model dispatch =
                         powerAndPropulsionCard
                         sensorsAndFireControlCard
                     ]
-                    |> List.map (fun propsFn -> Bulma.Card.render <| propsFn model dispatch)
+                    |> List.map (fun propsFn ->
+                        let (key, name, contents) = propsFn model dispatch
+                        let props =
+                            Bulma.Card.CardProps
+                                (
+                                    name = key,
+                                    headerItems = [ Title name ],
+                                    contents = contents,
+                                    expander =
+                                        {
+                                            IsExpanded = model |> Model.isExpanded key
+                                            OnExpanderToggled = (fun expanded ->
+                                                App.Msg.SetSectionExpanded (key, expanded)
+                                                |> dispatch
+                                            )
+                                        }
+                                )
+                        Bulma.Card.render props
+                    )
                 )
             div [ ClassName "column is-2" ] []
         ]

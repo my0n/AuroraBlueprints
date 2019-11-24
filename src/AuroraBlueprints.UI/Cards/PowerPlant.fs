@@ -2,9 +2,9 @@ module Cards.PowerPlant
 
 open Model.Measures
 open App.Msg
+open App.Model
 open Bulma.Card
 open Cards.Common
-open Model.Measures
 open Comp.PowerPlant
 open Comp.ShipComponent
 open Comp.Ship
@@ -15,9 +15,12 @@ open Nerds.PriceNerd
 open Nerds.SizeNerd
 open Nerds.PowerProductionNerd
 
-open Model.Technology
+let render (comp: PowerPlant) (count: int<comp>) (model: App.Model.Model) (ship: Ship) dispatch =
+    let currentTech = model.CurrentTechnology
+    let allTechs = model.AllTechnologies
+    let key = ship.Id.ToString() + comp.Id.ToString()
+    let expanded = model |> Model.isExpanded key
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: PowerPlant) dispatch =
     let header =
         [
             Name comp.Name
@@ -82,13 +85,13 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                                 ).ToString()
                         }
                         (fun n -> Msg.UpdateComponent (PowerPlant { comp with Size = sizeOptions.[Int32.Parse(n)]}) |> dispatch)
-                    boundTechField tech
+                    boundTechField currentTech
                         "Power Plant Technology"
                         allTechs.Reactors
                         (fun t -> String.Format("{0} power - {1}", t.PowerOutput, t.Name))
                         comp.Technology
                         (fun n -> App.Msg.UpdateComponent (PowerPlant { comp with Technology = n }) |> dispatch)
-                    boundTechField tech
+                    boundTechField currentTech
                         "Power Boost"
                         allTechs.ReactorsPowerBoost
                         (fun t -> t.Name)
@@ -100,4 +103,4 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, PowerPlant comp) |> dispatch)
         ]
-    shipComponentCard (comp.Id.ToString ()) header form actions
+    shipComponentCard key header form actions expanded dispatch

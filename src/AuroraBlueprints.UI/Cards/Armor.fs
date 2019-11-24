@@ -1,6 +1,6 @@
 module Cards.Armor
 
-open Global
+open App.Model
 open App.Msg
 open Cards.Common
 open Comp.Ship
@@ -12,9 +12,12 @@ open Nerds.ArmorStrengthNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-open Model.Technology
+let render (model: App.Model.Model) (ship: Ship) dispatch =
+    let currentTech = model.CurrentTechnology
+    let allTechs = model.AllTechnologies
+    let key = ship.Id.ToString() + "armor"
+    let expanded = model |> Model.isExpanded key
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) dispatch =
     let header =
         [
             Name ship.ArmorTechnology.Name
@@ -32,7 +35,7 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) di
                     (Some 1, None)
                     ship.ArmorDepth
                     (fun n -> { ship with ArmorDepth = n })
-                boundTechField tech
+                boundTechField currentTech
                     "Armor Technology"
                     allTechs.Armor
                     (fun t -> t.Name)
@@ -40,4 +43,4 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) di
                     (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = n } |> dispatch)
             ]
     let actions = []
-    shipComponentCard "armor" header [ form ] actions
+    shipComponentCard key header [ form ] actions expanded dispatch

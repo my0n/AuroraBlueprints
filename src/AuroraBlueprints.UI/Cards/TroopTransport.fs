@@ -1,9 +1,10 @@
 module Cards.TroopTransport
 
 open Global
-open System
 
 open App.Msg
+open App.Model
+
 open Bulma.Card
 open Cards.Common
 open Model.Measures
@@ -16,9 +17,12 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.TroopTransportNerd
 
-open Model.Technology
+let render (comp: TroopTransport) (model: App.Model.Model) (ship: Ship) dispatch =
+    let currentTech = model.CurrentTechnology
+    let allTechs = model.AllTechnologies
+    let key = ship.Id.ToString() + comp.Id.ToString()
+    let expanded = model |> Model.isExpanded key
 
-let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: Ship) (comp: TroopTransport) dispatch =
     let header =
         [
             Name "Troop Transport"
@@ -62,4 +66,4 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, TroopTransport comp) |> dispatch)
         ]
-    shipComponentCard (comp.Id.ToString ()) header form actions
+    shipComponentCard key header form actions expanded dispatch

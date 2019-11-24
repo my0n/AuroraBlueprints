@@ -1,9 +1,9 @@
 module Cards.CargoHold
 
 open Global
-open System
 
 open App.Msg
+open App.Model
 open Bulma.Card
 open Cards.Common
 open Comp.CargoHold
@@ -17,9 +17,12 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.TractorStrengthNerd
 
-open Model.Technology
+let render (comp: CargoHold) (model: App.Model.Model) (ship: Ship) dispatch =
+    let currentTech = model.CurrentTechnology
+    let allTechs = model.AllTechnologies
+    let key = ship.Id.ToString() + comp.Id.ToString()
+    let expanded = model |> Model.isExpanded key
 
-let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: Ship) (comp: CargoHold) dispatch =
     let header =
         [
             Name "Cargo Hold"
@@ -87,4 +90,4 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, CargoHold comp) |> dispatch)
         ]
-    shipComponentCard (comp.Id.ToString ()) header form actions
+    shipComponentCard key header form actions expanded dispatch

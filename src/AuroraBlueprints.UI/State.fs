@@ -65,6 +65,19 @@ let update msg model =
     | Noop ->
         model, Cmd.none
     
+    // UI
+    | SetSectionExpanded (section, expanded) ->
+        match expanded with
+        | true ->
+            { model with
+                CollapsedSections = List.except [section] model.CollapsedSections
+            }
+        | false ->
+            { model with
+                CollapsedSections = model.CollapsedSections @ [section]
+            }
+        , Cmd.none
+
     // Initialization
     | InitializeGame (techs, gameInfo) ->
         let currentTechnology =

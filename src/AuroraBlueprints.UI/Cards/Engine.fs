@@ -6,6 +6,7 @@ open Global
 open System
 
 open App.Msg
+open App.Model
 open Bulma.Card
 open Cards.Common
 open Comp.Engine
@@ -18,9 +19,12 @@ open Nerds.SizeNerd
 open Nerds.EnginePowerNerd
 open Nerds.FuelConsumptionNerd
 
-open Model.Technology
+let render (comp: Engine) (count: int<comp>) (model: App.Model.Model) (ship: Ship) dispatch =
+    let currentTech = model.CurrentTechnology
+    let allTechs = model.AllTechnologies
+    let key = ship.Id.ToString() + comp.Id.ToString()
+    let expanded = model |> Model.isExpanded key
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: Engine) dispatch =
     let header =
         [
             Name comp.Name
@@ -72,25 +76,25 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                             Disabled = false
                         }
                         (fun n -> Msg.UpdateComponent (Engine { comp with Size = n }) |> dispatch)
-                    boundTechField tech
+                    boundTechField currentTech
                         "Engine Technology"
                         allTechs.Engines
                         (fun t -> String.Format("{0} EP - {1}", t.PowerPerHs, t.Name))
                         comp.EngineTech
                         (fun n -> Msg.UpdateComponent (Engine { comp with EngineTech = n }) |> dispatch)
-                    boundTechField tech
+                    boundTechField currentTech
                         "Fuel Consumption"
                         allTechs.EngineEfficiency
                         (fun t -> sprintf "x%.3f fuel" t.Efficiency)
                         comp.EfficiencyTech
                         (fun n -> Msg.UpdateComponent (Engine { comp with EfficiencyTech = n }) |> dispatch)
-                    boundFloatChoiceField (allTechs.UnlockedPowerMods tech) ship dispatch
+                    boundFloatChoiceField (allTechs.UnlockedPowerMods currentTech) ship dispatch
                         "Engine Power"
                         allTechs.AllPowerMods
                         comp.PowerModTech
                         (fun n -> sprintf "x%.2f EP / x%.3f fuel" n (Math.Pow(n, 2.5)))
                         (fun n -> Engine { comp with PowerModTech = n })
-                    boundTechField tech
+                    boundTechField currentTech
                         "Thermal Efficiency"
                         allTechs.EngineThermalEfficiency
                         (fun t -> sprintf "x%.2f therms" t.ThermalEfficiency)
@@ -102,4 +106,4 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Engine comp) |> dispatch)
         ]
-    shipComponentCard (comp.Id.ToString ()) header form actions
+    shipComponentCard key header form actions expanded dispatch

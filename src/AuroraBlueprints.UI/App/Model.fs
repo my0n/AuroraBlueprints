@@ -28,6 +28,7 @@ type Model =
         AllTechnologies: AllTechnologies
         Presets: GameInfo.Preset list
         FullyInitialized: bool
+        CollapsedSections: string list
     }
     static member empty =
         {
@@ -39,6 +40,7 @@ type Model =
             AllTechnologies = { Technologies = Map.empty }
             Presets = List.empty
             FullyInitialized = false
+            CollapsedSections = List.empty
         }
         
 module Model =
@@ -52,3 +54,5 @@ module Model =
                 ship.Components.ContainsKey comp.Id
             )
         )
+    let isExpanded key model =
+        not <| List.contains key model.CollapsedSections

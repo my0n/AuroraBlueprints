@@ -129,11 +129,19 @@ let inline boundTechField<'a when 'a :> TechBase> (currentTech: GameObjectId lis
         }
         (fun n -> cb (List.find (fun t -> t.Id = n) options))
 
-let shipComponentCard key header contents actions =
-    Bulma.Card.render {
-        key = key
-        HeaderItems = renderHeader header
-        Contents = contents
-        Actions = actions
-        HasExpanderToggle = true
-    }
+let shipComponentCard key header contents actions expanded dispatch =
+    Bulma.Card.render <| Bulma.Card.CardProps
+        (
+            name = key,
+            headerItems = renderHeader header,
+            contents = contents,
+            actions = actions,
+            expander =
+                {
+                    IsExpanded = expanded
+                    OnExpanderToggled = (fun expanded ->
+                        App.Msg.SetSectionExpanded (key, expanded)
+                        |> dispatch
+                    )
+                }
+        )

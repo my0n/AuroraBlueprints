@@ -34,7 +34,7 @@ let actionBar ship dispatch =
                 ]
         ]
 
-let shipInfo dispatch allTechs tech ship =
+let shipInfo dispatch model ship =
     match ship with
     | None ->
         div [ ClassName "title is-4" ] [ str "No ship selected." ]
@@ -43,24 +43,26 @@ let shipInfo dispatch allTechs tech ship =
             ship.Components
             |> Map.values
             |> List.map (fun (count, comp) ->
-                match comp with
-                | Bridge comp         -> Cards.Bridge.render ship count comp dispatch
-                | CargoHold comp      -> Cards.CargoHold.render allTechs tech ship comp dispatch
-                | Engine comp         -> Cards.Engine.render allTechs tech ship count comp dispatch
-                | FuelStorage comp    -> Cards.FuelStorage.render allTechs tech ship comp dispatch
-                | Magazine comp       -> Cards.Magazine.render allTechs tech ship count comp dispatch
-                | PowerPlant comp     -> Cards.PowerPlant.render allTechs tech ship count comp dispatch
-                | Sensors comp        -> Cards.Sensors.render allTechs tech ship comp dispatch
-                | TroopTransport comp -> Cards.TroopTransport.render allTechs tech ship comp dispatch
+                (
+                    match comp with
+                    | Bridge comp         -> Cards.Bridge.render comp count
+                    | CargoHold comp      -> Cards.CargoHold.render comp
+                    | Engine comp         -> Cards.Engine.render comp count
+                    | FuelStorage comp    -> Cards.FuelStorage.render comp
+                    | Magazine comp       -> Cards.Magazine.render comp count
+                    | PowerPlant comp     -> Cards.PowerPlant.render comp count
+                    | Sensors comp        -> Cards.Sensors.render comp
+                    | TroopTransport comp -> Cards.TroopTransport.render comp
+                ) model ship dispatch
             )
 
         [
             Cards.Classification.render ship dispatch
-            Cards.Armor.render allTechs tech ship dispatch
-            Cards.CrewQuarters.render ship dispatch
+            Cards.Armor.render model ship dispatch
+            Cards.CrewQuarters.render model ship dispatch
         ]
         @ shipComponents
-        @ [ Cards.ShipDescription.render ship ]
+        @ [ Cards.ShipDescription.render ship dispatch ]
         |> ofList
 
 let root model dispatch =
@@ -71,6 +73,6 @@ let root model dispatch =
             div [ ClassName "column" ]
                 (
                   [ actionBar model.CurrentShip dispatch ]
-                  @+ div [ ClassName "content" ] [ shipInfo dispatch model.AllTechnologies model.CurrentTechnology model.CurrentShip ]
+                  @+ div [ ClassName "content" ] [ shipInfo dispatch model model.CurrentShip ]
                 )
         ]

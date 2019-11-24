@@ -5,6 +5,7 @@ open System
 open Global
 
 open App.Msg
+open App.Model
 
 open Cards.Common
 open Model.Measures
@@ -16,9 +17,12 @@ open Nerds.MagazineCapacityNerd
 open Nerds.PriceNerd
 open Nerds.SizeNerd
 
-open Model.Technology
+let render (comp: Magazine) (count: int<comp>) (model: App.Model.Model) (ship: Ship) dispatch =
+    let currentTech = model.CurrentTechnology
+    let allTechs = model.AllTechnologies
+    let key = ship.Id.ToString() + comp.Id.ToString()
+    let expanded = model |> Model.isExpanded key
 
-let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (count: int<comp>) (comp: Magazine) dispatch =
     let header =
         [
             Name comp.Name
@@ -56,19 +60,19 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
                         (Some 1, Some 30)
                         comp.Size
                         (fun n -> Magazine { comp with Size = n })
-                    boundTechField tech
+                    boundTechField currentTech
                         "Armor"
                         allTechs.Armor
                         (fun t -> t.Name)
                         comp.Armor
                         (fun n -> Msg.UpdateComponent (Magazine { comp with Armor = n }) |> dispatch)
-                    boundTechField tech
+                    boundTechField currentTech
                         "Feed System"
                         allTechs.MagazineEfficiency
                         (fun t -> sprintf "x%.2f ammo" (t.AmmoDensity / 20.0))
                         comp.FeedSystem
                         (fun n -> Msg.UpdateComponent (Magazine { comp with FeedSystem = n }) |> dispatch)
-                    boundTechField tech
+                    boundTechField currentTech
                         "Ejection"
                         allTechs.MagazineEjection
                         (fun t -> String.Format("{0}% ejection chance", t.EjectionChance * 100.0))
@@ -80,4 +84,4 @@ let render (allTechs: AllTechnologies) (tech: GameObjectId list) (ship: Ship) (c
         [
             "Remove", Bulma.Card.DangerColor, (fun _ -> App.Msg.RemoveComponentFromShip (ship, Magazine comp) |> dispatch)
         ]
-    shipComponentCard (comp.Id.ToString ()) header form actions
+    shipComponentCard key header form actions expanded dispatch
