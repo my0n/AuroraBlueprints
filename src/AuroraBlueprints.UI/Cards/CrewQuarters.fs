@@ -1,7 +1,7 @@
 module Cards.CrewQuarters
 
 open App.Msg
-open App.Model
+open App.Model.UI
 open Bulma.FC
 open Cards.Common
 open Model.Measures

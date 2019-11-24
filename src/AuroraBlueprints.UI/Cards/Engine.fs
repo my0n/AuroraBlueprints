@@ -6,7 +6,7 @@ open Global
 open System
 
 open App.Msg
-open App.Model
+open App.Model.UI
 open Bulma.Card
 open Cards.Common
 open Comp.Engine

@@ -15,6 +15,13 @@ let toHash page =
     | Ships -> "#ships"
     | Tech -> "#tech"
 
+type PendingSave =
+    | SetShip of Ship
+    | RemoveShip of Ship
+    | SetComponent of ShipComponent
+    | RemoveComponent of ShipComponent
+    | SetCurrentTechnologies of GameObjectId list
+
 type Model =
     {
         // stuff that gets saved
@@ -29,6 +36,9 @@ type Model =
         Presets: GameInfo.Preset list
         FullyInitialized: bool
         CollapsedSections: string list
+
+        // stuff that will get saved
+        PendingSaves: PendingSave list
     }
     static member empty =
         {
@@ -41,18 +51,6 @@ type Model =
             Presets = List.empty
             FullyInitialized = false
             CollapsedSections = List.empty
+            PendingSaves = List.empty
         }
         
-module Model =
-    let canDeleteComponent (model) (comp: ShipComponent) =
-        not comp.BuiltIn
-        &&
-        not (
-            model.AllShips
-            |> Map.values
-            |> Seq.exists (fun ship ->
-                ship.Components.ContainsKey comp.Id
-            )
-        )
-    let isExpanded key model =
-        not <| List.contains key model.CollapsedSections

@@ -1,6 +1,7 @@
 module Tables.ComponentTable
 
 open App.Model
+open App.Model.Components
 open App.Msg
 open Bulma.Table
 open Comp.ShipComponent
@@ -62,7 +63,7 @@ let render (comps: ShipComponent list) model dispatch =
                     Render = fun comp ->
                         Bulma.FC.Button
                             "Delete"
-                            (match Model.canDeleteComponent model comp with true -> Bulma.FC.ButtonOpts.Empty | false -> Bulma.FC.ButtonOpts.Disabled)
+                            (match Model.canDeleteComponent comp model with true -> Bulma.FC.ButtonOpts.Empty | false -> Bulma.FC.ButtonOpts.Disabled)
                             (fun _ -> deleteComponent comp)
                 }
             ]

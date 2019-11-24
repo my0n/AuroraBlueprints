@@ -3,7 +3,7 @@ module Cards.Bridge
 open Model.Measures
 
 open App.Msg
-open App.Model
+open App.Model.UI
 open Bulma.Card
 open Cards.Common
 open Comp.Bridge

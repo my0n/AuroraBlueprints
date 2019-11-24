@@ -3,7 +3,7 @@ module Cards.FuelStorage
 open Global
 
 open App.Msg
-open App.Model
+open App.Model.UI
 open Bulma.Card
 open Cards.Common
 open Model.Measures

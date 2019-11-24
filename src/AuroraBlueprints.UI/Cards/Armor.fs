@@ -1,6 +1,6 @@
 module Cards.Armor
 
-open App.Model
+open App.Model.UI
 open App.Msg
 open Cards.Common
 open Comp.Ship

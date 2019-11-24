@@ -1,6 +1,5 @@
 module Cards.Classification
 
-open Global
 open App.Msg
 open Comp.Ship
 

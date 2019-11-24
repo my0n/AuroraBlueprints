@@ -5,7 +5,7 @@ open System
 open Global
 
 open App.Msg
-open App.Model
+open App.Model.UI
 
 open Cards.Common
 open Model.Measures

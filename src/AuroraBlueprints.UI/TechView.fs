@@ -6,6 +6,7 @@ open Fable.React.Props
 open Global
 
 open App.Model
+open App.Model.UI
 open App.Msg
 open Bulma.FC
 open Bulma.Card
