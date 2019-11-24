@@ -1,10 +1,11 @@
-module App.Model.Components
+module State.Components
 
 open Global
 
-open App.Model.Ships
 open Comp.Ship
 open Comp.ShipComponent
+open State.Model
+open State.Ships
 
 module Model =
 

@@ -2,8 +2,8 @@ module Cards.Bridge
 
 open Model.Measures
 
-open App.Msg
-open App.Model.UI
+open State.Msg
+open State.UI
 open Bulma.Card
 open Cards.Common
 open Comp.Bridge
@@ -13,7 +13,7 @@ open Comp.Ship
 open Nerds.PriceNerd
 open Nerds.SizeNerd
 
-let render (comp: Bridge) (count: int<comp>) (model: App.Model.Model) (ship: Ship) dispatch =
+let render (comp: Bridge) (count: int<comp>) (model: State.Model.Model) (ship: Ship) dispatch =
     let key = ship.Id.ToString() + comp.Id.ToString()
     let expanded = model |> Model.isExpanded key
 

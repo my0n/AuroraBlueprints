@@ -3,7 +3,7 @@ module PageState
 open Elmish.Navigation
 open Elmish.UrlParser
 open Browser
-open App.Model
+open State.Model
 
 let pageParser: Parser<Page->Page,Page> =
     oneOf [

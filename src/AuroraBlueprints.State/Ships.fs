@@ -1,4 +1,4 @@
-module App.Model.Ships
+module State.Ships
 
 open Global
 
@@ -6,6 +6,7 @@ open Comp.Ship
 open Comp.ShipComponent
 open Model.Names
 open Model.Measures
+open State.Model
 
 module Model =
 

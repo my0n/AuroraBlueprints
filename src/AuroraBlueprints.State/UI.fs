@@ -1,4 +1,6 @@
-module App.Model.UI
+module State.UI
+
+open State.Model
 
 module Model =
 

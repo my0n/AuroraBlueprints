@@ -1,7 +1,7 @@
 module Cards.CrewQuarters
 
-open App.Msg
-open App.Model.UI
+open State.Msg
+open State.UI
 open Bulma.FC
 open Cards.Common
 open Model.Measures
@@ -11,7 +11,7 @@ open Nerds.DeployTimeNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (model: App.Model.Model) (ship: Ship) dispatch =
+let render (model: State.Model.Model) (ship: Ship) dispatch =
     let key = ship.Id.ToString() + "crewquarters"
     let expanded = model |> Model.isExpanded key
 

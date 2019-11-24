@@ -5,9 +5,9 @@ open Fable.React.Props
 
 open Global
 
-open App.Model
-open App.Model.UI
-open App.Msg
+open State.Model
+open State.UI
+open State.Msg
 open Bulma.FC
 open Bulma.Card
 
@@ -170,7 +170,7 @@ let root model dispatch =
                                         {
                                             IsExpanded = model |> Model.isExpanded key
                                             OnExpanderToggled = (fun expanded ->
-                                                App.Msg.SetSectionExpanded (key, expanded)
+                                                State.Msg.SetSectionExpanded (key, expanded)
                                                 |> dispatch
                                             )
                                         }

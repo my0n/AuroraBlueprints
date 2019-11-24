@@ -1,6 +1,6 @@
 module Cards.Classification
 
-open App.Msg
+open State.Msg
 open Comp.Ship
 
 let render (ship: Ship) dispatch =

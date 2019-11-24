@@ -1,4 +1,4 @@
-module App.Msg
+module State.Msg
 
 open Global
 open Comp.Ship
@@ -6,11 +6,17 @@ open Comp.ShipComponent
 open Model.Measures
 open Model.Technology
 
+type Preset =
+    {
+        Name: string
+        Technologies: GameObjectId list
+    }
+
 type Msg =
     | Noop
 
     // Initialization
-    | InitializeGame of AllTechnologies * GameInfo.GameInfo
+    | InitializeGame of AllTechnologies * (Preset list)
     | ApplyPreset of string
 
     // UI

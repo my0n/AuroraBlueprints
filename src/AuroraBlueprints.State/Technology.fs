@@ -1,4 +1,6 @@
-module App.Model.Technology
+module State.Technology
+
+open State.Model
 
 module Model =
 

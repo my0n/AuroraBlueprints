@@ -6,6 +6,9 @@
     <ProjectReference Include="..\AuroraBlueprints.Model\AuroraBlueprints.Model.fsproj">
       <Name>AuroraBlueprints.Model.fsproj</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AuroraBlueprints.State\AuroraBlueprints.State.fsproj">
+      <Name>AuroraBlueprints.State.fsproj</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="File/CsvReader.fs" />
@@ -14,14 +17,6 @@
     <Compile Include="Saving/Technology.fs" />
     <Compile Include="Saving/Components.fs" />
     <Compile Include="Saving/Ships.fs" />
-    <Compile Include="App/Msg.fs" />
-    <Compile Include="App/Model.fs" />
-    <Compile Include="App/Ships.fs" />
-    <Compile Include="App/Components.fs" />
-    <Compile Include="App/Technology.fs" />
-    <Compile Include="App/UI.fs" />
-    <Compile Include="App/Initialization.fs" />
-    <Compile Include="App/Builder.fs" />
     <Compile Include="Nerds/Icon.fs" />
     <Compile Include="Nerds/Common.fs" />
     <Compile Include="Nerds/ArmorSizeNerd.fs" />

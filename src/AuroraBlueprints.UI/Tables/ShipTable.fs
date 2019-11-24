@@ -1,8 +1,8 @@
 module Tables.ShipTable
 
 open Global
-open App.Model
-open App.Msg
+open State.Model
+open State.Msg
 open Bulma.Table
 open Fable.React
 open Comp.Ship

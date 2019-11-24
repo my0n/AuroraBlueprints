@@ -4,12 +4,7 @@ open Global
 
 open Fetch
 open Fable.SimpleJson
-
-type Preset =
-    {
-        Name: string
-        Technologies: GameObjectId list
-    }
+open State.Msg
 
 type GameInfo =
     {
