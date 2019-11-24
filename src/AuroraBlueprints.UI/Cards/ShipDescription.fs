@@ -139,7 +139,7 @@ let private renderNerd (nerd: INerd) =
         div [ HTMLAttr.Title nerd.Tooltip ] [ str d ]
     )
 
-let render ship =
+let render ship dispatch =
     let contents =
         let renderDescription desc =
             match desc with
@@ -159,10 +159,9 @@ let render ship =
         ship
         |> describe
         |> renderContents
-    Bulma.Card.render {
-        key = "description"
-        HeaderItems = [ Title "Description" ]
-        Contents = [ contents ]
-        Actions = []
-        HasExpanderToggle = true
-    }
+    Bulma.Card.render <| Bulma.Card.CardProps
+        (
+            name = ship.Id.ToString() + "description",
+            headerItems = [ Title "Description" ],
+            contents = [ contents ]
+        )

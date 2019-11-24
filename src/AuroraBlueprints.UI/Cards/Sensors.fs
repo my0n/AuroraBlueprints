@@ -3,6 +3,8 @@ module Cards.Sensors
 open Global
 
 open App.Msg
+open App.Model
+
 open Bulma.Card
 open Cards.Common
 open Comp.Sensors
@@ -16,9 +18,12 @@ open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 open Nerds.SensorStrengthNerd
 
-open Model.Technology
+let render (comp: Sensors) (model: App.Model.Model) (ship: Ship) dispatch =
+    let currentTech = model.CurrentTechnology
+    let allTechs = model.AllTechnologies
+    let key = ship.Id.ToString() + comp.Id.ToString()
+    let expanded = model |> Model.isExpanded key
 
-let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: Ship) (comp: Sensors) dispatch =
     let header =
         [
             Name "Sensors"
@@ -90,4 +95,4 @@ let render (allTechs: AllTechnologies) (currentTech: GameObjectId list) (ship: S
         [
             "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, Sensors comp) |> dispatch)
         ]
-    shipComponentCard (comp.Id.ToString ()) header form actions
+    shipComponentCard key header form actions expanded dispatch

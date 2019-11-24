@@ -1,7 +1,7 @@
 module Cards.CrewQuarters
 
-open Global
 open App.Msg
+open App.Model
 open Bulma.FC
 open Cards.Common
 open Model.Measures
@@ -11,7 +11,10 @@ open Nerds.DeployTimeNerd
 open Nerds.PriceTotalNerd
 open Nerds.SizeNerd
 
-let render (ship: Ship) dispatch =
+let render (model: App.Model.Model) (ship: Ship) dispatch =
+    let key = ship.Id.ToString() + "crewquarters"
+    let expanded = model |> Model.isExpanded key
+
     let header =
         [
             Name "Crew Quarters"
@@ -42,4 +45,4 @@ let render (ship: Ship) dispatch =
                 ]
         ]
     let actions = []
-    shipComponentCard "crewquarters" header form actions
+    shipComponentCard key header form actions expanded dispatch

@@ -13,6 +13,10 @@ type Msg =
     | InitializeGame of AllTechnologies * GameInfo.GameInfo
     | ApplyPreset of string
 
+    // UI
+    /// Expands or collapses an expandable section.
+    | SetSectionExpanded of string * bool
+
     // Ships
     /// Create a new and empty ship, and navigate to the new ship.
     /// * Accesses local storage
