@@ -19,9 +19,9 @@ module Expect =
 
 [<Tests>]
 let tests =
-    testList "components" [
-        testList "remove" [
-            testList "not built-in" [
+    testList "components." [
+        testList "remove." [
+            testList "not built-in." [
                 Generators.components
                 |> Seq.filter (fun comp -> not comp.BuiltIn)
                 |> Seq.map (fun comp ->
@@ -35,7 +35,7 @@ let tests =
                             comp
                 )
                 |> Seq.toList
-                |> testList "lean list"
+                |> testList "lean list."
 
                 Generators.components
                 |> Seq.filter (fun comp -> not comp.BuiltIn)
@@ -52,7 +52,7 @@ let tests =
                             comp
                 )
                 |> Seq.toList
-                |> testList "busy list"
+                |> testList "busy list."
             ]
             
             testList "built-in" [
@@ -69,7 +69,7 @@ let tests =
                             comp
                 )
                 |> Seq.toList
-                |> testList "lean list"
+                |> testList "lean list."
 
                 Generators.components
                 |> Seq.filter (fun comp -> comp.BuiltIn)
@@ -86,7 +86,7 @@ let tests =
                             comp
                 )
                 |> Seq.toList
-                |> testList "busy list"
+                |> testList "busy list."
             ]
         ]
     ]

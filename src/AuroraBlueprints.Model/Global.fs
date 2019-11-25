@@ -59,6 +59,7 @@ let inline (%@) (a: Map<'a, 'b>) (b: Map<'a, 'b>) =
 
 module String =
     let inline split (ch: char[]) (count: int) (s: string) = s.Split(ch, count)
+    let inline replace (old: string) (n: string) (s: string) = s.Replace(old, n)
 
 // lol
 let inline (|||>) (a, b, c) f = f a b c
