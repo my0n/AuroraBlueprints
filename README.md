@@ -8,6 +8,8 @@ The latest stable version of the website can be found at: https://my0n.github.io
 
 # Running the app
 
+First `npm install`
+
 Dev mode: `npx webpack-dev-server` will host on `localhost:8080`.
 
 Full build: `npx webpack` will deploy to the `deploy` folder.
