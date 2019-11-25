@@ -51,4 +51,4 @@ let tests =
                 expectedCopy
                 "name of copy not equal"
     )
-    |> testList "names"
+    |> testList "names."

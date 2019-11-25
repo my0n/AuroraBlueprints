@@ -67,6 +67,7 @@ let components =
                     powerModTech
                     engineEffTech.Efficiency
                     thermalEffTech.ThermalEfficiency
+                |> String.replace "." ","
 
             ShipComponent.Engine
                 {

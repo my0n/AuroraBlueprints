@@ -2,6 +2,7 @@ module Tests.EngineTests
 
 open Expecto
 
+open Global
 open Model.Measures
 open Model.Technology
 open Comp.Engine
@@ -41,6 +42,7 @@ let expectEngineProperties ((size, engineTech, powerMod, efficiency, thermalEffi
             powerMod
             efficiency.Efficiency
             thermalEfficiency.ThermalEfficiency
+        |> String.replace "." ","
     
     testCase name <| fun _ ->
         Expect.floatClose
@@ -83,4 +85,4 @@ let tests =
         (bigEngine,   photonicEngineTech,     highPowerMod, highEfficiency, normalThermal), (3125.0</comp>, 62<people/comp>, 6250.0<therm/comp>, 6250.0<ep/comp>, 4913.125<l/comp/hr>)
     ]
     |> List.map expectEngineProperties
-    |> testList "engines"
+    |> testList "engines."
