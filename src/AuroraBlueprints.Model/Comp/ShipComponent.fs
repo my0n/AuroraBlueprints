@@ -131,13 +131,4 @@ type ShipComponent =
         | PowerPlant c         -> PowerPlant { c with Locked = locked }
         | Sensors c            -> Sensors { c with Locked = locked }
         | TroopTransport c     -> TroopTransport { c with Locked = locked }
-    member this.duplicate =
-        match this with
-        | Bridge c             -> Bridge { c with Id = GameObjectId.generate(); BuiltIn = false }
-        | CargoHold c          -> CargoHold { c with Id = GameObjectId.generate(); BuiltIn = false }
-        | Engine c             -> Engine { c with Id = GameObjectId.generate(); BuiltIn = false }
-        | FuelStorage c        -> FuelStorage { c with Id = GameObjectId.generate(); BuiltIn = false }
-        | Magazine c           -> Magazine { c with Id = GameObjectId.generate(); BuiltIn = false }
-        | PowerPlant c         -> PowerPlant { c with Id = GameObjectId.generate(); BuiltIn = false }
-        | Sensors c            -> Sensors { c with Id = GameObjectId.generate(); BuiltIn = false }
-        | TroopTransport c     -> TroopTransport { c with Id = GameObjectId.generate(); BuiltIn = false }
+        

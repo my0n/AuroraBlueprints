@@ -26,10 +26,20 @@ module Model =
     /// * The newly duplicated component
     /// </returns>
     let duplicateComponent (comp: ShipComponent) model =
-        let comp' = comp.duplicate
+        let comp' =
+            match comp with
+            | Bridge c         -> Bridge { c with Id = GameObjectId.generate(); BuiltIn = false }
+            | CargoHold c      -> CargoHold { c with Id = GameObjectId.generate(); BuiltIn = false }
+            | Engine c         -> Engine { c with Id = GameObjectId.generate(); BuiltIn = false }
+            | FuelStorage c    -> FuelStorage { c with Id = GameObjectId.generate(); BuiltIn = false }
+            | Magazine c       -> Magazine { c with Id = GameObjectId.generate(); BuiltIn = false }
+            | PowerPlant c     -> PowerPlant { c with Id = GameObjectId.generate(); BuiltIn = false }
+            | Sensors c        -> Sensors { c with Id = GameObjectId.generate(); BuiltIn = false }
+            | TroopTransport c -> TroopTransport { c with Id = GameObjectId.generate(); BuiltIn = false }
+            
         { model with
-            AllComponents = model.AllComponents.Add(comp.Id, comp)
-            PendingSaves = model.PendingSaves @ [ SetComponent comp ]
+            AllComponents = model.AllComponents.Add(comp'.Id, comp')
+            PendingSaves = model.PendingSaves @ [ SetComponent comp' ]
         },
         comp'
         
