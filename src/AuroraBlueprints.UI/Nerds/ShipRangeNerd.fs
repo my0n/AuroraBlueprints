@@ -14,7 +14,10 @@ type ShipRangeNerd =
                 sprintf "%.1f" (this.Range / 1000000000.0)
         member this.Tooltip
             with get() =
-                sprintf "%.1f billion km" (this.Range / 1000000000.0)
+                if this.Range > 14959787.1<km> then // 0.1 AU
+                    sprintf "%.1f billion km (%.1f AU)" (this.Range / 1000000000.0) (this.Range / 149597870.7)
+                else
+                    sprintf "%.1f billion km" (this.Range / 1000000000.0)
         member this.Icon
             with get() =
                 NoIcon
