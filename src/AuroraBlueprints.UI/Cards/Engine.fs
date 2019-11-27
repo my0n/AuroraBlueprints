@@ -45,6 +45,7 @@ let render (comp: Engine) (count: int<comp>) (model: State.Model.Model) (ship: S
               { Count = count
                 Consumption = comp.FuelConsumption
                 Efficiency = comp.FuelConsumption / comp.EnginePower } ]
+
     let form =
         [ Bulma.FC.HorizontalGroup None
               [ countField
@@ -94,5 +95,9 @@ let render (comp: Engine) (count: int<comp>) (model: State.Model.Model) (ship: S
                       GetName = fun t -> sprintf "x%.2f therms" t.ThermalEfficiency
                       OnChange = fun n -> Engine { comp with ThermalEfficiencyTech = n } } dispatch ] ]
 
-    let actions = [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, Engine comp) |> dispatch) ]
+    let actions =
+        [ removeButton
+            { Ship = ship
+              Component = Engine comp } dispatch ]
+
     shipComponentCard key header form actions expanded dispatch

@@ -72,5 +72,9 @@ let render (comp: PowerPlant) (count: int<comp>) (model: State.Model.Model) (shi
                       GetName = fun t -> t.Name
                       OnChange = fun n -> PowerPlant { comp with PowerBoost = n } } dispatch ] ]
 
-    let actions = [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, PowerPlant comp) |> dispatch) ]
+    let actions =
+        [ removeButton
+            { Ship = ship
+              Component = PowerPlant comp } dispatch ]
+
     shipComponentCard key header form actions expanded dispatch

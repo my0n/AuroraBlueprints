@@ -36,6 +36,7 @@ let render (comp: Magazine) (count: int<comp>) (model: State.Model.Model) (ship:
               { RenderMode = HS
                 Count = count
                 Size = float2int <| int2float comp.Size * 50.0<ton/hs> } ]
+
     let form =
         [ Bulma.FC.HorizontalGroup None
               [ countField
@@ -86,6 +87,8 @@ let render (comp: Magazine) (count: int<comp>) (model: State.Model.Model) (ship:
                       OnChange = fun n -> Magazine { comp with Ejection = n } } dispatch ] ]
 
     let actions =
-        [ "Remove", Bulma.Card.DangerColor,
-          (fun _ -> State.Msg.RemoveComponentFromShip(ship, Magazine comp) |> dispatch) ]
+        [ removeButton
+            { Ship = ship
+              Component = Magazine comp } dispatch ]
+
     shipComponentCard key header form actions expanded dispatch
