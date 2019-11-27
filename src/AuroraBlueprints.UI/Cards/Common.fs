@@ -213,6 +213,13 @@ let inline techCountFields (props: BountTechCountFieldProps<'a>) dispatch =
               Disabled = not <| List.contains tech.Id props.CurrentTech
               OnChange = fun n -> props.OnChange tech n } dispatch)
 
+type RemoveButtonProps =
+    { Ship: Ship
+      Component: ShipComponent }
+
+let inline removeButton (props: RemoveButtonProps) dispatch =
+    "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(props.Ship, props.Component) |> dispatch)
+
 let shipComponentCard key header contents actions expanded dispatch =
     Bulma.Card.render
     <| Bulma.Card.CardProps

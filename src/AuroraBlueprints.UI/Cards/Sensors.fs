@@ -54,5 +54,9 @@ let render (comp: Sensors) (model: State.Model.Model) (ship: Ship) dispatch =
                     OnChange = fun tech n -> Sensors { comp with GravSensors = comp.GravSensors.Add(tech, n) } }
                    dispatch) ]
 
-    let actions = [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, Sensors comp) |> dispatch) ]
+    let actions =
+        [ removeButton
+            { Ship = ship
+              Component = Sensors comp } dispatch ]
+
     shipComponentCard key header form actions expanded dispatch

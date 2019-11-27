@@ -33,5 +33,9 @@ let render (comp: Bridge) (count: int<comp>) (model: State.Model.Model) (ship: S
               Ship = ship
               Component = Bridge comp } dispatch
 
-    let actions = [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, Bridge comp) |> dispatch) ]
+    let actions =
+        [ removeButton
+            { Ship = ship
+              Component = Bridge comp } dispatch ]
+
     shipComponentCard key header [ form ] actions expanded dispatch

@@ -41,5 +41,9 @@ let render (comp: FuelStorage) (model: State.Model.Model) (ship: Ship) dispatch 
                     OnChange = fun tech n -> FuelStorage { comp with FuelStorages = comp.FuelStorages.Add(tech, n) } }
                    dispatch) ]
 
-    let actions = [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, FuelStorage comp) |> dispatch) ]
+    let actions =
+        [ removeButton
+            { Ship = ship
+              Component = FuelStorage comp } dispatch ]
+
     shipComponentCard key header form actions expanded dispatch

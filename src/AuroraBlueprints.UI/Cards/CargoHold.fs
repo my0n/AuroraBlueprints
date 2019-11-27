@@ -5,7 +5,6 @@ open Global
 open State.Msg
 open State.Model
 open State.UI
-open Bulma.Card
 open Cards.Common
 open Comp.CargoHold
 open Comp.ShipComponent
@@ -35,6 +34,7 @@ let render (comp: CargoHold) (model: State.Model.Model) (ship: Ship) dispatch =
           Nerd
               { TractorStrength = comp.TractorStrength * 1<comp>
                 LoadTime = ship.LoadTime } ]
+
     let form =
         [ Bulma.FC.HorizontalGroup None
               (techCountFields
@@ -55,5 +55,9 @@ let render (comp: CargoHold) (model: State.Model.Model) (ship: Ship) dispatch =
                             CargoHold { comp with CargoHandlingSystems = comp.CargoHandlingSystems.Add(tech, n) } }
                    dispatch) ]
 
-    let actions = [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, CargoHold comp) |> dispatch) ]
+    let actions =
+        [ removeButton
+            { Ship = ship
+              Component = CargoHold comp } dispatch ]
+
     shipComponentCard key header form actions expanded dispatch

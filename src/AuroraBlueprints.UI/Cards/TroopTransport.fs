@@ -49,5 +49,8 @@ let render (comp: TroopTransport) (model: State.Model.Model) (ship: Ship) dispat
                    dispatch) ]
 
     let actions =
-        [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, TroopTransport comp) |> dispatch) ]
+        [ removeButton
+            { Ship = ship
+              Component = TroopTransport comp } dispatch ]
+
     shipComponentCard key header form actions expanded dispatch
