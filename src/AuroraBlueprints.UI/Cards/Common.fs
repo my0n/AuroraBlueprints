@@ -43,23 +43,22 @@ type BoundNameFieldsProps =
       OnManufacturerChange: string -> ShipComponent }
 
 let inline nameFields (props: BoundNameFieldsProps) dispatch =
-    fragment []
-        [ Bulma.FC.WithLabel "Name"
-              [ Bulma.FC.AddonGroup
-                  [ Bulma.FC.TextInput props.Name
-                        (props.OnNameChange
-                         >> Msg.UpdateComponent
-                         >> dispatch)
-                    Bulma.FC.Button "Generate" Bulma.FC.ButtonOpts.Empty (fun _ ->
-                        props.GeneratedName
-                        |> props.OnNameChange
-                        |> Msg.UpdateComponent
-                        |> dispatch) ] ]
-          Bulma.FC.WithLabel "Manufacturer"
-              [ Bulma.FC.TextInput props.Manufacturer
-                    (props.OnManufacturerChange
+    [ Bulma.FC.WithLabel "Name"
+          [ Bulma.FC.AddonGroup
+              [ Bulma.FC.TextInput props.Name
+                    (props.OnNameChange
                      >> Msg.UpdateComponent
-                     >> dispatch) ] ]
+                     >> dispatch)
+                Bulma.FC.Button "Generate" Bulma.FC.ButtonOpts.Empty (fun _ ->
+                    props.GeneratedName
+                    |> props.OnNameChange
+                    |> Msg.UpdateComponent
+                    |> dispatch) ] ]
+      Bulma.FC.WithLabel "Manufacturer"
+          [ Bulma.FC.TextInput props.Manufacturer
+                (props.OnManufacturerChange
+                 >> Msg.UpdateComponent
+                 >> dispatch) ] ]
 
 let inline boundStringField ship dispatch lbl getter setter =
     Bulma.FC.WithLabel lbl

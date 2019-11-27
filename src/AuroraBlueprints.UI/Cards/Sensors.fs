@@ -1,12 +1,9 @@
 module Cards.Sensors
 
-open Global
 
-open State.Msg
 open State.Model
 open State.UI
 
-open Bulma.Card
 open Cards.Common
 open Comp.Sensors
 open Comp.ShipComponent

@@ -5,10 +5,8 @@ open Model.Measures
 open Global
 open System
 
-open State.Msg
 open State.UI
 open State.Model
-open Bulma.Card
 open Cards.Common
 open Comp.Engine
 open Comp.ShipComponent
@@ -48,16 +46,16 @@ let render (comp: Engine) (count: int<comp>) (model: State.Model.Model) (ship: S
 
     let form =
         [ Bulma.FC.HorizontalGroup None
-              [ countField
+              ([ countField
                   { Value = count
                     Ship = ship
-                    Component = Engine comp } dispatch
-                nameFields
-                    { Name = comp.Name
-                      Manufacturer = comp.Manufacturer
-                      GeneratedName = comp.GeneratedName
-                      OnNameChange = fun n -> Engine { comp with Name = n }
-                      OnManufacturerChange = fun n -> Engine { comp with Manufacturer = n } } dispatch ]
+                    Component = Engine comp } dispatch ]
+               @ (nameFields
+                   { Name = comp.Name
+                     Manufacturer = comp.Manufacturer
+                     GeneratedName = comp.GeneratedName
+                     OnNameChange = fun n -> Engine { comp with Name = n }
+                     OnManufacturerChange = fun n -> Engine { comp with Manufacturer = n } } dispatch))
           Bulma.FC.HorizontalGroup None
               [ compIntField
                   { Label = "Size"

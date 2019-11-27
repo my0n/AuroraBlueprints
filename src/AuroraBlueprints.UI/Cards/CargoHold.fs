@@ -1,8 +1,5 @@
 module Cards.CargoHold
 
-open Global
-
-open State.Msg
 open State.Model
 open State.UI
 open Cards.Common

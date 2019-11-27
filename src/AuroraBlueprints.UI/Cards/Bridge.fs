@@ -2,9 +2,7 @@ module Cards.Bridge
 
 open Model.Measures
 
-open State.Msg
 open State.UI
-open Bulma.Card
 open Cards.Common
 open Comp.Bridge
 open Comp.ShipComponent
