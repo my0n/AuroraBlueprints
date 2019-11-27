@@ -4,7 +4,6 @@ open System
 
 open Global
 
-open State.Msg
 open State.Model
 open State.UI
 
@@ -39,16 +38,16 @@ let render (comp: Magazine) (count: int<comp>) (model: State.Model.Model) (ship:
 
     let form =
         [ Bulma.FC.HorizontalGroup None
-              [ countField
+              ([ countField
                   { Value = count
                     Ship = ship
-                    Component = Magazine comp } dispatch
-                nameFields
-                    { Name = comp.Name
-                      Manufacturer = comp.Manufacturer
-                      GeneratedName = comp.GeneratedName
-                      OnNameChange = fun n -> Magazine { comp with Name = n }
-                      OnManufacturerChange = fun n -> Magazine { comp with Manufacturer = n } } dispatch ]
+                    Component = Magazine comp } dispatch ]
+               @ (nameFields
+                   { Name = comp.Name
+                     Manufacturer = comp.Manufacturer
+                     GeneratedName = comp.GeneratedName
+                     OnNameChange = fun n -> Magazine { comp with Name = n }
+                     OnManufacturerChange = fun n -> Magazine { comp with Manufacturer = n } } dispatch))
           Bulma.FC.HorizontalGroup None
               [ compIntField
                   { Label = "HTK"

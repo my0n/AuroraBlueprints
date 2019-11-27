@@ -1,12 +1,8 @@
 module Cards.TroopTransport
 
-open Global
-
-open State.Msg
 open State.Model
 open State.UI
 
-open Bulma.Card
 open Cards.Common
 open Model.Measures
 open Comp.TroopTransport
