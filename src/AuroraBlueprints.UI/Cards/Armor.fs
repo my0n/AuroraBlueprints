@@ -1,7 +1,6 @@
 module Cards.Armor
 
 open State.UI
-open State.Msg
 open State.Model
 
 open Cards.Common
@@ -21,28 +20,32 @@ let render (model: State.Model.Model) (ship: Ship) dispatch =
     let expanded = model |> Model.isExpanded key
 
     let header =
-        [
-            Name ship.ArmorTechnology.Name
-            Nerd { TotalBuildCost = ship.ArmorBuildCost }
-            Nerd { RenderMode = HS; Count = 1<comp>; Size = ship.ArmorSize*1</comp> }
-            Nerd { Strength = ship.ArmorStrength }
-            Nerd { Width = ship.ArmorWidth; Depth = ship.ArmorDepth }
-        ]
+        [ Name ship.ArmorTechnology.Name
+          Nerd { TotalBuildCost = ship.ArmorBuildCost }
+          Nerd
+              { RenderMode = HS
+                Count = 1<comp>
+                Size = ship.ArmorSize * 1<1/comp> }
+          Nerd { Strength = ship.ArmorStrength }
+          Nerd
+              { Width = ship.ArmorWidth
+                Depth = ship.ArmorDepth } ]
     let form =
-        Bulma.FC.HorizontalGroup
-            None
-            [
-                boundShipIntField dispatch
-                    "Armor Depth"
-                    (Some 1, None)
-                    ship.ArmorDepth
-                    (fun n -> { ship with ArmorDepth = n })
-                boundTechField currentTech
-                    "Armor Technology"
-                    allTechs.Armor
-                    (fun t -> t.Name)
-                    ship.ArmorTechnology
-                    (fun n -> Msg.ReplaceShip { ship with ArmorTechnology = n } |> dispatch)
-            ]
+        Bulma.FC.HorizontalGroup None
+            [ shipIntField
+                { Label = "Armor Depth"
+                  Value = ship.ArmorDepth
+                  Min = Some 1
+                  Max = None
+                  Disabled = false
+                  OnChange = fun n -> { ship with ArmorDepth = n } } dispatch
+              shipTechField
+                  { CurrentTech = currentTech
+                    Label = "Armor Technology"
+                    Value = ship.ArmorTechnology
+                    Options = allTechs.Armor
+                    GetName = fun t -> t.Name
+                    OnChange = fun n -> { ship with ArmorTechnology = n } } dispatch ]
+
     let actions = []
     shipComponentCard key header [ form ] actions expanded dispatch

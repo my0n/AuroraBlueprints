@@ -1,8 +1,6 @@
 module Cards.CrewQuarters
 
-open State.Msg
 open State.UI
-open Bulma.FC
 open Cards.Common
 open Model.Measures
 open Comp.Ship
@@ -16,33 +14,26 @@ let render (model: State.Model.Model) (ship: Ship) dispatch =
     let expanded = model |> Model.isExpanded key
 
     let header =
-        [
-            Name "Crew Quarters"
-            Nerd { TotalBuildCost = ship.CrewQuartersBuildCost }
-            Nerd { RenderMode = HS; Count = 1<comp>; Size = ship.CrewQuartersSize*1</comp> }
-            Nerd { DeployTime = ship.DeployTime }
-        ]
+        [ Name "Crew Quarters"
+          Nerd { TotalBuildCost = ship.CrewQuartersBuildCost }
+          Nerd
+              { RenderMode = HS
+                Count = 1<comp>
+                Size = ship.CrewQuartersSize * 1<1/comp> }
+          Nerd { DeployTime = ship.DeployTime } ]
     let form =
-        [
-            Bulma.FC.HorizontalGroup
-                None
-                [
-                    Bulma.FC.FloatInput
-                        {
-                            Label = Some "Deployment Time"
-                            Value = ship.DeployTime
-                        }
-                        (fun n -> Msg.ReplaceShip { ship with DeployTime = n } |> dispatch)
-                    Bulma.FC.IntInput
-                        {
-                            Label = Some "Spare Crew Berths"
-                            Value = ship.SpareBerths
-                            Min = Some 0
-                            Max = None
-                            Disabled = false
-                        }
-                        (fun n -> Msg.ReplaceShip { ship with SpareBerths = n } |> dispatch)
-                ]
-        ]
+        [ Bulma.FC.HorizontalGroup None
+              [ shipFloatField
+                  { Label = "Deployment Time"
+                    Value = ship.DeployTime
+                    OnChange = fun n -> { ship with DeployTime = n } } dispatch
+                shipIntField
+                    { Label = "Spare Crew Berths"
+                      Value = ship.SpareBerths
+                      Min = Some 0
+                      Max = None
+                      Disabled = false
+                      OnChange = fun n -> { ship with SpareBerths = n } } dispatch ] ]
+
     let actions = []
     shipComponentCard key header form actions expanded dispatch
