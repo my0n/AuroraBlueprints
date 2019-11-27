@@ -25,46 +25,29 @@ let render (comp: TroopTransport) (model: State.Model.Model) (ship: Ship) dispat
     let expanded = model |> Model.isExpanded key
 
     let header =
-        [
-            Name "Troop Transport"
-            Nerd { MaintenanceClass = comp.MaintenanceClass }
-            Nerd { TotalBuildCost = comp.BuildCost * 1<comp> }
-            Nerd { RenderMode = HS; Count = 1<comp>; Size = comp.Size }
-            Nerd { CryoDrop = comp.CryoDropCapability * 1<comp>; CombatDrop = comp.CombatDropCapability * 1<comp>; TroopTransport = comp.TroopTransportCapability * 1<comp> }
-        ]
+        [ Name "Troop Transport"
+          Nerd { MaintenanceClass = comp.MaintenanceClass }
+          Nerd { TotalBuildCost = comp.BuildCost * 1<comp> }
+          Nerd
+              { RenderMode = HS
+                Count = 1<comp>
+                Size = comp.Size }
+          Nerd
+              { CryoDrop = comp.CryoDropCapability * 1<comp>
+                CombatDrop = comp.CombatDropCapability * 1<comp>
+                TroopTransport = comp.TroopTransportCapability * 1<comp> } ]
+
     let form =
-        [
-            Bulma.FC.HorizontalGroup
-                None
-                (
-                    allTechs.TroopTransports
-                    |> List.map (fun tech ->
-                        Bulma.FC.IntInput
-                            {
-                                Label = Some tech.Name
-                                Value =
-                                    comp.TroopTransports
-                                    |> Map.tryFind tech
-                                    |> Option.defaultValue 0<comp>
-                                Min = Some 0
-                                Max = None
-                                Disabled = not <| List.contains tech.Id currentTech
-                            }
-                            (fun n ->
-                                Msg.UpdateComponent
-                                    (
-                                        TroopTransport
-                                            { comp with
-                                                TroopTransports = comp.TroopTransports.Add (tech, n)
-                                            }
-                                    )
-                                |> dispatch
-                            )
-                    )
-                )
-        ]
+        [ Bulma.FC.HorizontalGroup None
+              (techCountFields
+                  { Values = comp.TroopTransports
+                    CurrentTech = currentTech
+                    AllTechs = allTechs.TroopTransports
+                    GetName = fun n -> n.Name
+                    OnChange =
+                        fun tech n -> TroopTransport { comp with TroopTransports = comp.TroopTransports.Add(tech, n) } }
+                   dispatch) ]
+
     let actions =
-        [
-            "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip (ship, TroopTransport comp) |> dispatch)
-        ]
+        [ "Remove", DangerColor, (fun _ -> Msg.RemoveComponentFromShip(ship, TroopTransport comp) |> dispatch) ]
     shipComponentCard key header form actions expanded dispatch
