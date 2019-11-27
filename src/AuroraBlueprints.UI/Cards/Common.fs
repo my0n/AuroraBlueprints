@@ -27,16 +27,13 @@ let renderNerd (nerd: INerd) =
 
 let inline private renderHeader header: CardHeaderElement list =
     header
-    |> List.map (fun h ->
-        match h with
+    |> List.map (function
         | Name name -> Title name
-        | Nerd nerd ->
-            match nerd.Render with
-            | false -> NoRender
-            | true ->
-                nerd
-                |> renderNerd
-                |> Info)
+        | Nerd nerd when nerd.Render ->
+            nerd
+            |> renderNerd
+            |> Info
+        | Nerd _ -> NoRender)
 
 type BoundNameFieldsProps =
     { Name: string
