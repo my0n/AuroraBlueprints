@@ -23,7 +23,7 @@ let actionBar ship dispatch =
                     Bulma.FC.Button
                         "Clone Ship"
                         Bulma.FC.ButtonOpts.Empty
-                        (fun _ -> 
+                        (fun _ ->
                             match ship with
                             | None -> ()
                             | Some ship' ->
@@ -42,6 +42,17 @@ let shipInfo dispatch model ship =
         let shipComponents =
             ship.Components
             |> Map.values
+            |> List.sortBy (fun (_, comp) ->
+                match comp with
+                | Bridge comp         -> "bridge"
+                | CargoHold comp      -> "cargo"
+                | Engine comp         -> "engine"
+                | FuelStorage comp    -> "fuel"
+                | Magazine comp       -> "magazine"
+                | PowerPlant comp     -> "reactor"
+                | Sensors comp        -> "sensors"
+                | TroopTransport comp -> "troop"
+            )
             |> List.map (fun (count, comp) ->
                 (
                     match comp with
